@@ -1,0 +1,57 @@
+.list-item {
+	display: flex;
+	background: #FFFFFF;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+	border-radius: 10px;
+	margin-bottom: 10px;
+	padding: 10px 20px;
+	height: 35px;
+	justify-content: space-between;
+}
+
+.list-item h4 {
+	color: #FF7182;
+	font-size: 18px;
+	margin: 0 0 5px;	
+}
+
+.list-item p {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 700;
+}
+
+.simple-pagination ul {
+	display: flex;
+	margin: 0;
+	padding: 45px 0 90px 0;
+	list-style: none;
+	text-align: center;
+	height: 30px;
+}
+
+.simple-pagination li {
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.simple-pagination li a,
+.simple-pagination li span {
+	color: #000;
+	padding: 5px 10px;
+	text-decoration: none;
+}
+
+.next, .prev{
+	color: #fff !important;
+	font-weight: 400 !important;
+	background: #6D6D6D;
+	box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.15);
+	border-radius: 5px;
+}
+
+.simple-pagination>ul>.active{
+	font-weight: 700;
+	background: transparent !important;
+	box-shadow: unset !important; 
+}

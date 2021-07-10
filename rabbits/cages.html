@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>rabbits</title>
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+  <link rel="stylesheet" type="text/css" href="/css/pagination.css">
+  <link href="/css/datepicker.css" rel="stylesheet" type="text/css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="/js/pagination.js"></script>
+  <script src="/js/main.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="width=device-width">
+</head>
+<header>
+  <div class="h-wrapper jcsb header">
+    <div class="v-wrapper logo">
+      <img src="/img/logo.svg">
+    </div>
+    <div class="v-wrapper menu-list">
+      <ul class="h-wrapper jcsb">
+        <li class="v-wrapper menu-list-item">
+          <a href="/">Данные о ферме</a>
+        </li>
+        <li class="v-wrapper menu-list-item">
+          <a href="/operations.html">Операции</a>
+        </li>
+        <li class="v-wrapper menu-list-item">
+          <a href="/statistics.html">Статистика</a>
+        </li>
+        <li class="v-wrapper menu-list-item">
+          <a href="#">Прогнозирование</a>
+        </li>
+      </ul>
+    </div>
+    <div class="menu-plan v-wrapper">
+      <p>Работа с планом</p>
+    </div>
+    <div class="v-wrapper">
+      <div class="h-wrapper menu-user">
+        <div class="v-wrapper">
+          <img src="/img/user-logo.svg">
+        </div>
+        <p>Управляющий</p>
+        <div class="v-wrapper">
+          <img src="/img/logout.svg">
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<body>
+  <div class="main-content-container">
+    <div class="main-content">
+      <div class="main-content-navigation">
+        <div class="navigation-leftside">
+          <a href="/index.html">
+            <div class="rabbits-btn v-wrapper">
+              <p>Кролики</p>
+            </div>
+          </a>
+          <div class="cages-btn v-wrapper active-link">
+            <p>Клетки</p>
+          </div>
+        </div>
+        <div class="navigation-rightside">
+          <div class="rightside-text">
+            <p>Сортировать</p>
+
+          </div>
+          <div class="v-wrapper">
+            <div class="rightside-filter-wrapper">
+              <select class="rightside-filter">
+                <option>по ферме</option>
+                <option>по номеру</option>
+                <option>по типу</option>
+                <option>по кол-ву кроликов</option>
+                <option>по статусу</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="main-content-body">
+        <div class="h-wrapper content-body-container">
+          <div class="left-content-body-label">
+            <p>№ фермы</p>
+          </div>
+          <div class="h-wrapper middle-main-content-body-label">
+            <p>Номер</p>
+            <p>Тип</p>
+            <p>Кол-во кроликов</p>
+          </div>
+          <div class="right-main-content-body-label cage-right-label">
+            <p>Статус</p>
+          </div>
+        </div>
+        <div class="list-wrapper">
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 1</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>МАТОЧНАЯ 2</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+          <div class="list-item">
+            <div class="left-item-body">
+              <label class="farm-select">
+                  <input type="checkbox" name="farm-checkbox" value="">
+                  <span></span>
+              </label>
+              <div class="v-wrapper">
+                <p>Ферма №1</p>
+              </div>
+            </div>
+            <div class="middle-item-body">
+              <div class="v-wrapper">
+                <p>#123123</p>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p>ОТКОРМОЧНАЯ</p>
+                </div>
+              </div>
+              <div class="v-wrapper">
+                <div class="h-wrapper">
+                  <p class="kind">4</p>
+                </div>
+              </div>
+            </div>
+            <div class="right-item-body">
+              <p>Треб. уборка, Треб. ремонт</p>
+            </div>    
+          </div>
+        </div>
+      </div>
+      <div class="main-content-pagination">
+        <div id="pagination-container"></div>
+      </div>
+    </div>
+    <div class="sidebar">
+      <div class="cages-farm-input-form">
+        <div class="input-form-body">
+          <div class="input-form-wrapper">
+            <div class="v-wrapper">
+              <p>Номер фермы</p>
+            </div>
+            <div class="v-wrapper">
+              <select class="dropdown-input">
+                <option>Ферма №1</option>
+                <option>Ферма №2</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-form-wrapper">
+            <div class="v-wrapper">
+              <p>Тип клетки</p>
+            </div>
+            <div class="v-wrapper">
+              <select class="dropdown-input">
+                <option>МАТОЧНАЯ 1</option>
+                <option>МАТОЧНАЯ 2</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-form-wrapper">
+            <div class="v-wrapper">
+              <p>Кол-во кроликов</p>
+            </div>
+            <div class="v-wrapper">
+              <input class="rabbits-count-input" type="" name="rabbits-count">
+            </div>
+          </div>
+          <div class="input-form-wrapper">
+            <div class="v-wrapper">
+              <p>Статус клетки</p>
+            </div>
+            <div class="v-wrapper cage-status-wrapper">
+              <label class="custom-checkbox">
+                <input type="checkbox" name="green-radio" value="indigo">
+                <span><p class="cage-status-title">Требуется уборка</p></span>
+              </label>
+              <label class="custom-checkbox">
+                <input type="checkbox" name="green-radio" value="indigo">
+                <span><p class="cage-status-title">Требуется ремонт</p></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="cage-sbmt submit-btn-wrapper">
+          <button type="submit" class="submit-btn">
+            <div class="v-wrapper">
+              <div class="h-wrapper">
+                Отобразить&nbsp<span id="count-results">(0)</span>
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div class="input-form-btns v-wrapper">
+        <div class="h-wrapper btns-container">
+          <button type="submit" class="auto-select-btn repair-btn">
+            <div class="v-wrapper">
+              <div class="h-wrapper">
+                Клетка отремонтирована
+              </div>
+            </div>
+          </button>
+          <button type="submit" class="submit-kill-btn needrepair-btn">
+            <div class="v-wrapper">
+              <div class="h-wrapper">
+                Требуется ремонт
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div class="input-form-btns v-wrapper">
+        <div class="h-wrapper btns-container">
+          <button type="submit" class="auto-select-btn cleaned-btn">
+            <div class="v-wrapper">
+              <div class="h-wrapper">
+                Клетка убрана
+              </div>
+            </div>
+          </button>
+          <button type="submit" class="submit-kill-btn needclean-btn">
+            <div class="v-wrapper">
+              <div class="h-wrapper">
+                Требуется уборка
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    $('#calendar').datepicker({
+        // Можно выбрать тольо даты, идущие за сегодняшним днем, включая сегодня
+        minDate: new Date()
+    })
+  </script>
+  <script type="text/javascript">
+    var items = $(".list-wrapper .list-item");
+      var numItems = items.length;
+      var perPage = 10;
+
+      items.slice(perPage).hide();
+
+      $('#pagination-container').pagination({
+          items: numItems,
+          itemsOnPage: perPage,
+          prevText: "Предыдущая",
+          nextText: "Следующая",
+          onPageClick: function (pageNumber) {
+              var showFrom = perPage * (pageNumber - 1);
+              var showTo = showFrom + perPage;
+              items.hide().slice(showFrom, showTo).show();
+          }
+      });
+  </script>
+  <script src="/js/datepicker.js"></script>
+</body>
+</html>

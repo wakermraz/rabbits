@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>rabbits</title>
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+  <link rel="stylesheet" type="text/css" href="/css/pagination.css">
+  <link href="/css/datepicker.css" rel="stylesheet" type="text/css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="/js/pagination.js"></script>
+  <script src="/js/main.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="width=device-width">
+</head>
+<header>
+  <div class="h-wrapper jcsb header">
+    <div class="v-wrapper logo">
+      <img src="/img/logo.svg">
+    </div>
+    <div class="v-wrapper menu-list">
+      <ul class="h-wrapper jcsb">
+        <li class="v-wrapper menu-list-item">
+          <a href="/">Данные о ферме</a>
+        </li>
+        <li class="v-wrapper menu-list-item">
+          <a href="/operations.html">Операции</a>
+        </li>
+        <li class="v-wrapper menu-list-item">
+          <a href="/statistics.html">Статистика</a>
+        </li>
+        <li class="v-wrapper menu-list-item">
+          <a href="#">Прогнозирование</a>
+        </li>
+      </ul>
+    </div>
+    <div class="menu-plan v-wrapper">
+      <p>Работа с планом</p>
+    </div>
+    <div class="v-wrapper">
+      <div class="h-wrapper menu-user">
+        <div class="v-wrapper">
+          <img src="/img/user-logo.svg">
+        </div>
+        <p>Управляющий</p>
+        <div class="v-wrapper">
+          <img src="/img/logout.svg">
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<body>
+  <div class="main-content-container">
+    <div class="main-content statistics-content-container">
+      <div class="main-content-navigation">
+        <div class="navigation-leftside">
+          <div class="page-label v-wrapper">
+            <p>Статистика</p>
+          </div>
+        </div>
+      </div>
+      <div class="main-content-body">
+      	<div class="stat-top-container">
+      		<div class="leftside-top-stats">
+      			<div class="top-stats-w-btn">
+      				<p class="top-stats-item">Кроликов всего на ферме: <span>0</span></p>
+      				<a href="/index.html">
+      					<p class="top-stats-item-btn">Перейти</p>
+      				</a>
+      			</div>
+      			<div class="top-stats-w-btn">
+      				<p class="top-stats-item">Клеток всего на ферме: <span>0</span></p>
+      				<a href="/cages.html">
+      					<p class="top-stats-item-btn">Перейти</p>
+      				</a>
+      			</div>
+      			<div class="top-stats">
+      				<p class="top-stats-item">Кормятся детей: <span>0</span></p>
+      			</div>
+      			<div class="top-stats">
+      				<p class="top-stats-item">Операций за последние сутки: <span>0</span></p>
+      			</div>
+      			<div class="food-management-btn">
+      				<p>Управление кормом</p>
+      			</div>
+      		</div>
+      		<div class="rightside-top-stats">
+      			<div class="top-stats-filter">
+      				<div class="stats-filter-leftside">
+	      				<p>Выберите фильтр</p>
+	      			</div>
+	      			<div class="stats-filter-rightside">
+		      			<select class="rightside-filter">
+			                <option>убоев</option>
+			            </select>
+			            <select class="rightside-filter">
+			                <option>за неделю</option>
+			                <option>за месяц</option>
+			                <option>за год</option>
+			                <option>за все время</option>
+			            </select>
+			        </div>
+		        </div>
+		        <div class="top-stats-filter-body">
+		        	
+		        </div>
+      		</div>
+      	</div>
+      	<div class="stat-bot-container">
+      		<div class="stats-graphic">
+      			
+      		</div>
+      		<div class="stats-graphic">
+      			
+      		</div>
+      		<div class="stats-graphic">
+      			
+      		</div>
+      	</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
