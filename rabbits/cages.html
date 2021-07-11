@@ -33,7 +33,9 @@
       </ul>
     </div>
     <div class="menu-plan v-wrapper">
-      <p>Работа с планом</p>
+      <a href="#planModal-create">
+        <p>Работа с планом</p>
+      </a>
     </div>
     <div class="v-wrapper">
       <div class="h-wrapper menu-user">
@@ -83,7 +85,7 @@
       <div class="main-content-body">
         <div class="h-wrapper content-body-container">
           <div class="left-content-body-label">
-            <p>№ фермы</p>
+            <p>№ фермы <font>(</font><span id="count"></span><font>)</font></p>
           </div>
           <div class="h-wrapper middle-main-content-body-label">
             <p>Номер</p>
@@ -1943,6 +1945,26 @@
         // Можно выбрать тольо даты, идущие за сегодняшним днем, включая сегодня
         minDate: new Date()
     })
+  </script>
+  <script type="text/javascript">
+    var count = 0; 
+    $(function() { 
+         updateCount(); 
+         $('input[name=farm-checkbox]').change(function() { 
+               updateCount(this.checked ? 1 : -1); 
+         });
+         $('#invert').click(function(e) { 
+               e = $('input[name=farm-checkbox]');
+               e.each(function(i, el) {
+                     el.checked = !el.checked;
+               });
+               updateCount(e.length - count - count);
+         }); 
+    }); 
+    function updateCount(a) {
+         count = a ? count + a : $('input[name=farm-checkbox]:checked').length;
+         $('#count').text(count);
+    }
   </script>
   <script type="text/javascript">
     var items = $(".list-wrapper .list-item");

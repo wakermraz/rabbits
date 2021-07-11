@@ -126,7 +126,7 @@ p{
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
     padding: 36px 63px;
-    overflow: auto;
+    overflow: clip;
 }
 
 
@@ -433,4 +433,628 @@ p{
 .autoSelect-decline{
     background: linear-gradient(180deg, #C74D4D 0%, #B33B3B 100%);
     border-radius: 10px;
+}
+
+
+/* MANUAL SELECT MODAL */   
+
+#manualSelectModal>.modal-dialog{
+    max-width: 980px
+}
+
+#manualSelectModal>.modal-dialog>.modal-content{
+    height: 700px;
+}
+
+#manualSelectModal>.modal-dialog>.modal-content>.modal-body>.close{
+    margin-top: -25px;
+    margin-left: 880px;
+}
+
+.manual-selected-rabbit-pair{
+    max-height: 250px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    padding: 25px 10px 5px 10px;
+}
+
+.manual-selected-rabbit-pair>a>.list-item>.middle-item-body>label>span{
+    background: #6CC165;
+    border-radius: 10px;
+}
+
+
+/* FOOD CONTROL MODAL */
+
+#foodControlModal>.modal-dialog{
+    max-width: 670px;
+}
+
+#foodControlModal>.modal-dialog>.modal-content{
+    height: 410px;
+}
+
+#foodControlModal>.modal-dialog>.modal-content>.modal-body>.close{
+    margin-top: -25px;
+    margin-left: 570px;
+}
+
+.foodControlModal-subheader{
+    margin-top: 42px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.foodControlModal-subheader>p{
+    font-weight: 700;
+}
+
+.foodControlModal-subheader>p:nth-child(2){
+    text-align: right;
+    width: 35%;
+}
+
+.foodControlModal-subheader>p>span{
+    font-weight: 400;
+}
+
+.foodControl-body-container{
+    display: flex;
+    gap: 25px;
+}
+
+.foodControl-body-container>.changeWeight-body{
+    width: 270px;
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+}
+
+.foodControl-body-container>.changeWeight-body>p{
+    color: #fff;
+}
+
+.foodControl-body-container>.changeWeight-body>input{
+    background: #297A2A;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.addFood{
+    background: linear-gradient(180deg, #FFFFFF 0%, #DCDCDC 100%);
+    color: #297A2A;
+    font-size: 16px;
+}
+
+.deleteFood{
+    background: linear-gradient(180deg, #C74D4D 0%, #B33B3B 100%);
+    color: #fff;
+    font-size: 16px;
+}
+
+
+/* PLAN MODAL */
+
+#planModal-create>.modal-dialog{
+    max-width: 1174px;
+}
+
+#planModal-create>.modal-dialog>.modal-content{
+    height: 670px;
+    background: transparent;
+    border-radius: 10px;
+}
+
+#planModal-create>.modal-dialog>.modal-content>.modal-body{
+    padding: unset;
+}
+
+#planModal-create>.modal-dialog>.modal-content>.modal-body>.close{
+    margin-top: 10px;
+    margin-left: 1135px;
+}
+
+.planModal-wrapper{
+    display: flex;
+    height: 100%;
+}
+
+.planModal-left{
+    width: 449px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 10px 0px 0px 10px;
+    padding: 40px 50px;
+}
+
+.planModal-right{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 470px;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.25);
+    border-radius: 0px 10px 10px 0px;
+    padding: 50px 80px;
+}
+
+.planModal-left-label{
+    font-size: 25px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.planModal-left-middle{
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+ .planModal-left-middle-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+ }
+
+ .planModal-plan-select-tomorrow{
+    font-weight: 400;
+    font-size: 18px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+ }
+
+ .planModal-plan-select-wrapper{
+    display: flex;
+    gap: 10px;
+ }
+
+ .planModal-plan-select{
+    flex-direction: column;
+    justify-content: center;
+ }
+
+ .planModal-plan-select>span{
+    height: 20px;
+ }
+
+ .planModal-left-middle-wrapper>select{
+    width: 326px;
+    background: #297A2A;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    text-align: center;
+    height: 35px;
+    font-size: 18px;
+    font-family: 'Roboto Condensed';
+ }
+
+.planCreate-calendar{
+    height: 25px;
+}
+
+.planCreate-input{
+    background: #297A2A;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    width: 322px;
+}
+
+ .planModal-left-middle-wrapper>p{
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+ }
+
+.planModal-left-bottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.planModal-add-item{
+    background: linear-gradient(180deg, #FFFFFF 0%, #DCDCDC 100%);
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #297A2a;
+    padding: 15px 0px;
+    text-align: center;
+    width: 280px;
+}
+
+.planCreate-rightside-label-container{
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: -25px;
+}
+
+.planCreate-rightside-label-container>a>p{
+    width: 215px;
+    padding: 7px 0;
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+}
+
+.planModal-right-items{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+    height: 430px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.planModal-right-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    padding: 9px 20px;
+}
+
+.planModal-right-submit{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.planModal-submit{
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #297A2a;
+    padding: 15px 0px;
+    text-align: center;
+    width: 280px;
+    color: #fff;
+    margin-bottom: -10px;
+}
+
+
+/* ALL PLANS MODAL */
+
+
+#allPlansModal>.modal-dialog{
+    max-width: 1000px;
+}
+
+#allPlansModal>.modal-dialog>.modal-content{
+    height: 657px;
+}
+
+#allPlansModal>.modal-dialog>.modal-content>.modal-body>.close{
+    margin-top: -25px;
+    margin-left: 900px;
+}
+
+.allPlans-subheader{
+    margin-top: 45px;
+    display: flex;
+    gap: 30px;
+}
+
+.allPlans-list{
+    margin-top: 13px;
+    height: 470px;
+    padding: 7px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    gap: 10px;
+    margin-bottom: 90px;
+}
+
+.appPlans-list-item{
+    display: flex;
+    gap: 10px;
+}
+
+.allPlans-list-item-leftside{
+    width: 100%;
+}
+
+.allPlans-subheader>a{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.allPlans-subheader-tab{
+    background: linear-gradient(180deg, #BEBEBE 0%, #9D9D9D 100%);
+    border-radius: 10px;
+    padding: 5px 0px;
+    color: #fff;
+    width: 135px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.allPlans-subheader-tab-active{
+    cursor: default;
+    background: #6D6D6D;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+#allPlans-delete{
+    cursor: pointer;
+}
+
+.p-wrapper{
+    margin: auto 0;
+}
+
+.allPlans-header>a>p{
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 10px;
+    padding: 7px 0;
+    text-align: center;
+    width: 215px;
+    font-size: 18px;
+    color: #fff;
+    margin-top: -10px;
+    margin-left: -40px;
+}
+
+.allPlans-list-item-leftside>.planModal-right-item{
+    height: 12px;
+}
+
+.allPlans-list-item-leftside>.planModal-right-item>.v-wrapper{
+    width: 100%;
+}
+
+.allPlans-list-item-leftside>.planModal-right-item>.v-wrapper>p{
+    font-size: 18px;
+}
+
+
+/* ADD RABBIT MODAL */
+
+#addRabbitModal>.modal-dialog{
+    max-width: 1174px;
+}
+
+#addRabbitModal>.modal-dialog>.modal-content{
+    height: 670px;
+    background: transparent;
+    border-radius: 10px;
+}
+
+#addRabbitModal>.modal-dialog>.modal-content>.modal-body{
+    padding: unset;
+}
+
+#addRabbitModal>.modal-dialog>.modal-content>.modal-body>.close{
+    margin-top: 10px;
+    margin-left: 1135px;
+}
+
+.addRabbitModal-wrapper{
+    display: flex;
+    height: 100%;
+}
+
+.addRabbitModal-left{
+    width: 449px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 10px 0px 0px 10px;
+    padding: 40px 50px;
+}
+
+.addRabbitModal-right{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 470px;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.25);
+    border-radius: 0px 10px 10px 0px;
+    padding: 50px 80px;
+}
+
+.addRabbitModal-left-label{
+    font-size: 25px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.addRabbitModal-left-middle{
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+ .addRabbitModal-left-middle-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+ }
+
+ .addRabbitModal-plan-select-tomorrow{
+    font-weight: 400;
+    font-size: 18px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+ }
+
+ .addRabbitModal-plan-select-wrapper{
+    display: flex;
+    gap: 10px;
+ }
+
+ .addRabbitModal-plan-select{
+    flex-direction: column;
+    justify-content: center;
+ }
+
+ .addRabbitModal-plan-select>span{
+    height: 20px;
+ }
+
+ .addRabbitModal-left-middle-wrapper>select{
+    width: 100%;
+    background: #297A2A;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    text-align: center;
+    height: 35px;
+    font-size: 18px;
+    font-family: 'Roboto Condensed';
+ }
+
+.planCreate-calendar{
+    height: 25px;
+}
+
+.planCreate-input{
+    background: #297A2A;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    width: 322px;
+}
+
+ .addRabbitModal-left-middle-wrapper>p{
+    color: #fff;
+    width: 53.6%;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+ }
+
+.addRabbitModal-left-bottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.addRabbitModal-add-item{
+    background: linear-gradient(180deg, #FFFFFF 0%, #DCDCDC 100%);
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #297A2a;
+    padding: 15px 0px;
+    text-align: center;
+    width: 280px;
+}
+
+.planCreate-rightside-label-container{
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: -25px;
+}
+
+.planCreate-rightside-label-container>a>p{
+    width: 215px;
+    padding: 7px 0;
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+}
+
+.addRabbitModal-right-items{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+    height: 430px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+.addRabbitModal-right-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    padding: 9px 20px;
+}
+
+.addRabbitModal-right-submit{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.addRabbitModal-submit{
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #297A2a;
+    padding: 15px 0px;
+    text-align: center;
+    width: 280px;
+    color: #fff;
+    margin-bottom: -10px;
+}
+
+.rabbitBirth-calendar{
+    width: 290px;
+    height: 25px;
+}
+
+.addRabbitModal-left-middle>.input-form-wrapper>.v-wrapper>p{
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.addRabbitModal-checkbox > input:checked + span::before {
+    background: #297A2A;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    width: 135px;
+}
+
+.addRabbitModal-checkbox > span::before{
+    background: linear-gradient(0deg, #2f9543 0%, #27973e 100%);
+    border-radius: 5px;
+    width: 135px;
+}
+
+.addRabbit-checkbox-container{
+    gap: 20px;
+}
+
+.addRabbitModal-left-middle>.input-form-wrapper>div{
+    width: 100%;
+}
+
+.addRabbitModal-checkbox>img{
+    margin-left: 55px;
 }

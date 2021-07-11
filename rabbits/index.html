@@ -7,6 +7,7 @@
 	<link href="/css/datepicker.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" type="text/css" href="/css/modal.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="/js/server.js"></script>
 	<script src="/js/modal.js"></script>
 	<script src="/js/pagination.js"></script>
 	<script src="/js/main.js"></script>
@@ -66,7 +67,9 @@
 						</div>
 					</a>
 					<div class="add-btn v-wrapper">
-						<img src="/img/add-btn.svg">
+						<a href="#addRabbitModal">	
+							<img src="/img/add-btn.svg">
+						</a>
 					</div>
 				</div>
 				<div class="navigation-rightside">
@@ -93,7 +96,7 @@
 			<div class="main-content-body">
 				<div class="h-wrapper content-body-container">
 					<div class="left-content-body-label">
-						<p>№ клетки</p>
+						<p>№ клетки <font>(</font><span id="count"></span><font>)</font></p>
 					</div>
 					<div class="h-wrapper middle-main-content-body-label">
 						<p>Номер</p>
@@ -1165,11 +1168,20 @@
 			</div>
 			<div class="input-form-btns v-wrapper">
 				<div class="h-wrapper btns-container">
-					<a href="#autoSelectModal">
+					<a href="#autoSelectModal" id="auto-select-btn">
 						<button type="submit" class="auto-select-btn">
 							<div class="v-wrapper">
 								<div class="h-wrapper">
 									Автоматический подбор пары
+								</div>
+							</div>
+						</button>
+					</a>
+					<a href="#manualSelectModal" id="manual-select-btn" class="hidden">
+						<button type="submit" class="auto-select-btn">
+							<div class="v-wrapper">
+								<div class="h-wrapper">
+									Ручной подбор пары
 								</div>
 							</div>
 						</button>
@@ -1186,7 +1198,7 @@
 					<div class="manual-select-wrapper">
 						<label class="manual-select">
 						   	<input type="checkbox" name="default-radio" value="indigo">
-						   	<span>Ручной выбор</span>
+						   	<span id="manual-select">Ручной выбор</span>
 						</label>
 					</div>
 					<div class="v-wrapper calendar-min">
@@ -1280,15 +1292,24 @@
 	        <div class="rabbitModal-subheader-bot">
 	        	<div class="input-form-btns v-wrapper">
 					<div class="h-wrapper btns-container">
-						<button type="submit" class="auto-select-btn">
-							<div class="v-wrapper">
-								<a href="#autoSelectModal">
-									<div class="h-wrapper rabbits-auto-select-btn">
+						<a href="#autoSelectModal" id="modal-auto-select-btn">
+							<button type="submit" class="auto-select-btn">
+								<div class="v-wrapper">
+									<div class="h-wrapper">
 										Автоматический подбор пары
 									</div>
-								</a>
-							</div>
-						</button>
+								</div>
+							</button>
+						</a>
+						<a href="#manualSelectModal" id="modal-manual-select-btn" class="hidden">
+							<button type="submit" class="auto-select-btn">
+								<div class="v-wrapper">
+									<div class="h-wrapper">
+										Ручной подбор пары
+									</div>
+								</div>
+							</button>
+						</a>
 						<button type="submit" class="submit-kill-btn">
 							<div class="v-wrapper">
 								<div class="h-wrapper">
@@ -1301,7 +1322,7 @@
 						<div class="manual-select-wrapper">
 							<label class="manual-select">
 							   	<input type="checkbox" name="default-radio" value="indigo">
-							   	<span>Ручной выбор</span>
+							   	<span id="modal-manual-select">Ручной выбор</span>
 							</label>
 						</div>
 						<div class="v-wrapper calendar-min">
@@ -1346,10 +1367,74 @@
 	  <div class="modal-dialog">
 	    <div class="modal-content">  
 	      <div class="modal-body"> 
-	      	<a href="#close" title="Close" class="close">×</a> 
-	        <div class="rabbitModal-header">
-	        	
-	        </div>
+	      	<a href="#close" title="Close" class="close">×</a>
+	      	<div class="planModal-wrapper">
+		        <div class="planModal-left">
+		        	<div class="planModal-left-top">
+		        		<p class="planModal-left-label">Добавить в план</p>
+		        	</div>
+		        	<div class="planModal-left-middle">
+		        		<div class="planModal-left-middle-wrapper">
+		        			<p>Дата</p>
+		        			<div class="plan-label-data">
+								<div class="v-wrapper">
+									<img class="calendar-icon" src="/img/calendar.svg">
+									<input id="calendar" disabled class="datepicker-here custom-calendar planCreate-calendar" data-position="left top">
+								</div>
+							</div>
+							<div class="planModal-plan-select-wrapper">
+								<label class="plan-select planModal-plan-select">
+								   	<input type="checkbox" checked name="plan-checkbox" value="">
+								   	<span></span>
+								</label>
+								<p class="planModal-plan-select-tomorrow">Завтра</p>
+							</div>
+		        		</div>
+		        		<div class="planModal-left-middle-wrapper">
+		        			<p>Операция</p>
+							<select class="planModal-dropdown-input">
+								<option>Ферма №1</option>
+								<option>Ферма №2</option>
+							</select>
+		        		</div>
+		        		<div class="planModal-left-middle-wrapper">
+		        			<p>Количество</p>
+		        			<div class="v-wrapper">
+				              <input class="rabbits-count-input planCreate-input" type="" name="rabbits-count">
+				            </div>
+		        		</div>
+		        	</div>
+		        	<div class="planModal-left-bottom">
+		        		<p class="planModal-add-item">Добавить</p>
+		        	</div>
+		        </div>
+		        <div class="planModal-right">
+		        	<div class="planCreate-rightside-label-container">
+		        		<a href="#allPlansModal">
+		        			<p class="planCreate-rightside-label">Просмотреть план</p>
+		        		</a>	
+		        	</div>
+		        	<div class="planModal-right-items">
+		        		<div class="planModal-right-item">
+		        			<div class="v-wrapper">
+		        				<p>01.01.2021</p>
+		        			</div>
+		        			<div class="v-wrapper">
+		        				<p>Убой</p>
+		        			</div>
+		        			<div class="v-wrapper">
+		        				<p>535</p>
+		        			</div>
+		        			<div class="v-wrapper">
+		        				<img src="/img/planCreate-delete-item.svg">
+		        			</div>
+		        		</div>
+		        	</div>
+		        	<div class="planModal-right-submit">
+		        		<p class="planModal-submit">Отправить план</p>
+		        	</div>
+		        </div>
+		    </div> 
 	      </div>
 	    </div>
 	  </div>
@@ -1374,7 +1459,7 @@
 								<div class="list-item">
 									<div class="middle-item-body">
 										<label class="small-rabbit-select">
-										   	<input type="checkbox" name="small-rabbit-checkbox" value="">
+										   	<input name="small-rabbit-checkbox" value="">
 										   	<span></span>
 										</label>
 										<div class="v-wrapper">
@@ -1404,7 +1489,7 @@
 							<div class="list-item">
 								<div class="middle-item-body">
 									<label class="small-rabbit-select">
-									   	<input type="checkbox" checked name="small-rabbit-checkbox" value="">
+									   	<input type="radio" checked name="small-rabbit-checkbox-for#123123" value="">
 									   	<span></span>
 									</label>
 									<div class="v-wrapper">
@@ -1442,7 +1527,7 @@
 								<div class="list-item">
 									<div class="middle-item-body">
 										<label class="small-rabbit-select">
-										   	<input type="checkbox" name="small-rabbit-checkbox" value="">
+										   	<input name="small-rabbit-checkbox" value="">
 										   	<span></span>
 										</label>
 										<div class="v-wrapper">
@@ -1472,7 +1557,7 @@
 							<div class="list-item">
 								<div class="middle-item-body">
 									<label class="small-rabbit-select">
-									   	<input type="checkbox" checked name="small-rabbit-checkbox" value="">
+									   	<input type="radio" checked name="small-rabbit-checkbox-for#321321" value="">
 									   	<span></span>
 									</label>
 									<div class="v-wrapper">
@@ -1516,116 +1601,93 @@
 	  </div>
 	</div>
 
-	<div id="addRabbitsModal" class="modal">
+	<div id="addRabbitModal" class="modal">
 	  <div class="modal-dialog">
 	    <div class="modal-content">  
 	      <div class="modal-body"> 
-	      	<a href="#close" title="Close" class="close">×</a> 
-	        <div class="rabbitModal-header">
-	        	<img src="/img/rabbit-modal-ico.svg">
-	        	<div class="h-wrapper rabbit-header-container">
-		        	<div class="rabbit-header-left">
-		        		<div class="rabbit-header-info">
-		        			<p>Кролик</p>
-		        			<div class="v-wrapper rabbit-header-sex">
-		        				<img src="/img/sex.svg">
-		        			</div>
-		        			<div id="changeWeight" class="changeWeight">
-		        				<img src="/img/change-weight.svg">
-		        				<p>Взвесить</p>
-		        			</div>
+	      	<a href="#close" title="Close" class="close">×</a>
+	      	<div class="addRabbitModal-wrapper">
+		        <div class="addRabbitModal-left">
+		        	<div class="addRabbitModal-left-top">
+		        		<p class="addRabbitModal-left-label">Информация о кролике</p>
+		        	</div>
+		        	<div class="addRabbitModal-left-middle">
+		        		<div class="addRabbitModal-left-middle-wrapper">
+		        			<p>Дата рождения</p>
+		        			<div class="plan-label-data">
+								<div class="v-wrapper">
+									<img class="calendar-icon" src="/img/calendar.svg">
+									<input id="calendar" class="datepicker-here custom-calendar rabbitBirth-calendar" data-position="left top">
+								</div>
+							</div>
 		        		</div>
-		        		<div class="rabbit-header-info-bot">
-		        			<p>#123123</p>
-		        			<p>1,81 кг</p>
+		        		<div class="addRabbitModal-left-middle-wrapper">
+		        			<p>Порода кролика</p>
+							<select class="addRabbitModal-dropdown-input">
+								<option>Ферма №1</option>
+								<option>Ферма №2</option>
+							</select>
+		        		</div>
+		        		<div class="input-form-wrapper">
+							<div class="v-wrapper">
+								<p>Пол кролика</p>
+							</div>
+							<div class="v-wrapper">
+								<div class="checkbox-container addRabbit-checkbox-container">
+								    <label class="custom-checkbox addRabbitModal-checkbox">
+								     	<input type="radio" checked name="addRabbit-sex" value="male">
+								     	<span></span>
+								     	<img src="/img/male.svg">
+								    </label>
+								    <label class="custom-checkbox addRabbitModal-checkbox">
+								     	<input type="radio" name="addRabbit-sex" value="female">
+								     	<span></span>
+								     	<img src="/img/female.svg">
+								    </label>
+								</div>
+							</div>
+						</div>
+		        		<div class="addRabbitModal-left-middle-wrapper">
+		        			<p>№ фермы</p>
+							<select class="addRabbitModal-dropdown-input">
+								<option>Ферма №1</option>
+								<option>Ферма №2</option>
+							</select>
+		        		</div>
+		        		<div class="addRabbitModal-left-middle-wrapper">
+		        			<p>№ клетки</p>
+							<select class="addRabbitModal-dropdown-input">
+								<option>Ферма №1</option>
+								<option>Ферма №2</option>
+							</select>
 		        		</div>
 		        	</div>
-		        	<div class="rabbit-header-right">
-		        		<p>Дата рождения: 01.01.2021</p>
-		        		<p>Возраст: 100 дней</p>
+		        	<div class="addRabbitModal-left-bottom">
+		        		<p class="addRabbitModal-add-item">Добавить кролика</p>
 		        	</div>
 		        </div>
-	        </div>
-	        <div class="rabbitModal-subheader">
-	        	<div class="rabbitModal-subheader-left">
-	        		<p>Тип: <span class="subheader-details">РАЗМНОЖ</span></p>
-	        		<p>Порода: <span class="subheader-details">ПАННОН</span></p>
-	        	</div>
-	        	<div class="rabbitModal-subheader-middle">
-	        		<p>Кол-во выводов: <span class="subheader-details">6</span></p>
-	        		<p>Средний вывод: <span class="subheader-details">8</span></p>
-	        	</div>
-	        	<div class="rabbitModal-subheader-right">
-	        		<p>№ клетки: <span class="subheader-details">136Б</span></p>
-	        		<p>Статус: <span class="subheader-details">Треб. вак.</span></p>
-	        	</div>
-	        </div>
-	        <div class="operations-history">
-	        	<div class="operations-history-label">
-	        		<p>История операций</p>
-	        	</div>
-	        	<div class="operations-history-body">
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Рождение кролика</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Отсадка кролика (132Б → 122А)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Вакцинирование</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Спаривание (#321312)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Спаривание (#737313)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Рождение кролика</p>
-	        		</div>
-	        	</div>
-	        </div>
-	        <div class="rabbitModal-subheader-bot">
-	        	<div class="input-form-btns v-wrapper">
-					<div class="h-wrapper btns-container">
-						<button type="submit" class="auto-select-btn">
-							<div class="v-wrapper">
-								<div class="h-wrapper">
-									Автоматический подбор пары
-								</div>
-							</div>
-						</button>
-						<button type="submit" class="submit-kill-btn">
-							<div class="v-wrapper">
-								<div class="h-wrapper">
-									Отправить на убой
-								</div>
-							</div>
-						</button>
-					</div>
-					<div class="h-wrapper bot-navigation">
-						<div class="manual-select-wrapper">
-							<label class="manual-select">
-							   	<input type="checkbox" name="default-radio" value="indigo">
-							   	<span>Ручной выбор</span>
-							</label>
-						</div>
-						<div class="v-wrapper calendar-min">
-							<div class="h-wrapper">
-								<img class="calendar-icon-min" src="/img/calendar-min.svg">
-								<p>Дата:</p>
-								<input id="calendar" placeholder="01.01.2021" class="datepicker-here custom-kill-calendar" data-position="left bottom">
-							</div>
-						</div>
-					</div>
-				</div>
-	        </div>
+		        <div class="addRabbitModal-right">
+		        	<div class="addRabbitModal-right-items">
+		        		<div class="addRabbitModal-right-item">
+		        			<div class="v-wrapper">
+		        				<p>01.01.2021</p>
+		        			</div>
+		        			<div class="v-wrapper">
+		        				<p>Убой</p>
+		        			</div>
+		        			<div class="v-wrapper">
+		        				<p>535</p>
+		        			</div>
+		        			<div class="v-wrapper">
+		        				<img src="/img/planCreate-delete-item.svg">
+		        			</div>
+		        		</div>
+		        	</div>
+		        	<div class="addRabbitModal-right-submit">
+		        		<p class="addRabbitModal-submit">Сохранить изменения</p>
+		        	</div>
+		        </div>
+		    </div> 
 	      </div>
 	    </div>
 	  </div>
@@ -1636,110 +1698,36 @@
 	    <div class="modal-content">  
 	      <div class="modal-body"> 
 	      	<a href="#close" title="Close" class="close">×</a> 
-	        <div class="rabbitModal-header">
-	        	<img src="/img/rabbit-modal-ico.svg">
-	        	<div class="h-wrapper rabbit-header-container">
-		        	<div class="rabbit-header-left">
-		        		<div class="rabbit-header-info">
-		        			<p>Кролик</p>
-		        			<div class="v-wrapper rabbit-header-sex">
-		        				<img src="/img/sex.svg">
+	        <div class="allPlans-header">
+	        	<a href="#planModal-create">
+	        		<p>Вернуться назад</p>
+	        	</a>
+	        </div>
+	        <div class="allPlans-subheader">
+	        	<p class="p-wrapper">План</p>
+	        	<a href="#planModal-create">	
+	        		<img src="/img/edit.svg">
+	        	</a>
+	        	<p class="allPlans-subheader-tab allPlans-subheader-tab-active">Ожидается</p>
+	        	<p class="allPlans-subheader-tab">Выполнено</p>
+	        </div>
+	        <div class="allPlans-list">
+	        	<div class="appPlans-list-item">
+	        		<div class="allPlans-list-item-leftside">
+	        			<div class="planModal-right-item">
+		        			<div class="v-wrapper">
+		        				<p>01.01.2021</p>
 		        			</div>
-		        			<div id="changeWeight" class="changeWeight">
-		        				<img src="/img/change-weight.svg">
-		        				<p>Взвесить</p>
+		        			<div class="v-wrapper">
+		        				<p>Убой</p>
+		        			</div>
+		        			<div class="v-wrapper">
+		        				<p>535</p>
 		        			</div>
 		        		</div>
-		        		<div class="rabbit-header-info-bot">
-		        			<p>#123123</p>
-		        			<p>1,81 кг</p>
-		        		</div>
-		        	</div>
-		        	<div class="rabbit-header-right">
-		        		<p>Дата рождения: 01.01.2021</p>
-		        		<p>Возраст: 100 дней</p>
-		        	</div>
-		        </div>
-	        </div>
-	        <div class="rabbitModal-subheader">
-	        	<div class="rabbitModal-subheader-left">
-	        		<p>Тип: <span class="subheader-details">РАЗМНОЖ</span></p>
-	        		<p>Порода: <span class="subheader-details">ПАННОН</span></p>
+	        		</div>
+	        		<img id="allPlans-delete" src="/img/planCreate-delete-item.svg">
 	        	</div>
-	        	<div class="rabbitModal-subheader-middle">
-	        		<p>Кол-во выводов: <span class="subheader-details">6</span></p>
-	        		<p>Средний вывод: <span class="subheader-details">8</span></p>
-	        	</div>
-	        	<div class="rabbitModal-subheader-right">
-	        		<p>№ клетки: <span class="subheader-details">136Б</span></p>
-	        		<p>Статус: <span class="subheader-details">Треб. вак.</span></p>
-	        	</div>
-	        </div>
-	        <div class="operations-history">
-	        	<div class="operations-history-label">
-	        		<p>История операций</p>
-	        	</div>
-	        	<div class="operations-history-body">
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Рождение кролика</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Отсадка кролика (132Б → 122А)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Вакцинирование</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Спаривание (#321312)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Спаривание (#737313)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Рождение кролика</p>
-	        		</div>
-	        	</div>
-	        </div>
-	        <div class="rabbitModal-subheader-bot">
-	        	<div class="input-form-btns v-wrapper">
-					<div class="h-wrapper btns-container">
-						<button type="submit" class="auto-select-btn">
-							<div class="v-wrapper">
-								<div class="h-wrapper">
-									Автоматический подбор пары
-								</div>
-							</div>
-						</button>
-						<button type="submit" class="submit-kill-btn">
-							<div class="v-wrapper">
-								<div class="h-wrapper">
-									Отправить на убой
-								</div>
-							</div>
-						</button>
-					</div>
-					<div class="h-wrapper bot-navigation">
-						<div class="manual-select-wrapper">
-							<label class="manual-select">
-							   	<input type="checkbox" name="default-radio" value="indigo">
-							   	<span>Ручной выбор</span>
-							</label>
-						</div>
-						<div class="v-wrapper calendar-min">
-							<div class="h-wrapper">
-								<img class="calendar-icon-min" src="/img/calendar-min.svg">
-								<p>Дата:</p>
-								<input id="calendar" placeholder="01.01.2021" class="datepicker-here custom-kill-calendar" data-position="left bottom">
-							</div>
-						</div>
-					</div>
-				</div>
 	        </div>
 	      </div>
 	    </div>
@@ -1751,110 +1739,380 @@
 	    <div class="modal-content">  
 	      <div class="modal-body"> 
 	      	<a href="#close" title="Close" class="close">×</a> 
-	        <div class="rabbitModal-header">
-	        	<img src="/img/rabbit-modal-ico.svg">
-	        	<div class="h-wrapper rabbit-header-container">
-		        	<div class="rabbit-header-left">
-		        		<div class="rabbit-header-info">
-		        			<p>Кролик</p>
-		        			<div class="v-wrapper rabbit-header-sex">
-		        				<img src="/img/sex.svg">
-		        			</div>
-		        			<div id="changeWeight" class="changeWeight">
-		        				<img src="/img/change-weight.svg">
-		        				<p>Взвесить</p>
-		        			</div>
-		        		</div>
-		        		<div class="rabbit-header-info-bot">
-		        			<p>#123123</p>
-		        			<p>1,81 кг</p>
-		        		</div>
-		        	</div>
-		        	<div class="rabbit-header-right">
-		        		<p>Дата рождения: 01.01.2021</p>
-		        		<p>Возраст: 100 дней</p>
-		        	</div>
-		        </div>
+	        <div class="autoSelectModal-header">
+	        	<p>Ручной подбор</p>
 	        </div>
-	        <div class="rabbitModal-subheader">
-	        	<div class="rabbitModal-subheader-left">
-	        		<p>Тип: <span class="subheader-details">РАЗМНОЖ</span></p>
-	        		<p>Порода: <span class="subheader-details">ПАННОН</span></p>
-	        	</div>
-	        	<div class="rabbitModal-subheader-middle">
-	        		<p>Кол-во выводов: <span class="subheader-details">6</span></p>
-	        		<p>Средний вывод: <span class="subheader-details">8</span></p>
-	        	</div>
-	        	<div class="rabbitModal-subheader-right">
-	        		<p>№ клетки: <span class="subheader-details">136Б</span></p>
-	        		<p>Статус: <span class="subheader-details">Треб. вак.</span></p>
-	        	</div>
-	        </div>
-	        <div class="operations-history">
-	        	<div class="operations-history-label">
-	        		<p>История операций</p>
-	        	</div>
-	        	<div class="operations-history-body">
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Рождение кролика</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Отсадка кролика (132Б → 122А)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Вакцинирование</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Спаривание (#321312)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Спаривание (#737313)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Рождение кролика</p>
-	        		</div>
-	        	</div>
-	        </div>
-	        <div class="rabbitModal-subheader-bot">
-	        	<div class="input-form-btns v-wrapper">
-					<div class="h-wrapper btns-container">
-						<button type="submit" class="auto-select-btn">
-							<div class="v-wrapper">
-								<div class="h-wrapper">
-									Автоматический подбор пары
+	        <div class="autoSelectModal-body-container">
+	        	<div class="autoSelectModal-body-item">
+	        		<div class="selected-rabbit">
+	        			<div class="selected-rabbit-label">
+	        				<p>Выбранный кролик:</p>
+	        			</div>
+	        			<div>
+	        				<a href="#rabbitModal">
+								<div class="list-item">
+									<div class="middle-item-body">
+										<label class="small-rabbit-select">
+										   	<input name="small-rabbit-checkbox" value="">
+										   	<span></span>
+										</label>
+										<div class="v-wrapper">
+											<p>136Б</p>
+										</div>
+										<div class="v-wrapper">
+											<p>#123123</p>
+										</div>
+										<div class="v-wrapper">
+											<img src="/img/sex.svg">
+										</div>
+										<div class="v-wrapper">
+											<div class="h-wrapper">
+												<p class="kind">ПАННОН</p>
+											</div>
+										</div>
+										<div class="v-wrapper">
+											<p>48 дней</p>
+										</div>
+									</div>	
 								</div>
+							</a>
+	        			</div>
+	        		</div>
+	        		<div class="manual-selected-rabbit-pair">
+	        			<a href="#rabbitModal">
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" checked name="manual-rabbit-checkbox-for#123123" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Нет связей</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
 							</div>
-						</button>
-						<button type="submit" class="submit-kill-btn">
-							<div class="v-wrapper">
-								<div class="h-wrapper">
-									Отправить на убой
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" name="manual-rabbit-checkbox-for#123123" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Связь в N пок.</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
+							</div>
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" name="manual-rabbit-checkbox-for#123123" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Нет связей</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
+							</div>
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" name="manual-rabbit-checkbox-for#123123" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Связь в N пок.</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
+							</div>
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" name="manual-rabbit-checkbox-for#123123" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Нет связей</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
+							</div>
+						</a>
+	        		</div>
+	        	</div>
+	        	<div class="autoSelectModal-body-item">
+	        		<div class="selected-rabbit">
+	        			<div class="selected-rabbit-label">
+	        				<p>Выбранный кролик:</p>
+	        			</div>
+	        			<div>
+	        				<a href="#rabbitModal">
+								<div class="list-item">
+									<div class="middle-item-body">
+										<label class="small-rabbit-select">
+										   	<input name="manual-rabbit-checkbox" value="">
+										   	<span></span>
+										</label>
+										<div class="v-wrapper">
+											<p>136Б</p>
+										</div>
+										<div class="v-wrapper">
+											<p>#123123</p>
+										</div>
+										<div class="v-wrapper">
+											<img src="/img/sex.svg">
+										</div>
+										<div class="v-wrapper">
+											<div class="h-wrapper">
+												<p class="kind">ПАННОН</p>
+											</div>
+										</div>
+										<div class="v-wrapper">
+											<p>48 дней</p>
+										</div>
+									</div>	
 								</div>
+							</a>
+	        			</div>
+	        		</div>
+	        		<div class="manual-selected-rabbit-pair">
+	        			<a href="#rabbitModal">
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" checked name="manual-rabbit-checkbox-for#321321" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Нет связей</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
 							</div>
-						</button>
-					</div>
-					<div class="h-wrapper bot-navigation">
-						<div class="manual-select-wrapper">
-							<label class="manual-select">
-							   	<input type="checkbox" name="default-radio" value="indigo">
-							   	<span>Ручной выбор</span>
-							</label>
-						</div>
-						<div class="v-wrapper calendar-min">
-							<div class="h-wrapper">
-								<img class="calendar-icon-min" src="/img/calendar-min.svg">
-								<p>Дата:</p>
-								<input id="calendar" placeholder="01.01.2021" class="datepicker-here custom-kill-calendar" data-position="left bottom">
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" name="manual-rabbit-checkbox-for#321321" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Связь в N пок.</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
 							</div>
-						</div>
-					</div>
-				</div>
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" name="manual-rabbit-checkbox-for#321321" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Нет связей</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
+							</div>
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" name="manual-rabbit-checkbox-for#321321" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Связь в N пок.</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
+							</div>
+							<div class="list-item">
+								<div class="middle-item-body">
+									<label class="small-rabbit-select">
+									   	<input type="radio" name="manual-rabbit-checkbox-for#321321" value="">
+									   	<span></span>
+									</label>
+									<div class="v-wrapper">
+										<p>136Б</p>
+									</div>
+									<div class="v-wrapper">
+										<p>Нет связей</p>
+									</div>
+									<div class="v-wrapper">
+										<p>#123123</p>
+									</div>
+									<div class="v-wrapper">
+										<img src="/img/sex.svg">
+									</div>
+									<div class="v-wrapper">
+										<div class="h-wrapper">
+											<p class="kind">ПАННОН</p>
+										</div>
+									</div>
+									<div class="v-wrapper">
+										<p>48 дней</p>
+									</div>
+								</div>	
+							</div>
+						</a>
+	        		</div>
+	        	</div>
+	        </div>
+	        <div class="autoSelectModal-bot">
+		       	<div id="autoSelect-submit" class="autoSelect-submit">
+		       		<p>Сохранить выбранный подбор</p>
+		       	</div>
+		        <a href="#close">
+		        	<div id="autoSelect-decline" class="autoSelect-decline">
+		        		<p>Отменить выбранный подбор</p>
+		        	</div>
+		        </a>
 	        </div>
 	      </div>
 	    </div>
@@ -1865,111 +2123,19 @@
 	  <div class="modal-dialog">
 	    <div class="modal-content">  
 	      <div class="modal-body"> 
-	      	<a href="#close" title="Close" class="close">×</a> 
-	        <div class="rabbitModal-header">
-	        	<img src="/img/rabbit-modal-ico.svg">
-	        	<div class="h-wrapper rabbit-header-container">
-		        	<div class="rabbit-header-left">
-		        		<div class="rabbit-header-info">
-		        			<p>Кролик</p>
-		        			<div class="v-wrapper rabbit-header-sex">
-		        				<img src="/img/sex.svg">
-		        			</div>
-		        			<div id="changeWeight" class="changeWeight">
-		        				<img src="/img/change-weight.svg">
-		        				<p>Взвесить</p>
-		        			</div>
-		        		</div>
-		        		<div class="rabbit-header-info-bot">
-		        			<p>#123123</p>
-		        			<p>1,81 кг</p>
-		        		</div>
-		        	</div>
-		        	<div class="rabbit-header-right">
-		        		<p>Дата рождения: 01.01.2021</p>
-		        		<p>Возраст: 100 дней</p>
-		        	</div>
-		        </div>
+	      	<a href="#rabbitModal" title="Close" class="close">×</a> 
+	        <div class="changeWeightModal-header">
+	        	<p>Взвесить кролика</p>
 	        </div>
-	        <div class="rabbitModal-subheader">
-	        	<div class="rabbitModal-subheader-left">
-	        		<p>Тип: <span class="subheader-details">РАЗМНОЖ</span></p>
-	        		<p>Порода: <span class="subheader-details">ПАННОН</span></p>
-	        	</div>
-	        	<div class="rabbitModal-subheader-middle">
-	        		<p>Кол-во выводов: <span class="subheader-details">6</span></p>
-	        		<p>Средний вывод: <span class="subheader-details">8</span></p>
-	        	</div>
-	        	<div class="rabbitModal-subheader-right">
-	        		<p>№ клетки: <span class="subheader-details">136Б</span></p>
-	        		<p>Статус: <span class="subheader-details">Треб. вак.</span></p>
-	        	</div>
+	        <div class="changeWeightModal-subheader">
+	        	<p>Текущий вес кролика: <span>0</span></p>
 	        </div>
-	        <div class="operations-history">
-	        	<div class="operations-history-label">
-	        		<p>История операций</p>
-	        	</div>
-	        	<div class="operations-history-body">
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Рождение кролика</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Отсадка кролика (132Б → 122А)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Вакцинирование</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Спаривание (#321312)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Спаривание (#737313)</p>
-	        		</div>
-	        		<div class="operations-history-item">
-	        			<p>01.01.2021</p>
-	        			<p>Рождение кролика</p>
-	        		</div>
-	        	</div>
-	        </div>
-	        <div class="rabbitModal-subheader-bot">
-	        	<div class="input-form-btns v-wrapper">
-					<div class="h-wrapper btns-container">
-						<button type="submit" class="auto-select-btn">
-							<div class="v-wrapper">
-								<div class="h-wrapper">
-									Автоматический подбор пары
-								</div>
-							</div>
-						</button>
-						<button type="submit" class="submit-kill-btn">
-							<div class="v-wrapper">
-								<div class="h-wrapper">
-									Отправить на убой
-								</div>
-							</div>
-						</button>
-					</div>
-					<div class="h-wrapper bot-navigation">
-						<div class="manual-select-wrapper">
-							<label class="manual-select">
-							   	<input type="checkbox" name="default-radio" value="indigo">
-							   	<span>Ручной выбор</span>
-							</label>
-						</div>
-						<div class="v-wrapper calendar-min">
-							<div class="h-wrapper">
-								<img class="calendar-icon-min" src="/img/calendar-min.svg">
-								<p>Дата:</p>
-								<input id="calendar" placeholder="01.01.2021" class="datepicker-here custom-kill-calendar" data-position="left bottom">
-							</div>
-						</div>
-					</div>
-				</div>
+	        <div class="changeWeight-body">
+	        	<p>Новый вес кролика</p>
+	        	<input type="" name="newWeight">
+	        	<a href="#rabbitModal">
+	        		<p id="submit-changeWeight" class="submit-changeWeight">Сохранить вес кролика</p>
+	        	</a>
 	        </div>
 	      </div>
 	    </div>
@@ -1981,6 +2147,26 @@
 		    // Можно выбрать тольо даты, идущие за сегодняшним днем, включая сегодня
 		    minDate: new Date()
 		})
+	</script>
+	<script type="text/javascript">
+		var count = 0; 
+		$(function() { 
+		     updateCount(); 
+		     $('input[name=rabbit-checkbox], input[name=small-rabbit-checkbox]').change(function() { 
+		           updateCount(this.checked ? 1 : -1); 
+		     });
+		     $('#invert').click(function(e) { 
+		           e = $('input[name=rabbit-checkbox], input[name=small-rabbit-checkbox]');
+		           e.each(function(i, el) {
+		                 el.checked = !el.checked;
+		           });
+		           updateCount(e.length - count - count);
+		     }); 
+		}); 
+		function updateCount(a) {
+		     count = a ? count + a : $('input[name=rabbit-checkbox]:checked').length;
+		     $('#count').text(count);
+		}
 	</script>
 	<script type="text/javascript">
 		var items = $(".list-wrapper .list-item");
