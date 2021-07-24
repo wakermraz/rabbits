@@ -1,1184 +1,1067 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>rabbits</title>
-  <link rel="stylesheet" type="text/css" href="/css/main.css">
-  <link rel="stylesheet" type="text/css" href="/css/pagination.css">
-  <link href="/css/datepicker.css" rel="stylesheet" type="text/css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="/js/pagination.js"></script>
-  <script src="/js/main.js"></script>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta name="viewport" content="width=device-width">
+    <title>rabbits</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/pagination.css">
+    <link rel="stylesheet" type="text/css" href="/css/modal.css">
+    <link href="/css/datepicker.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/js/operations.js"></script>
+    <script src="/js/pagination.js"></script>
+    <script src="/js/main.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
 </head>
 <header>
-  <div class="h-wrapper jcsb header">
-    <div class="v-wrapper logo">
-      <img src="/img/logo.svg">
-    </div>
-    <div class="v-wrapper menu-list">
-      <ul class="h-wrapper jcsb">
-        <li class="v-wrapper menu-list-item">
-          <a href="/">Данные о ферме</a>
-        </li>
-        <li class="v-wrapper menu-list-item">
-          <a href="/operations.html">Операции</a>
-        </li>
-        <li class="v-wrapper menu-list-item">
-          <a href="/statistics.html">Статистика</a>
-        </li>
-        <li class="v-wrapper menu-list-item">
-          <a href="#">Прогнозирование</a>
-        </li>
-      </ul>
-    </div>
-    <div class="menu-plan v-wrapper">
-      <a href="#planModal-create">
-				<p>Работа с планом</p>
-			</a>
-    </div>
-    <div class="v-wrapper">
-      <div class="h-wrapper menu-user">
-        <div class="v-wrapper">
-          <img src="/img/user-logo.svg">
+    <div class="h-wrapper jcsb header">
+        <div class="v-wrapper logo">
+            <img src="/img/logo.svg">
         </div>
-        <p>Управляющий</p>
-        <div class="v-wrapper">
-          <img src="/img/logout.svg">
+        <div class="v-wrapper menu-list">
+            <ul class="h-wrapper jcsb">
+                <li class="v-wrapper menu-list-item">
+                    <a href="/">Данные о ферме</a>
+                </li>
+                <li class="v-wrapper menu-list-item">
+                    <a href="/operations.html">Операции</a>
+                </li>
+                <li class="v-wrapper menu-list-item">
+                    <a href="/statistics.html">Статистика</a>
+                </li>
+                <li class="v-wrapper menu-list-item">
+                    <a href="#">Прогнозирование</a>
+                </li>
+            </ul>
         </div>
-      </div>
+        <div class="menu-plan v-wrapper">
+            <a href="#planModal-create">
+                <p>Работа с планом</p>
+            </a>
+        </div>
+        <div class="v-wrapper">
+            <div class="h-wrapper menu-user">
+                <div class="v-wrapper">
+                    <img src="/img/user-logo.svg">
+                </div>
+                <p>Управляющий</p>
+                <div class="v-wrapper">
+                    <img src="/img/logout.svg">
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </header>
+
 <body>
-  <div class="main-content-container">
-    <div class="main-content">
-      <div class="main-content-navigation">
-        <div class="navigation-leftside">
-          <div class="page-label v-wrapper">
-            <p>Операции</p>
-          </div>
-        </div>
-        <div class="navigation-rightside">
-          <div class="rightside-text">
-            <p>Сортировать</p>
-
-          </div>
-          <div class="v-wrapper">
-            <div class="rightside-filter-wrapper">
-              <select class="rightside-filter">
-                <option>по ферме</option>
-                <option>по номеру</option>
-                <option>по типу</option>
-                <option>по кол-ву кроликов</option>
-                <option>по статусу</option>
-              </select>
+    <div class="main-content-container">
+        <div class="main-content">
+            <div class="main-content-navigation">
+                <div class="navigation-leftside">
+                    <div class="page-label v-wrapper">
+                        <p>Операции</p>
+                    </div>
+                </div>
+                <div class="navigation-rightside">
+                    <div class="rightside-text">
+                        <p>Сортировать</p>
+                    </div>
+                    <div class="v-wrapper">
+                        <div class="rightside-filter-wrapper">
+                            <select class="rightside-filter">
+                                <option>по ферме</option>
+                                <option>по номеру</option>
+                                <option>по типу</option>
+                                <option>по кол-ву кроликов</option>
+                                <option>по статусу</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="main-content-body">
-        <div class="h-wrapper content-body-container">
-          <div class="left-content-body-label">
-            <p>Дата / Время</p>
-          </div>
-          <div class="h-wrapper middle-main-content-body-label">
-            <p>Номер</p>
-          </div>
-          <div class="right-main-content-body-label">
-            <p>Наименование операции</p>
-          </div>
-        </div>
-        <div class="list-wrapper">
-        	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	            	<div class="h-wrapper">
-		              <div class="v-wrapper">
-		                <p>#123123</p>
-		              </div>
-		          	</div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Рождение кролика</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Отсадка кролика (132Б → 122А)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Вакцинирование</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Спаривание (#321312)</p>
-	            </div>    
-          	</div>
-          	<div class="list-item">
-	            <div class="left-item-body">
-	              <div class="v-wrapper">
-	                <p>01.01.2021  21:20</p>
-	              </div>
-	            </div>
-	            <div class="middle-item-body">
-	              <div class="v-wrapper">
-	                <p>#123123</p>
-	              </div>
-	            </div>
-	            <div class="right-item-body">
-	              <p>Убой</p>
-	            </div>    
-          	</div>
-        </div>
-      </div>
-      <div class="main-content-pagination">
-        <div id="pagination-container"></div>
-      </div>
-    </div>
-    <div class="sidebar">
-      <div class="cages-farm-input-form">
-        <div class="input-form-body">
-        	<div class="input-form-wrapper">
-	            <div class="v-wrapper">
-	              <p>№ кролика</p>
-	            </div>
-	            <div class="v-wrapper">
-	              <input class="rabbits-count-input" type="" name="rabbits-count">
-	            </div>
-	          </div>
-          <div class="input-form-wrapper">
-            <div class="v-wrapper">
-              <p>Операция</p>
+            <div class="main-content-body">
+                <div class="h-wrapper content-body-container">
+                    <div class="left-content-body-label">
+                        <p>Дата / Время</p>
+                    </div>
+                    <div class="h-wrapper middle-main-content-body-label">
+                        <p>Номер</p>
+                    </div>
+                    <div class="right-main-content-body-label">
+                        <p>Наименование операции</p>
+                    </div>
+                </div>
+                <div class="list-wrapper">
+                    <div id="list-wrapper-loading" class="loading">
+                        <img src="/img/loading.gif">
+                    </div>
+                </div>
             </div>
-            <div class="v-wrapper">
-              <select class="dropdown-input">
-                <option>Рождение кролика</option>
-                <option>Вакцинирование</option>
-              </select>
+            <div class="main-content-pagination">
+                <div id="pagination-container"></div>
             </div>
-          </div>
-          <div class="input-form-wrapper">
-						<div class="v-wrapper">
-							<p>Дата / Время</p>
-						</div>
-						<div class="v-wrapper">
-							<div class="age-input-container">
-								<div class="v-wrapper operations-calendar calendar-min">
-									<div class="h-wrapper">
-										<img class="operations-calendar-icon calendar-icon-min" src="/img/calendar.svg">
-										<p>от:</p>
-										<input id="calendar" placeholder="01.01.2021" class="datepicker-here operations-filter-calendar custom-kill-calendar" data-position="left top">
-									</div>
-								</div>
-								<div class="v-wrapper operations-calendar calendar-min">
-									<div class="h-wrapper">
-										<img class="operations-calendar-icon calendar-icon-min" src="/img/calendar.svg">
-										<p>до:</p>
-										<input id="calendar" placeholder="01.01.2021" class="datepicker-here operations-filter-calendar custom-kill-calendar" data-position="left top">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-        <div class="cage-sbmt submit-btn-wrapper">
-          <button type="submit" class="submit-btn">
-            <div class="v-wrapper">
-              <div class="h-wrapper">
-                Отобразить&nbsp<span id="count-results">(0)</span>
-              </div>
-            </div>
-          </button>
         </div>
-      </div>
-    </div>
-  </div>
-  <script type="text/javascript">
-    $('#calendar').datepicker({
-        // Можно выбрать тольо даты, идущие за сегодняшним днем, включая сегодня
-        minDate: new Date()
-    })
-  </script>
-  <script type="text/javascript">
-    var items = $(".list-wrapper .list-item");
-      var numItems = items.length;
-      var perPage = 10;
-
-      items.slice(perPage).hide();
-
-      $('#pagination-container').pagination({
-          items: numItems,
-          itemsOnPage: perPage,
-          prevText: "Предыдущая",
-          nextText: "Следующая",
-          onPageClick: function (pageNumber) {
-              var showFrom = perPage * (pageNumber - 1);
-              var showTo = showFrom + perPage;
-              items.hide().slice(showFrom, showTo).show();
-          }
-      });
-  </script>
-  <script src="/js/datepicker.js"></script>
+        <div class="sidebar">
+            <div class="cages-farm-input-form">
+                <div class="input-form-body">
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>№ кролика</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <input class="rabbits-count-input" type="" name="rabbits-count">
+                        </div>
+                    </div>
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Операция</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <select class="dropdown-input">
+                                <option>Рождение кролика</option>
+                                <option>Вакцинирование</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Дата / Время</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <div class="age-input-container">
+                                <div class="v-wrapper operations-calendar calendar-min">
+                                    <div class="h-wrapper">
+                                        <img class="operations-calendar-icon calendar-icon-min" src="/img/calendar.svg">
+                                        <p>от:</p>
+                                        <input id="calendar" placeholder="01.01.2021" class="datepicker-here operations-filter-calendar custom-kill-calendar" data-position="left top">
+                                    </div>
+                                </div>
+                                <div class="v-wrapper operations-calendar calendar-min">
+                                    <div class="h-wrapper">
+                                        <img class="operations-calendar-icon calendar-icon-min" src="/img/calendar.svg">
+                                        <p>до:</p>
+                                        <input id="calendar" placeholder="01.01.2021" class="datepicker-here operations-filter-calendar custom-kill-calendar" data-position="left top">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cage-sbmt submit-btn-wrapper">
+                        <button type="submit" class="submit-btn">
+                            <div class="v-wrapper">
+                                <div class="h-wrapper">
+                                    Отобразить&nbsp<span id="count-results">(0)</span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="rabbitModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <a href="#close" title="Close" id="rabbitModal-close" class="close">×</a>
+                        <div id="loader-rabbit-modal">
+                            <div id="rabbit-modal-loading" class="loading">
+                                <img src="/img/loading.gif">
+                            </div>
+                        </div>
+                        <div class="rabbitModal-header">
+                            <div class="h-wrapper rabbit-header-container">
+                                <div class="rabbit-header-left">
+                                    <div class="rabbit-header-info">
+                                        <p>Кролик</p>
+                                        <div class="v-wrapper rabbit-header-sex">
+                                        </div>
+                                    </div>
+                                    <div class="rabbit-header-info-bot">
+                                    </div>
+                                </div>
+                                <div class="rabbit-header-right">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rabbitModal-subheader">
+                            <div class="rabbitModal-subheader-left">
+                                <p class="rabbitModal-type">Тип:</p>
+                                <p class="rabbitModal-breed">Порода:</p>
+                            </div>
+                            <!-- <div class="rabbitModal-subheader-middle">
+	        		<p>Кол-во выводов: <span class="subheader-details rabbitModal-overall">6</span></p>
+	        		<p>Средний вывод: <span class="subheader-details rabbitModal-avg">8</span></p>
+	        	</div> -->
+                            <div class="rabbitModal-subheader-right">
+                                <p class="rabbitModal-cageNum">№ клетки:</p>
+                                <p class="rabbitModal-status">Статус:</p>
+                            </div>
+                        </div>
+                        <div class="operations-history">
+                            <div class="operations-history-label">
+                                <p>История операций</p>
+                            </div>
+                            <div class="operations-history-body">
+                            </div>
+                        </div>
+                        <div class="rabbitModal-subheader-bot">
+                            <div class="input-form-btns v-wrapper">
+                                <div class="h-wrapper btns-container">
+                                    <a href="#autoSelectModal" id="modal-auto-select-btn">
+                                        <button type="submit" class="auto-select-btn">
+                                            <div class="v-wrapper">
+                                                <div class="h-wrapper">
+                                                    Автоматический подбор пары
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </a>
+                                    <a href="#manualSelectModal" id="modal-manual-select-btn" class="hidden">
+                                        <button type="submit" class="auto-select-btn">
+                                            <div class="v-wrapper">
+                                                <div class="h-wrapper">
+                                                    Ручной подбор пары
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </a>
+                                    <button type="submit" class="submit-kill-btn">
+                                        <div class="v-wrapper">
+                                            <div class="h-wrapper">
+                                                Отправить на убой
+                                            </div>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="h-wrapper bot-navigation">
+                                    <div class="manual-select-wrapper">
+                                        <label class="manual-select">
+                                            <input type="checkbox" name="default-radio" value="indigo">
+                                            <span id="modal-manual-select">Ручной выбор</span>
+                                        </label>
+                                    </div>
+                                    <div class="v-wrapper calendar-min">
+                                        <div class="h-wrapper">
+                                            <img class="calendar-icon-min" src="/img/calendar-min.svg">
+                                            <p>Дата:</p>
+                                            <input id="calendar" placeholder="01.01.2021" class="datepicker-here custom-kill-calendar" data-position="left bottom">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="changeWeight" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="loader-changeWeight-modal">
+                            <div id="changeWeight-modal-loading" class="loading">
+                                <img src="/img/loading.gif">
+                            </div>
+                        </div>
+                        <a href="#rabbitModal" id="changeWeight-close" title="Close" class="close">×</a>
+                        <div class="changeWeightModal-header">
+                            <p>Взвесить кролика</p>
+                        </div>
+                        <div class="changeWeightModal-subheader">
+                            <p class="curr-rabbit-weight">Текущий вес кролика:</p>
+                        </div>
+                        <div class="changeWeight-body">
+                            <p>Новый вес кролика</p>
+                            <input type="" id="newWeight" name="newWeight">
+                            <a href="#close" id="submit-changeWeight">
+                                <p class="submit-changeWeight">Сохранить вес кролика</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="planModal-create" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <a href="#close" title="Close" class="close">×</a>
+                        <div class="planModal-wrapper">
+                            <div class="planModal-left">
+                                <div class="planModal-left-top">
+                                    <p class="planModal-left-label">Добавить в план</p>
+                                </div>
+                                <div class="planModal-left-middle">
+                                    <div class="planModal-left-middle-wrapper">
+                                        <p>Дата</p>
+                                        <div class="plan-label-data">
+                                            <div class="v-wrapper">
+                                                <img class="calendar-icon" src="/img/calendar.svg">
+                                                <input id="calendar" disabled class="datepicker-here custom-calendar planCreate-calendar" data-position="left top">
+                                            </div>
+                                        </div>
+                                        <div class="planModal-plan-select-wrapper">
+                                            <label class="plan-select planModal-plan-select">
+                                                <input type="checkbox" checked name="plan-checkbox" value="">
+                                                <span></span>
+                                            </label>
+                                            <p class="planModal-plan-select-tomorrow">Завтра</p>
+                                        </div>
+                                    </div>
+                                    <div class="planModal-left-middle-wrapper">
+                                        <p>Операция</p>
+                                        <select class="planModal-dropdown-input">
+                                            <option>Ферма №1</option>
+                                            <option>Ферма №2</option>
+                                        </select>
+                                    </div>
+                                    <div class="planModal-left-middle-wrapper">
+                                        <p>Количество</p>
+                                        <div class="v-wrapper">
+                                            <input class="rabbits-count-input planCreate-input" type="" name="rabbits-count">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="planModal-left-bottom">
+                                    <p class="planModal-add-item">Добавить</p>
+                                </div>
+                            </div>
+                            <div class="planModal-right">
+                                <div class="planCreate-rightside-label-container">
+                                    <a href="#allPlansModal">
+                                        <p class="planCreate-rightside-label">Просмотреть план</p>
+                                    </a>
+                                </div>
+                                <div class="planModal-right-items">
+                                    <div class="planModal-right-item">
+                                        <div class="v-wrapper">
+                                            <p>01.01.2021</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <p>Убой</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <p>535</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <img src="/img/planCreate-delete-item.svg">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="planModal-right-submit">
+                                    <p class="planModal-submit">Отправить план</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="autoSelectModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <a href="#close" title="Close" class="close">×</a>
+                        <div class="autoSelectModal-header">
+                            <p>Автоматический подбор</p>
+                        </div>
+                        <div class="autoSelectModal-body-container">
+                            <div class="autoSelectModal-body-item">
+                                <div class="selected-rabbit">
+                                    <div class="selected-rabbit-label">
+                                        <p>Выбранный кролик:</p>
+                                    </div>
+                                    <div>
+                                        <a href="#rabbitModal">
+                                            <div class="list-item">
+                                                <div class="middle-item-body">
+                                                    <label class="small-rabbit-select">
+                                                        <input name="small-rabbit-checkbox" value="">
+                                                        <span></span>
+                                                    </label>
+                                                    <div class="v-wrapper">
+                                                        <p>136Б</p>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <p>#123123</p>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <img src="/img/sex.svg">
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <div class="h-wrapper">
+                                                            <p class="kind">ПАННОН</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <p>48 дней</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="selected-rabbit-pair">
+                                    <a href="#rabbitModal">
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" checked name="small-rabbit-checkbox-for#123123" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Нет связей</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="autoSelectModal-body-item">
+                                <div class="selected-rabbit">
+                                    <div class="selected-rabbit-label">
+                                        <p>Выбранный кролик:</p>
+                                    </div>
+                                    <div>
+                                        <a href="#rabbitModal">
+                                            <div class="list-item">
+                                                <div class="middle-item-body">
+                                                    <label class="small-rabbit-select">
+                                                        <input name="small-rabbit-checkbox" value="">
+                                                        <span></span>
+                                                    </label>
+                                                    <div class="v-wrapper">
+                                                        <p>136Б</p>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <p>#123123</p>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <img src="/img/sex.svg">
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <div class="h-wrapper">
+                                                            <p class="kind">ПАННОН</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <p>48 дней</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="selected-rabbit-pair">
+                                    <a href="#rabbitModal">
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" checked name="small-rabbit-checkbox-for#321321" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Нет связей</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="autoSelectModal-bot">
+                            <div id="autoSelect-submit" class="autoSelect-submit">
+                                <p>Сохранить выбранный подбор</p>
+                            </div>
+                            <a href="#close">
+                                <div id="autoSelect-decline" class="autoSelect-decline">
+                                    <p>Отменить выбранный подбор</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="addRabbitModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <a href="#close" title="Close" class="close">×</a>
+                        <div class="addRabbitModal-wrapper">
+                            <div class="addRabbitModal-left">
+                                <div class="addRabbitModal-left-top">
+                                    <p class="addRabbitModal-left-label">Информация о кролике</p>
+                                </div>
+                                <div class="addRabbitModal-left-middle">
+                                    <div class="addRabbitModal-left-middle-wrapper">
+                                        <p>Дата рождения</p>
+                                        <div class="plan-label-data">
+                                            <div class="v-wrapper">
+                                                <img class="calendar-icon" src="/img/calendar.svg">
+                                                <input id="calendar" class="datepicker-here custom-calendar rabbitBirth-calendar" data-position="left top">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="addRabbitModal-left-middle-wrapper">
+                                        <p>Порода кролика</p>
+                                        <select class="addRabbitModal-dropdown-input">
+                                            <option>Ферма №1</option>
+                                            <option>Ферма №2</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-form-wrapper">
+                                        <div class="v-wrapper">
+                                            <p>Пол кролика</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <div class="checkbox-container addRabbit-checkbox-container">
+                                                <label class="custom-checkbox addRabbitModal-checkbox">
+                                                    <input type="radio" checked name="addRabbit-sex" value="male">
+                                                    <span></span>
+                                                    <img src="/img/male.svg">
+                                                </label>
+                                                <label class="custom-checkbox addRabbitModal-checkbox">
+                                                    <input type="radio" name="addRabbit-sex" value="female">
+                                                    <span></span>
+                                                    <img src="/img/female.svg">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="addRabbitModal-left-middle-wrapper">
+                                        <p>№ фермы</p>
+                                        <select class="addRabbitModal-dropdown-input">
+                                            <option>Ферма №1</option>
+                                            <option>Ферма №2</option>
+                                        </select>
+                                    </div>
+                                    <div class="addRabbitModal-left-middle-wrapper">
+                                        <p>№ клетки</p>
+                                        <select class="addRabbitModal-dropdown-input">
+                                            <option>Ферма №1</option>
+                                            <option>Ферма №2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="addRabbitModal-left-bottom">
+                                    <p class="addRabbitModal-add-item">Добавить кролика</p>
+                                </div>
+                            </div>
+                            <div class="addRabbitModal-right">
+                                <div class="addRabbitModal-right-items">
+                                    <div class="addRabbitModal-right-item">
+                                        <div class="v-wrapper">
+                                            <p>01.01.2021</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <p>Убой</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <p>535</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <img src="/img/planCreate-delete-item.svg">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="addRabbitModal-right-submit">
+                                    <p class="addRabbitModal-submit">Сохранить изменения</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="allPlansModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <a href="#close" title="Close" class="close">×</a>
+                        <div class="allPlans-header">
+                            <a href="#planModal-create">
+                                <p>Вернуться назад</p>
+                            </a>
+                        </div>
+                        <div class="allPlans-subheader">
+                            <p class="p-wrapper">План</p>
+                            <a href="#planModal-create">
+                                <img src="/img/edit.svg">
+                            </a>
+                            <p class="allPlans-subheader-tab allPlans-subheader-tab-active">Ожидается</p>
+                            <p class="allPlans-subheader-tab">Выполнено</p>
+                        </div>
+                        <div class="allPlans-list">
+                            <div class="appPlans-list-item">
+                                <div class="allPlans-list-item-leftside">
+                                    <div class="planModal-right-item">
+                                        <div class="v-wrapper">
+                                            <p>01.01.2021</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <p>Убой</p>
+                                        </div>
+                                        <div class="v-wrapper">
+                                            <p>535</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <img id="allPlans-delete" src="/img/planCreate-delete-item.svg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="manualSelectModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <a href="#close" title="Close" class="close">×</a>
+                        <div class="autoSelectModal-header">
+                            <p>Ручной подбор</p>
+                        </div>
+                        <div class="autoSelectModal-body-container">
+                            <div class="autoSelectModal-body-item">
+                                <div class="selected-rabbit">
+                                    <div class="selected-rabbit-label">
+                                        <p>Выбранный кролик:</p>
+                                    </div>
+                                    <div>
+                                        <a href="#rabbitModal">
+                                            <div class="list-item">
+                                                <div class="middle-item-body">
+                                                    <label class="small-rabbit-select">
+                                                        <input name="small-rabbit-checkbox" value="">
+                                                        <span></span>
+                                                    </label>
+                                                    <div class="v-wrapper">
+                                                        <p>136Б</p>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <p>#123123</p>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <img src="/img/sex.svg">
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <div class="h-wrapper">
+                                                            <p class="kind">ПАННОН</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <p>48 дней</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="manual-selected-rabbit-pair">
+                                    <a href="#rabbitModal">
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" checked name="manual-rabbit-checkbox-for#123123" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Нет связей</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" name="manual-rabbit-checkbox-for#123123" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Связь в N пок.</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" name="manual-rabbit-checkbox-for#123123" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Нет связей</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" name="manual-rabbit-checkbox-for#123123" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Связь в N пок.</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" name="manual-rabbit-checkbox-for#123123" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Нет связей</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="autoSelectModal-body-item">
+                                <div class="selected-rabbit">
+                                    <div class="selected-rabbit-label">
+                                        <p>Выбранный кролик:</p>
+                                    </div>
+                                    <div>
+                                        <a href="#rabbitModal">
+                                            <div class="list-item">
+                                                <div class="middle-item-body">
+                                                    <label class="small-rabbit-select">
+                                                        <input name="manual-rabbit-checkbox" value="">
+                                                        <span></span>
+                                                    </label>
+                                                    <div class="v-wrapper">
+                                                        <p>136Б</p>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <p>#123123</p>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <img src="/img/sex.svg">
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <div class="h-wrapper">
+                                                            <p class="kind">ПАННОН</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="v-wrapper">
+                                                        <p>48 дней</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="manual-selected-rabbit-pair">
+                                    <a href="#rabbitModal">
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" checked name="manual-rabbit-checkbox-for#321321" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Нет связей</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" name="manual-rabbit-checkbox-for#321321" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Связь в N пок.</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" name="manual-rabbit-checkbox-for#321321" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Нет связей</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" name="manual-rabbit-checkbox-for#321321" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Связь в N пок.</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-item">
+                                            <div class="middle-item-body">
+                                                <label class="small-rabbit-select">
+                                                    <input type="radio" name="manual-rabbit-checkbox-for#321321" value="">
+                                                    <span></span>
+                                                </label>
+                                                <div class="v-wrapper">
+                                                    <p>136Б</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>Нет связей</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>#123123</p>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <img src="/img/sex.svg">
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <div class="h-wrapper">
+                                                        <p class="kind">ПАННОН</p>
+                                                    </div>
+                                                </div>
+                                                <div class="v-wrapper">
+                                                    <p>48 дней</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="autoSelectModal-bot">
+                            <div id="autoSelect-submit" class="autoSelect-submit">
+                                <p>Сохранить выбранный подбор</p>
+                            </div>
+                            <a href="#close">
+                                <div id="autoSelect-decline" class="autoSelect-decline">
+                                    <p>Отменить выбранный подбор</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="foodControlModal" class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <a href="#rabbitModal" title="Close" class="close">×</a>
+                        <div class="changeWeightModal-header">
+                            <p>Взвесить кролика</p>
+                        </div>
+                        <div class="changeWeightModal-subheader">
+                            <p>Текущий вес кролика: <span>0</span></p>
+                        </div>
+                        <div class="changeWeight-body">
+                            <p>Новый вес кролика</p>
+                            <input type="" name="newWeight">
+                            <a href="#rabbitModal">
+                                <p id="submit-changeWeight" class="submit-changeWeight">Сохранить вес кролика</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+        $('#calendar').datepicker({
+            // Можно выбрать тольо даты, идущие за сегодняшним днем, включая сегодня
+            minDate: new Date()
+        })
+        </script>
+        <script src="/js/datepicker.js"></script>
 </body>
+
 </html>
