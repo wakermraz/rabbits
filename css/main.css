@@ -1130,3 +1130,7 @@ header {
 .curr-rabbit-weight {
     white-space: nowrap;
 }
+
+#todo-list-loading{
+    margin-top: 2%;
+}

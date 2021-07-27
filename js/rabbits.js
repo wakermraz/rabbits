@@ -1,7 +1,9 @@
 let rabbitsURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?"
+let rabbitsURL_ = "https://rabbit-api--test.herokuapp.com/api/rabbit/"
 let rabbit_operations = "https://rabbit-api--test.herokuapp.com/api/operation/?rabbit_id=";
 let rabbits_breed = "https://rabbit-api--test.herokuapp.com/api/breed/"
-const addRabbitCages = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status="
+let addRabbitCages = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status="
+let getPlan = "https://rabbit-api--test.herokuapp.com/api/plan/?date="
 var sidebar_filter = false;
 var sidebar_filter_order;
 var showWeight;
@@ -18,6 +20,7 @@ let f_weight_to;
 let counter = 0;
 let DATA;
 let FILTER = "";
+let rabbitsObj = []
 
 let _f_farm_number = "";
 let _f_male = "";
@@ -214,6 +217,18 @@ function countResponse(obj_key, filter) {
                 '<span id="count-results">(' + data.count + ')</span>'
             );
         })
+}
+
+function makeLink(url, id, r_type) {
+    let link;
+    if (r_type == "P") {
+        link = url + "father/" + id + "/";
+    } else if (r_type == "B") {
+        link = url + "bunny/" + id + "/";
+    } else if (r_type == "M") {
+        link = url + "mother/" + id + "/";
+    }
+    return link;
 }
 
 function showNewRabbit(id) {
@@ -460,10 +475,11 @@ function showNewRabbit(id) {
                         $(".submit-changeWeight").click(function() {
                             $('.added-secondary').remove();
                             newWeight.weight = +$("#newWeight").val();
-                            putData(makeLink(rabbitsURL, weight_rabbit_id_filtered, data.current_type), newWeight)
+                            putData(makeLink(rabbitsURL_, weight_rabbit_id_filtered, data.current_type), newWeight)
                                 .then((value) => {
                                     $('.rightside-filter').empty();
                                     $('#newWeight').empty();
+                                    location.reload()
                                 })
                         })
                     })
@@ -480,9 +496,17 @@ function converFromCalendar(date) {
     return res;
 }
 
+function convertToCalendar(date){
+    var res = "";
+    date = date.replace("-", ".")
+    date = date.replace("-", ".")
+    res = date[8] + data[9] + date[7] + date[5] + date[6] + date[4] + date[0] + date[1] + date[2] + date[3]
+    return res;
+}
+
 function getAvailCages(obj_key, filter) {
     $('.cageSelect-item').remove()
-    let obj_to_link = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0"
+    let obj_to_link = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status="
     console.log(filter)
     for (let key in ar_filter_object) {
         if (key == obj_key && filter != ar_filter_object[key]) {
@@ -498,7 +522,7 @@ function getAvailCages(obj_key, filter) {
             if (data.count != 0) {
                 for (let i = 0; i < data.count; i++) {
                     $('.cageSelect').append(
-                        '<option class="cageSelect-item" id="' + data.results[i].farm_number + data.results[i].number + data.results[i].letter + '" value="' + data.results[i].id + '">' + data.results[i].farm_number + data.results[i].number + data.results[i].letter + '</option>'
+                        '<option class="cageSelect-item" value="' + data.results[i].farm_number + data.results[i].number + data.results[i].letter + '" id="' + data.results[i].id + '">' + data.results[i].farm_number + data.results[i].number + data.results[i].letter + '</option>'
                     )
                 }
             } else {
@@ -1010,10 +1034,11 @@ function showList(url, first = true) {
                         $(".submit-changeWeight").click(function() {
                             $('.added-secondary').remove();
                             newWeight.weight = +$("#newWeight").val();
-                            putData(makeLink(rabbitsURL, weight_rabbit_id_filtered, data.results[weight_rabbit_id_in_array].current_type), newWeight)
+                            putData(makeLink(rabbitsURL_, weight_rabbit_id_filtered, data.results[weight_rabbit_id_in_array].current_type), newWeight)
                                 .then((value) => {
                                     $('.rightside-filter').empty();
                                     $('#newWeight').empty();
+                                    location.reload()
                                 })
                         })
                     })
@@ -1464,10 +1489,11 @@ function showList(url, first = true) {
                         $(".submit-changeWeight").click(function() {
                             $('.added-secondary').remove();
                             newWeight.weight = +$("#newWeight").val();
-                            putData(makeLink(rabbitsURL, weight_rabbit_id_filtered, data.results[weight_rabbit_id_in_array].current_type), newWeight)
+                            putData(makeLink(rabbitsURL_, weight_rabbit_id_filtered, data.results[weight_rabbit_id_in_array].current_type), newWeight)
                                 .then((value) => {
                                     $('.rightside-filter').empty();
                                     $('#newWeight').empty();
+                                    location.reload()
                                 })
                         })
                     })
@@ -1847,18 +1873,27 @@ $(document).ready(function() {
                 } else {
                     _is_male = false
                 }
+                var __cage_id
                 var __farm_number = $('.addRabbit-farm').val();
-                var __cage_id = $('.cageSelect').val();
-                var __cage_number = $('.cageSelect').id
-                console.log(__cage_number)
+                var __cage_number = $('.cageSelect').val()
+                var cage_number_ = $('.cageSelect-item').length
+                var cage_number__ = $('.cageSelect-item')
+                for (let i = 0; i < cage_number_; i++) {
+                    let curr = cage_number__[i]
+                    console.log(curr.value, curr.id)
+                    if (String(curr.value) == __cage_number) {
+                        __cage_id = curr.id
+                    }
+                }
                 console.log(__cage_id)
-                        console.log(cage_number)
-                        addRabbit(__birth, __breed_id, __breed_name, _is_male, __farm_number, __cage_number, __cage_id, __birth_send)
-                        $('.removable-label').remove()
-                        $('#rabbitBirth-calendar').empty()
-                        $('.is_male').prop('checked', false)
-                        $('.is_female').prop('checked', false)
-                        $('.cageSelect').empty()
+                console.log("cage id", __cage_id)
+                console.log("cahe number", __cage_number)
+                addRabbit(__birth, __breed_id, __breed_name, _is_male, __farm_number, __cage_number, __cage_id, __birth_send)
+                $('.removable-label').remove()
+                $('#rabbitBirth-calendar').empty()
+                $('.is_male').prop('checked', false)
+                $('.is_female').prop('checked', false)
+                $('.cageSelect').empty()
 
             })
 
@@ -1873,10 +1908,63 @@ $(document).ready(function() {
                     $('.is_male').prop('checked', false)
                     $('.is_female').prop('checked', false)
                     $('.cageSelect').empty()
-                    // location.reload()
-                    console.log(value.json())
+                    location.reload()
                 })
         }
     })
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+
+    getData(getPlan + today)
+        .then((value) => {
+            return value.json()
+        })
+        .then((data) => {
+            if(data.count >= 1){
+                for(let i = 0; i < Object.keys(data.results).length; i++){
+                    $('.todo-list').append(
+                        '<div class="todo-list-item">'
+                            +'<div class="todo-item-left">'
+                                +'<div class="v-wrapper">'
+                                    +'<label class="plan-select">'
+                                        +'<input type="radio" name="plan-checkbox" value="">'
+                                        +'<span></span>'
+                                    +'</label>'
+                                +'</div>'
+                                +'<div class="v-wrapper">'
+                                    +'<p class="todo-list-text">' +convertToCalendar(data.results[i].date)+ '</p>'
+                                +'</div>'
+                            +'</div>'
+                            +'<div class="todo-item-middle">'
+                                +'<div class="v-wrapper">'
+                                    +'<p class="todo-list-text">Убой</p>'
+                                +'</div>'
+                            +'</div>'
+                            +'<div class="todo-item-right">'
+                                +'<div class="v-wrapper">'
+                                    +'<p class="todo-list-text">0 из 535</p>'
+                                +'</div>'
+                            +'</div>'
+                        +'</div>'
+                        )
+                }
+            } else {
+                $('.todo-list').append(
+                    '<div class="todo-list-item">'
+                        +'<div class="todo-item-middle">'
+                            +'<div class="v-wrapper">'
+                                +'<p class="todo-list-text">На сегодня плана ещё нет...</p>'
+                            +'</div>'
+                        +'</div>'
+                    +'</div>'
+                    )
+            }
+            $('#todo-list-loading').remove()
+        })
 
 })
