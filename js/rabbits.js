@@ -21,6 +21,7 @@ let counter = 0;
 let DATA;
 let FILTER = "";
 let rabbitsObj = []
+let idsForRemove = ["Заглушка"]
 
 let _f_farm_number = "";
 let _f_male = "";
@@ -496,7 +497,7 @@ function converFromCalendar(date) {
     return res;
 }
 
-function convertToCalendar(date){
+function convertToCalendar(date) {
     var res = "";
     date = date.replace("-", ".")
     date = date.replace("-", ".")
@@ -506,8 +507,7 @@ function convertToCalendar(date){
 
 function getAvailCages(obj_key, filter) {
     $('.cageSelect-item').remove()
-    let obj_to_link = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status="
-    console.log(filter)
+    let obj_to_link = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status=&page_size=10000"
     for (let key in ar_filter_object) {
         if (key == obj_key && filter != ar_filter_object[key]) {
             ar_filter_object[key] = filter;
@@ -520,10 +520,14 @@ function getAvailCages(obj_key, filter) {
         })
         .then((data) => {
             if (data.count != 0) {
-                for (let i = 0; i < data.count; i++) {
-                    $('.cageSelect').append(
-                        '<option class="cageSelect-item" value="' + data.results[i].farm_number + data.results[i].number + data.results[i].letter + '" id="' + data.results[i].id + '">' + data.results[i].farm_number + data.results[i].number + data.results[i].letter + '</option>'
-                    )
+                for (let i = 0; i < Object.keys(data.results).length; i++) {
+                    if (idsForRemove.includes(String(data.results[i].id))) {
+                        continue
+                    } else {
+                        $('.cageSelect').append(
+                            '<option class="cageSelect-item" value="' + data.results[i].farm_number + data.results[i].number + data.results[i].letter + '" id="' + data.results[i].id + '">' + data.results[i].farm_number + data.results[i].number + data.results[i].letter + '</option>'
+                        )
+                    }
                 }
             } else {
                 $('.cageSelect').append(
@@ -568,7 +572,7 @@ function addRabbit(birthday, breed_id, breed_name, is_male, farm_number, cage_nu
     }
     rabbitsObj[counter] = assign;
     $('.addRabbitModal-right-items').append(
-        '<div class="addRabbitModal-right-item addRabbit-item' + counter + '" id="' + counter + '">' +
+        '<div class="addRabbitModal-right-item addRabbit-item' + counter + '" value="' + cage_id + '" id="' + counter + '">' +
         '<div class="v-wrapper">' +
         '<p>' + rabbitsObj[counter].show.birthday + '</p>' +
         '</div>' +
@@ -590,12 +594,13 @@ function addRabbit(birthday, breed_id, breed_name, is_male, farm_number, cage_nu
         '</div>'
     )
     counter++;
-    console.log(rabbitsObj)
+    idsForRemove.push(cage_id)
+    console.log(idsForRemove)
     $('.delete-rabbit').click(function() {
         delete rabbitsObj[this.id]
+        delete idsForRemove[idsForRemove.indexOf($(".addRabbit-item" + this.id).attr('value'))]
+        console.log(idsForRemove)
         let this_item = $('.addRabbit-item' + this.id).remove()
-        console.log(rabbitsObj)
-
     })
 }
 
@@ -1880,14 +1885,10 @@ $(document).ready(function() {
                 var cage_number__ = $('.cageSelect-item')
                 for (let i = 0; i < cage_number_; i++) {
                     let curr = cage_number__[i]
-                    console.log(curr.value, curr.id)
                     if (String(curr.value) == __cage_number) {
                         __cage_id = curr.id
                     }
-                }
-                console.log(__cage_id)
-                console.log("cage id", __cage_id)
-                console.log("cahe number", __cage_number)
+                }   
                 addRabbit(__birth, __breed_id, __breed_name, _is_male, __farm_number, __cage_number, __cage_id, __birth_send)
                 $('.removable-label').remove()
                 $('#rabbitBirth-calendar').empty()
@@ -1908,7 +1909,8 @@ $(document).ready(function() {
                     $('.is_male').prop('checked', false)
                     $('.is_female').prop('checked', false)
                     $('.cageSelect').empty()
-                    location.reload()
+                    window.location.replace("/#close")
+                    location.reload();
                 })
         }
     })
@@ -1925,44 +1927,44 @@ $(document).ready(function() {
             return value.json()
         })
         .then((data) => {
-            if(data.count >= 1){
-                for(let i = 0; i < Object.keys(data.results).length; i++){
+            if (data.count >= 1) {
+                for (let i = 0; i < Object.keys(data.results).length; i++) {
                     $('.todo-list').append(
-                        '<div class="todo-list-item">'
-                            +'<div class="todo-item-left">'
-                                +'<div class="v-wrapper">'
-                                    +'<label class="plan-select">'
-                                        +'<input type="radio" name="plan-checkbox" value="">'
-                                        +'<span></span>'
-                                    +'</label>'
-                                +'</div>'
-                                +'<div class="v-wrapper">'
-                                    +'<p class="todo-list-text">' +convertToCalendar(data.results[i].date)+ '</p>'
-                                +'</div>'
-                            +'</div>'
-                            +'<div class="todo-item-middle">'
-                                +'<div class="v-wrapper">'
-                                    +'<p class="todo-list-text">Убой</p>'
-                                +'</div>'
-                            +'</div>'
-                            +'<div class="todo-item-right">'
-                                +'<div class="v-wrapper">'
-                                    +'<p class="todo-list-text">0 из 535</p>'
-                                +'</div>'
-                            +'</div>'
-                        +'</div>'
-                        )
+                        '<div class="todo-list-item">' +
+                        '<div class="todo-item-left">' +
+                        '<div class="v-wrapper">' +
+                        '<label class="plan-select">' +
+                        '<input type="radio" name="plan-checkbox" value="">' +
+                        '<span></span>' +
+                        '</label>' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<p class="todo-list-text">' + convertToCalendar(data.results[i].date) + '</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="todo-item-middle">' +
+                        '<div class="v-wrapper">' +
+                        '<p class="todo-list-text">Убой</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="todo-item-right">' +
+                        '<div class="v-wrapper">' +
+                        '<p class="todo-list-text">0 из 535</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>'
+                    )
                 }
             } else {
                 $('.todo-list').append(
-                    '<div class="todo-list-item">'
-                        +'<div class="todo-item-middle">'
-                            +'<div class="v-wrapper">'
-                                +'<p class="todo-list-text">На сегодня плана ещё нет...</p>'
-                            +'</div>'
-                        +'</div>'
-                    +'</div>'
-                    )
+                    '<div class="todo-list-item">' +
+                    '<div class="todo-item-middle">' +
+                    '<div class="v-wrapper">' +
+                    '<p class="todo-list-text">На сегодня плана ещё нет...</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+                )
             }
             $('#todo-list-loading').remove()
         })

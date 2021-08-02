@@ -255,15 +255,126 @@
                 </div>
             </div>
         </div>
+         <div id="changeWeight-filtered" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    
+                    <a href="#rabbitModal-filtered" id="changeWeight-close" title="Close" class="close">×</a>
+                    <div class="changeWeightModal-header">
+                        <p>Взвесить кролика</p>
+                    </div>
+                    <div class="changeWeightModal-subheader">
+                        <p class="curr-rabbit-weight">Текущий вес кролика:</p>
+                    </div>
+                    <div class="changeWeight-body">
+                        <p>Новый вес кролика</p>
+                        <input type="" id="newWeight" name="newWeight">
+                        <a href="#close" id="submit-changeWeight">
+                            <p class="submit-changeWeight">Сохранить вес кролика</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="rabbitModal-filtered" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <a href="#rabbitModal" title="Close" id="rabbitModal-close-filtered" class="close">×</a>
+                    
+                    <div class="rabbitModal-header1">
+                        <div class="h-wrapper rabbit-header-container">
+                            <div class="rabbit-header-left">
+                                <div class="rabbit-header-info1">
+                                    <p>Кролик</p>
+                                    <div class="v-wrapper rabbit-header-sex1">
+                                    </div>
+                                </div>
+                                <div class="rabbit-header-info-bot1">
+                                </div>
+                            </div>
+                            <div class="rabbit-header-right1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rabbitModal-subheader">
+                        <div class="rabbitModal-subheader-left">
+                            <p class="rabbitModal-type1">Тип:</p>
+                            <p class="rabbitModal-breed1">Порода:</p>
+                        </div>
+                        <!-- <div class="rabbitModal-subheader-middle">
+                    <p>Кол-во выводов: <span class="subheader-details rabbitModal-overall">6</span></p>
+                    <p>Средний вывод: <span class="subheader-details rabbitModal-avg">8</span></p>
+                </div> -->
+                        <div class="rabbitModal-subheader-right">
+                            <p class="rabbitModal-cageNum1">№ клетки:</p>
+                            <p class="rabbitModal-status1">Статус:</p>
+                        </div>
+                    </div>
+                    <div class="operations-history">
+                        <div class="operations-history-label">
+                            <p>История операций</p>
+                        </div>
+                        <div class="operations-history-body1">
+                        </div>
+                    </div>
+                    <div class="rabbitModal-subheader-bot">
+                        <div class="input-form-btns v-wrapper">
+                            <div class="h-wrapper btns-container">
+                                <a href="#autoSelectModal" id="modal-auto-select-btn">
+                                    <button type="submit" class="auto-select-btn">
+                                        <div class="v-wrapper">
+                                            <div class="h-wrapper">
+                                                Автоматический подбор пары
+                                            </div>
+                                        </div>
+                                    </button>
+                                </a>
+                                <a href="#manualSelectModal" id="modal-manual-select-btn" class="hidden">
+                                    <button type="submit" class="auto-select-btn">
+                                        <div class="v-wrapper">
+                                            <div class="h-wrapper">
+                                                Ручной подбор пары
+                                            </div>
+                                        </div>
+                                    </button>
+                                </a>
+                                <button type="submit" class="submit-kill-btn">
+                                    <div class="v-wrapper">
+                                        <div class="h-wrapper">
+                                            Отправить на убой
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+                            <div class="h-wrapper bot-navigation">
+                                <div class="manual-select-wrapper">
+                                    <label class="manual-select">
+                                        <input type="checkbox" name="default-radio" value="indigo">
+                                        <span id="modal-manual-select">Ручной выбор</span>
+                                    </label>
+                                </div>
+                                <div class="v-wrapper calendar-min">
+                                    <div class="h-wrapper">
+                                        <img class="calendar-icon-min" src="/img/calendar-min.svg">
+                                        <p>Дата:</p>
+                                        <input id="calendar" placeholder="01.01.2021" class="datepicker-here custom-kill-calendar" data-position="left bottom">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
         <div id="changeWeight" class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div id="loader-changeWeight-modal">
-                            <div id="changeWeight-modal-loading" class="loading">
-                                <img src="/img/loading.gif">
-                            </div>
-                        </div>
+                        
                         <a href="#rabbitModal" id="changeWeight-close" title="Close" class="close">×</a>
                         <div class="changeWeightModal-header">
                             <p>Взвесить кролика</p>

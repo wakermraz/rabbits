@@ -1,8 +1,29 @@
-const operationsURL = "https://rabbit-api--test.herokuapp.com/api/operation/";
-const rabbitsURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/";
+const operationsURL = "https://rabbit-api--test.herokuapp.com/api/operation/?";
+let rabbitsURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/"
+let getRABBIT = "https://rabbit-api--test.herokuapp.com/api/rabbit/";
 const rabbit_operations = "https://rabbit-api--test.herokuapp.com/api/operation/?rabbit_id=";
 
 var showWeight;
+
+let DATA
+
+var sidebar_filter = false;
+var sidebar_filter_order;
+var filter_order;
+
+let _f_farm_number,
+    _f_type,
+    _f_number_rabbits_from,
+    _f_status
+
+let FILTER = ""
+
+let filter_object = {
+    "_f_farm_number": "&",
+    "_f_status": "&",
+    "_f_type": "&",
+    "_f_number_rabbits_from": "&"
+}
 
 var dateFormat = function() {
     var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
@@ -141,6 +162,18 @@ function putData(url, body) {
     return response_put;
 }
 
+function postData(url, body) {
+    const response_put = fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify(body)
+    });
+    return response_put;
+}
+
 function makeLink(url, id, r_type) {
     let link;
     if (r_type == "P") {
@@ -153,355 +186,726 @@ function makeLink(url, id, r_type) {
     return link;
 }
 
-getData(operationsURL)
-    .then((value) => {
-        return value.json();
-    })
-    .then((data) => {
-        $('#list-wrapper-loading').remove();
-        var totalItems = Object.keys(data).length;
-        var operation_type;
+function countResponse(obj_key, filter) {
+    $('#count-results').remove()
+    let obj_to_link = operationsURL;
+    for (let key in filter_object) {
+        if (key == obj_key && filter != filter_object[key]) {
+            filter_object[key] = filter;
+        }
+        obj_to_link += filter_object[key]
+    }
+    getData(obj_to_link)
+        .then((value) => {
+            return value.json();
+        })
+        .then((data) => {
+            $('#count-results').remove()
+            $('#count-results-container').append(
+                '<span id="count-results">(' + data.count + ')</span>'
+            );
+        })
+    sidebar_filter_order = obj_to_link;
+}
 
-        for (var i = 0; i < totalItems; i++) {
+function converFromCalendar(date) {
+    date = date.replace(" ", "T")
+    var res = "";
+    date = date.replace(".", "-")
+    date = date.replace(".", "-")
+    res = date[6] + date[7] + date[8] + date[9] + date[5] + date[3] + date[4] + date[2] + date[0] + date[1] + date[10] + date[11] + date[12] + date[13] + date[14] + date[15]
+    return res;
+}
 
-            var time = new Date(data[i].time);
-            time = time.format("dd.mm.yyyy HH:MM");
+function convertToCalendar(date) {
+    var res = "";
+    date = date.replace("-", ".")
+    date = date.replace("-", ".")
+    res = date[8] + data[9] + date[7] + date[5] + date[6] + date[4] + date[0] + date[1] + date[2] + date[3]
+    return res;
+}
 
-            var rabbit_id = data[i].rabbit_id;
+function showNewRabbit(id) {
+    $('.added1').remove()
+    getData("https://rabbit-api--test.herokuapp.com/api/rabbit/" + id)
+        .then((value) => {
+            return value.json()
+        })
+        .then((data) => {
+            let weight_rabbit_id_filtered = id;
+            let modalSex;
+            let rabbit_type;
+            let curr_rabbit_operations = rabbit_operations;
+            curr_rabbit_operations += id + "&page_size=50";
 
-            if (data[i].type == "J") {
-                operation_type = "Отсадка кролика ";
-                operation_type += "(" + data[i].old_cage.farm_number + data[i].old_cage.number + data[i].old_cage.letter + "→" + data[i].new_cage.farm_number + data[i].new_cage.number + data[i].new_cage.letter + ")";
-            } else if (data[i].type == "B") {
-                operation_type = "Рождение кролика";
-            } else if (data[i].type == "V") {
-                operation_type = "Вакцинация";
-            } else if (data[i].type == "S") {
-                operation_type = "Убой";
-            } else if (data[i].type == "M") {
-                operation_type = "Спаривание ";
-                operation_type += '<a class="rabbitModal" href="#rabbitModal" id="' + data[i].mother_rabbit_id + '">(#' + data[i].mother_rabbit_id + ')';
-                rabbit_id = data[i].father_rabbit_id;
+            var birthday = new Date(data.birthday);
+            var today = new Date;
+            var diff = today - birthday;
+            var milliseconds = diff;
+            var seconds = milliseconds / 1000;
+            var minutes = seconds / 60;
+            var hours = minutes / 60;
+            var days = hours / 24;
+
+            if (data.current_type == "B") {
+                modal_ico = "-small";
+                rabbit_type = "МАЛЕНЬК"
+            } else if (data.current_type == "F") {
+                modal_ico = "-big";
+                rabbit_type = "ОТКРОМ"
+            } else if (data.current_type == "M") {
+                modal_ico = "-big";
+                rabbit_type = "РАЗМНОЖ"
+            } else if (data.current_type == "P") {
+                modal_ico = "-big";
+                rabbit_type = "РАЗМНОЖ"
             }
 
-            $('.list-wrapper').append(
-                '<div class="list-item">' +
-                '<div class="left-item-body">' +
-                '<div class="v-wrapper">' +
-                '<p>' + time + '</p>' +
+            if (Object.keys(data.status) > 1) {
+                if (data.status[0] == "RF") {
+                    var rabbit_status = "Готов к размнож."
+                } else if (data.status[0] == "R") {
+                    rabbit_status = "Отдыхает"
+                } else if (data.status[0] == "UP") {
+                    rabbit_status = "Неподтвержденная берем."
+                } else if (data.status[0] == "NI") {
+                    rabbit_status = "Нужен осмотр на берем."
+                } else if (data.status[0] == "CP") {
+                    rabbit_status = "Беременная"
+                } else if (data.status[0] == "FB") {
+                    rabbit_status = "Кормит крольчат"
+                } else if (data.status[0] == "NV") {
+                    rabbit_status = "Треб. вак."
+                } else if (data.status[0] == "NI") {
+                    rabbit_status = "Треб. осмотр"
+                } else if (data.status[0] == "WC") {
+                    rabbit_status = "Кормится без кокцидиост."
+                } else if (data.status[0] == "RS") {
+                    rabbit_status = "Готов к убою"
+                } else if (data.status[0] == "NJ") {
+                    rabbit_status = "Треб. отсадка"
+                } else if (data.status[0] == "MF") {
+                    rabbit_status = "Кормится у матери"
+                }
+                for (let key in data.status) {
+                    if (data.status[key] == "RF") {
+                        rabbit_status += ", Готов к размнож."
+                    } else if (data.status[key] == "R") {
+                        rabbit_status += ", Отдыхает"
+                    } else if (data.status[key] == "UP") {
+                        rabbit_status += ", Неподтвержденная берем."
+                    } else if (data.status[key] == "NI") {
+                        rabbit_status += ", Нужен осмотр на берем."
+                    } else if (data.status[key] == "CP") {
+                        rabbit_status += ", Беременная"
+                    } else if (data.status[key] == "FB") {
+                        rabbit_status += ", Кормит крольчат"
+                    } else if (data.status[key] == "NV") {
+                        rabbit_status += ", Треб. вак."
+                    } else if (data.status[key] == "NI") {
+                        rabbit_status += ", Треб. осмотр"
+                    } else if (data.status[key] == "WC") {
+                        rabbit_status += ", Кормится без кокцидиост."
+                    } else if (data.status[key] == "RS") {
+                        rabbit_status += ", Готов к убою"
+                    } else if (data.status[key] == "NJ") {
+                        rabbit_status += ", Треб. отсадка"
+                    } else if (data.status[key] == "MF") {
+                        rabbit_status += ", Кормится у матери"
+                    }
+                }
+            } else {
+                if (data.status[0] == "RF") {
+                    var rabbit_status = "Готов к размнож."
+                } else if (data.status[0] == "R") {
+                    rabbit_status = "Отдыхает"
+                } else if (data.status[0] == "UP") {
+                    rabbit_status = "Неподтвержденная берем."
+                } else if (data.status[0] == "NI") {
+                    rabbit_status = "Нужен осмотр на берем."
+                } else if (data.status[0] == "CP") {
+                    rabbit_status = "Беременная"
+                } else if (data.status[0] == "FB") {
+                    rabbit_status = "Кормит крольчат"
+                } else if (data.status[0] == "NV") {
+                    rabbit_status = "Треб. вак."
+                } else if (data.status[0] == "NI") {
+                    rabbit_status = "Треб. осмотр"
+                } else if (data.status[0] == "WC") {
+                    rabbit_status = "Кормится без кокцидиост."
+                } else if (data.status[0] == "RS") {
+                    rabbit_status = "Готов к убою"
+                } else if (data.status[0] == "NJ") {
+                    rabbit_status = "Треб. отсадка"
+                } else if (data.status[0] == "MF") {
+                    rabbit_status = "Кормится у матери"
+                }
+            }
+
+            if (data.is_male === null) {
+                modalSex = "unknown";
+            } else if (data.is_male === true) {
+                modalSex = "male-main";
+            } else if (data.is_male === false) {
+                modalSex = "female-main";
+            }
+
+            $('.rabbitModal-header1').prepend(
+                '<img class="added1" src="/img/rabbit-ico' + modal_ico + '.svg">'
+            );
+
+            $('.rabbit-header-info1').append(
+                '<a class="changeWeightLink-filtered added1" href="#changeWeight-filtered" id="' + id + '">' +
+                '<div class="changeWeight">' +
+                '<img src="/img/change-weight.svg">' +
+                '<p>Взвесить</p>' +
                 '</div>' +
-                '</div>' +
-                '<div class="middle-item-body">' +
-                '<div class="h-wrapper">' +
-                '<div class="v-wrapper">' +
-                '<p><a href="#rabbitModal" class="rabbitModal" id="' + rabbit_id + '">#' + rabbit_id + '</a></p>' +
-                '</div>' +
-                '</div>' +
-                '</div>' +
-                '<div class="right-item-body">' +
-                '<p>' + operation_type + '</p>' +
-                '</div>' +
-                '</div>'
+                '</a>'
             )
-        }
-        getData(rabbitsURL)
-            .then((value) => {
-                return value.json();
-            })
-            .then((data) => {
-                $(".rabbitModal").click(function() {
-                    let modal_id = this.id - 1;
-                    let this_id = this.id;
-                    let modal_ico;
-                    let modalSex;
-                    let rabbit_type;
-                    let curr_rabbit_operations = rabbit_operations + this_id;
 
-                    var birthday = new Date(data[modal_id].birthday);
-                    var today = new Date;
-                    var diff = today - birthday;
-                    var milliseconds = diff;
-                    var seconds = milliseconds / 1000;
-                    var minutes = seconds / 60;
-                    var hours = minutes / 60;
-                    var days = hours / 24;
+            $('.rabbit-header-sex1').append(
+                '<img class="added1" src="/img/' + modalSex + '.svg">'
+            )
 
-                    if (data[modal_id].current_type == "B") {
-                        modal_ico = "-small";
-                        rabbit_type = "МАЛЕНЬК"
-                    } else if (data[modal_id].current_type == "F") {
-                        modal_ico = "-big";
-                        rabbit_type = "ОТКРОМ"
-                    } else if (data[modal_id].current_type == "M") {
-                        modal_ico = "-big";
-                        rabbit_type = "РАЗМНОЖ"
-                    } else if (data[modal_id].current_type == "P") {
-                        modal_ico = "-big";
-                        rabbit_type = "РАЗМНОЖ"
-                    }
+            $('.rabbit-header-info-bot1').append(
+                '<p class="added1">#' + id + '</p>' +
+                '<p class="added1">' + data.weight + '&nbspкг.</p>'
+            )
 
-                    if (Object.keys(data[modal_id].status) > 1) {
-                        if (data[modal_id].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data[modal_id].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data[modal_id].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data[modal_id].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data[modal_id].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data[modal_id].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data[modal_id].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data[modal_id].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data[modal_id].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data[modal_id].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data[modal_id].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data[modal_id].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                        for (let key in data[modal_id].status) {
-                            if (data[modal_id].status[key] == "RF") {
-                                rabbit_status += ", Готов к размнож."
-                            } else if (data[modal_id].status[key] == "R") {
-                                rabbit_status += ", Отдыхает"
-                            } else if (data[modal_id].status[key] == "UP") {
-                                rabbit_status += ", Неподтвержденная берем."
-                            } else if (data[modal_id].status[key] == "NI") {
-                                rabbit_status += ", Нужен осмотр на берем."
-                            } else if (data[modal_id].status[key] == "CP") {
-                                rabbit_status += ", Беременная"
-                            } else if (data[modal_id].status[key] == "FB") {
-                                rabbit_status += ", Кормит крольчат"
-                            } else if (data[modal_id].status[key] == "NV") {
-                                rabbit_status += ", Треб. вак."
-                            } else if (data[modal_id].status[key] == "NI") {
-                                rabbit_status += ", Треб. осмотр"
-                            } else if (data[modal_id].status[key] == "WC") {
-                                rabbit_status += ", Кормится без кокцидиост."
-                            } else if (data[modal_id].status[key] == "RS") {
-                                rabbit_status += ", Готов к убою"
-                            } else if (data[modal_id].status[key] == "NJ") {
-                                rabbit_status += ", Треб. отсадка"
-                            } else if (data[modal_id].status[key] == "MF") {
-                                rabbit_status += ", Кормится у матери"
-                            }
-                        }
+            var birth = new Date(data.birthday);
+            var now = new Date;
+            now = (now - birth) / 1000 / 60 / 60 / 24;
+            birth = birth.format("dd.mm.yyyy");
+            $('.rabbit-header-right1').append(
+                '<p class="added1">Дата рождения:&nbsp<font class="added" style="font-weight:700;width:9.4ch;display:inline-flex;overflow:hidden;">' + birth + '</font></p>' +
+                '<p class="added1">Возраст:&nbsp<font class="added" style="font-weight:700;">' + Math.round(now) + '&nbspдней</font></p>'
+            )
+
+            $('.rabbitModal-type1').append(
+                '<span class="subheader-details added1">&nbsp' + rabbit_type + '</span>'
+            )
+
+            $('.rabbitModal-breed1').append(
+                '<span class="subheader-details added1">&nbsp' + data.breed + '</span>'
+            )
+
+            $('.rabbitModal-cageNum1').append(
+                '<span class="subheader-details added1"> &nbsp' + data.cage.farm_number + data.cage.number + data.cage.letter + '</span>'
+            )
+
+            $('.rabbitModal-status1').append(
+                '<span class="subheader-details added1"> &nbsp' + rabbit_status + '</span>'
+            )
+
+            getData(curr_rabbit_operations)
+                .then((value) => {
+                    return value.json()
+                })
+                .then((data) => {
+                    if (data.results[0] === undefined) {
+                        $('.operations-history-body').append(
+                            '<div class="operations-history-item added">' +
+                            '<p>Операций с кроликом еще нет...</p>' +
+                            '</div>'
+                        )
+                        $('#rabbit-modal-loading').remove();
                     } else {
-                        if (data[modal_id].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data[modal_id].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data[modal_id].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data[modal_id].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data[modal_id].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data[modal_id].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data[modal_id].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data[modal_id].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data[modal_id].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data[modal_id].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data[modal_id].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data[modal_id].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
+                        let counter = data.count
+
+                        for (let i = 0; i < counter; i++) {
+                            var date = new Date(data.results[i].time);
+                            date = date.format("dd.mm.yyyy HH:MM");
+                            let context
+                            let bold_context = ""
+                            if (data.results[i].type == "B") {
+                                context = "Рождение кролика"
+                            }
+                            if (data.results[i].type == "J") {
+                                context = "Отсадка кролика&nbsp"
+                                bold_context = "<font style='font-weight:700'>(" + String(data.results[i].old_cage.farm_number) + data.results[i].old_cage.number + data.results[i].old_cage.letter + " → " + data.results[i].new_cage.farm_number + data.results[i].new_cage.number + data.results[i].new_cage.letter + ")</font>"
+                            }
+                            if (data.results[i].type == "V") {
+                                context = "Вакцинирование"
+                            }
+                            if (data.results[i].type == "S") {
+                                context = "Рождение кролика"
+                            }
+                            if (data.results[i].type == "M") {
+                                if (id == data.results[i].father_rabbit_id) {
+                                    context = "Спаривание&nbsp"
+                                    bold_context = "<a href='#rabbitModal' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
+                                } else if (id == data.results[i].mother_rabbit_id) {
+                                    context = "Спаривание&nbsp"
+                                    bold_context = "<a href='#rabbitModal' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
+                                }
+                            }
+                            $('.operations-history-body1').append(
+                                '<div class="operations-history-item added1">' +
+                                '<p>' + date + '</p>' +
+                                '<p>' + context + bold_context + '</p>' +
+                                '</div>'
+                            )
                         }
                     }
-
-                    if (data[modal_id].is_male === null) {
-                        modalSex = "unknown";
-                    } else if (data[modal_id].is_male === true) {
-                        modalSex = "male-main";
-                    } else if (data[modal_id].is_male === false) {
-                        modalSex = "female-main";
-                    }
-
-
-                    $('.rabbitModal-header').prepend(
-                        '<img class="added" src="/img/rabbit-ico' + modal_ico + '.svg">'
-                    );
-
-                    $('.rabbit-header-info').append(
-                        '<a class="changeWeightLink added" href="#changeWeight" id="' + modal_id + '">' +
-                        '<div class="changeWeight">' +
-                        '<img src="/img/change-weight.svg">' +
-                        '<p>Взвесить</p>' +
-                        '</div>' +
-                        '</a>'
-                    )
-
-                    $('.rabbit-header-sex').append(
-                        '<img class="added" src="/img/' + modalSex + '.svg">'
-                    )
-
-                    if (data[modal_id].weight === null) {
-                        data[modal_id].weight = "?"
-                    }
-                    $('.rabbit-header-info-bot').append(
-                        '<p class="added">#' + this.id + '</p>' +
-                        '<p class="removable-weight added">' + data[modal_id].weight + '&nbspкг.</p>'
-                    )
-
-                    var birthday = new Date(data[modal_id].birthday);
-                    birthday = birthday.format("dd.mm.yyyy");
-                    $('.rabbit-header-right').append(
-                        '<p class="added">Дата рождения:&nbsp<font class="added" style="font-weight:700;width:9.4ch;display:inline-flex;overflow:hidden;">' + birthday + '</font></p>' +
-                        '<p class="added">Возраст:&nbsp<font class="added" style="font-weight:700;">' + Math.round(days) + '&nbspдней</font></p>'
-                    )
-
-                    $('.rabbitModal-type').append(
-                        '<span class="subheader-details added">&nbsp' + rabbit_type + '</span>'
-                    )
-
-                    $('.rabbitModal-breed').append(
-                        '<span class="subheader-details added">&nbsp' + data[modal_id].breed + '</span>'
-                    )
-
-                    $('.rabbitModal-cageNum').append(
-                        '<span class="subheader-details added"> &nbsp' + data[modal_id].cage.farm_number + data[modal_id].cage.number + data[modal_id].cage.letter + '</span>'
-                    )
-
-                    $('.rabbitModal-status').append(
-                        '<span class="subheader-details added"> &nbsp' + rabbit_status + '</span>'
-                    )
-
-
-                    getData(curr_rabbit_operations)
-                        .then((value) => {
-                            return value.json();
-                        })
-                        .then((data) => {
-                            if (data[0] === undefined) {
-                                $('.operations-history-body').append(
-                                    '<div class="operations-history-item added">' +
-                                    '<p>Операций с кроликом еще нет...</p>' +
-                                    '</div>'
-                                )
-                                $('#rabbit-modal-loading').remove();
-                            } else {
-                                let counter = Object.keys(data).length
-                                for (let i = 0; i < counter; i++) {
-                                    var date = new Date(data[i].time);
-                                    date = date.format("dd.mm.yyyy HH:MM");
-                                    $('.operations-history-body').append(
-                                        '<div class="operations-history-item added">' +
-                                        '<p>' + date + '</p>' +
-                                        '</div>'
-                                    )
-                                }
-                                $('#rabbit-modal-loading').remove();
-                            }
-
-                        });
-
-                    $(".changeWeightLink").click(function() {
+                    $(".changeWeightLink-filtered").click(function() {
                         $('#loader-rabbit-modal').append(
                             '<div id="rabbit-modal-loading" class="loading">' +
                             '<img src="/img/loading.gif">' +
                             '</div>'
                         );
-                        let weight_rabbit_id_in_array = this.id;
-                        let weight_rabbit_id = +this.id + 1;
+                        let weight_rabbit_id_in_array = id;
+                        let weight_rabbit_id = +id + 1;
                         let newWeight = {
                             "weight": null
                         }
-                        showWeight = data[weight_rabbit_id_in_array].weight;
+                        showWeight = data.results[weight_rabbit_id_in_array].weight;
 
-                        $('.removable-weight').remove();
-                        if (data[weight_rabbit_id_in_array].weight === null) {
-                            data[weight_rabbit_id_in_array].weight = "?"
-                        }
                         $('.curr-rabbit-weight').append(
-                            '<span class="added added-secondary" style="white-space: nowrap;">&nbsp' + data[weight_rabbit_id_in_array].weight + '&nbspкг.</span>'
+                            '<span class="added added-secondary" style="white-space: nowrap;">&nbsp' + data.weight + '</span>'
                         )
 
                         $('#changeWeight-modal-loading').remove()
 
                         $(".submit-changeWeight").click(function() {
-
                             $('.added-secondary').remove();
                             newWeight.weight = +$("#newWeight").val();
-                            putData(makeLink(rabbitsURL, weight_rabbit_id, data[weight_rabbit_id_in_array].current_type), newWeight)
+                            putData(makeLink(rabbitsURL_, weight_rabbit_id_filtered, data.current_type), newWeight)
                                 .then((value) => {
+                                    $('.rightside-filter').empty();
+                                    $('#newWeight').empty();
                                     location.reload()
                                 })
                         })
                     })
-
-                });
-
-                $("#changeWeight-close").click(function() {
-                    $('#loader-changeWeight-modal').append(
-                        '<div id="changeWeight-modal-loading" class="loading">' +
-                        '<img src="/img/loading.gif">' +
-                        '</div>'
-                    );
-                    $('.added-secondary').remove();
-                    $('.rabbit-header-info-bot').append(
-                        '<p class="removable-weight added">' + showWeight + '&nbspкг.</p>'
-                    )
-                    $('#rabbit-modal-loading').remove();
                 })
+        })
+}
 
-                $("#rabbitModal-close").click(function() {
-                    $('#loader-rabbit-modal').append(
-                        '<div id="rabbit-modal-loading" class="loading">' +
-                        '<img src="/img/loading.gif">' +
+function showList(url, first = true) {
+    if (!first) {
+        getData(url + FILTER)
+            .then((value) => {
+                return value.json();
+            })
+            .then((data) => {
+                $('#list-wrapper-loading').remove();
+                $('.list-item').remove()
+                var totalItems = Object.keys(data.results).length;
+                var operation_type;
+
+                for (var i = 0; i < totalItems; i++) {
+
+                    var time = new Date(data.results[i].time);
+                    time = time.format("dd.mm.yyyy HH:MM");
+
+                    var rabbit_id = data.results[i].rabbit_id;
+
+                    if (data.results[i].type == "J") {
+                        operation_type = "Отсадка кролика ";
+                        operation_type += "(" + data.results[i].old_cage.farm_number + data.results[i].old_cage.number + data.results[i].old_cage.letter + "→" + data.results[i].new_cage.farm_number + data.results[i].new_cage.number + data.results[i].new_cage.letter + ")";
+                    } else if (data.results[i].type == "B") {
+                        operation_type = "Рождение кролика";
+                    } else if (data.results[i].type == "V") {
+                        operation_type = "Вакцинация";
+                    } else if (data.results[i].type == "S") {
+                        operation_type = "Убой";
+                    } else if (data.results[i].type == "M") {
+                        operation_type = "Спаривание ";
+                        operation_type += '<a class="rabbitModal" href="#rabbitModal" onclick="showRabbit(' + data.results[i].mother_rabbit_id + ')" id="' + data.results[i].mother_rabbit_id + '">(#' + data.results[i].mother_rabbit_id + ')';
+                        rabbit_id = data.results[i].father_rabbit_id;
+                    }
+
+                    $('.list-wrapper').append(
+                        '<div class="list-item">' +
+                        '<div class="left-item-body">' +
+                        '<div class="v-wrapper">' +
+                        '<p>' + time + '</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="middle-item-body">' +
+                        '<div class="h-wrapper">' +
+                        '<div class="v-wrapper">' +
+                        '<p><a href="#rabbitModal" class="rabbitModal" onclick="showRabbit(' + rabbit_id + ')" id="' + rabbit_id + '">#' + rabbit_id + '</a></p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="right-item-body">' +
+                        '<p>' + operation_type + '</p>' +
+                        '</div>' +
                         '</div>'
-                    );
-                    $('.added').remove();
-                });
-            });
+                    )
+                }
+                DATA = data;
+            })
+    } else {
+        getData(url + FILTER)
+            .then((value) => {
+                return value.json();
+            })
+            .then((data) => {
+                $('#list-wrapper-loading').remove();
+                $('.list-item').remove()
+                var totalItems = Object.keys(data.results).length;
+                var operation_type;
 
+                for (var i = 0; i < totalItems; i++) {
 
-        var items = $(".list-wrapper .list-item");
-        var numItems = items.length;
-        var perPage = 10;
+                    var time = new Date(data.results[i].time);
+                    time = time.format("dd.mm.yyyy HH:MM");
 
-        items.slice(perPage).hide();
+                    var rabbit_id = data.results[i].rabbit_id;
 
-        $('#pagination-container').pagination({
-            items: numItems,
-            itemsOnPage: perPage,
-            prevText: "Предыдущая",
-            nextText: "Следующая",
-            onPageClick: function(pageNumber) {
-                var showFrom = perPage * (pageNumber - 1);
-                var showTo = showFrom + perPage;
-                items.hide().slice(showFrom, showTo).show();
+                    if (data.results[i].type == "J") {
+                        operation_type = "Отсадка кролика ";
+                        operation_type += "(" + data.results[i].old_cage.farm_number + data.results[i].old_cage.number + data.results[i].old_cage.letter + "→" + data.results[i].new_cage.farm_number + data.results[i].new_cage.number + data.results[i].new_cage.letter + ")";
+                    } else if (data.results[i].type == "B") {
+                        operation_type = "Рождение кролика";
+                    } else if (data.results[i].type == "V") {
+                        operation_type = "Вакцинация";
+                    } else if (data.results[i].type == "S") {
+                        operation_type = "Убой";
+                    } else if (data.results[i].type == "M") {
+                        operation_type = "Спаривание ";
+                        operation_type += '<a class="rabbitModal" href="#rabbitModal" onclick="showRabbit(' + rabbit_id + ')" id="' + data.results[i].mother_rabbit_id + '">(#' + data.results[i].mother_rabbit_id + ')';
+                        rabbit_id = data.results[i].father_rabbit_id;
+                    }
+
+                    $('.list-wrapper').append(
+                        '<div class="list-item">' +
+                        '<div class="left-item-body">' +
+                        '<div class="v-wrapper">' +
+                        '<p>' + time + '</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="middle-item-body">' +
+                        '<div class="h-wrapper">' +
+                        '<div class="v-wrapper">' +
+                        '<p><a href="#rabbitModal" class="rabbitModal" onclick="showRabbit(' + rabbit_id + ')" id="' + rabbit_id + '">#' + rabbit_id + '</a></p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="right-item-body">' +
+                        '<p>' + operation_type + '</p>' +
+                        '</div>' +
+                        '</div>'
+                    )
+                }
+                DATA = data
+                makePaginate(data)
+            })
+    }
+}
+
+function showRabbit(id) {
+    getData(getRABBIT + id)
+        .then((value) => {
+            return value.json()
+        })
+        .then((data) => {
+            let modal_ico;
+            let modalSex;
+            let rabbit_type;
+            let curr_rabbit_operations = rabbit_operations + id;
+
+            var birthday = new Date(data.birthday);
+            var today = new Date;
+            var diff = today - birthday;
+            var milliseconds = diff;
+            var seconds = milliseconds / 1000;
+            var minutes = seconds / 60;
+            var hours = minutes / 60;
+            var days = hours / 24;
+
+            if (data.current_type == "B") {
+                modal_ico = "-small";
+                rabbit_type = "МАЛЕНЬК"
+            } else if (data.current_type == "F") {
+                modal_ico = "-big";
+                rabbit_type = "ОТКРОМ"
+            } else if (data.current_type == "M") {
+                modal_ico = "-big";
+                rabbit_type = "РАЗМНОЖ"
+            } else if (data.current_type == "P") {
+                modal_ico = "-big";
+                rabbit_type = "РАЗМНОЖ"
             }
-        });
 
-        var count = 0;
-        $(function() {
-            updateCount();
-            $('input[name=farm-checkbox]').change(function() {
-                updateCount(this.checked ? 1 : -1);
-            });
-            $('#invert').click(function(e) {
-                e = $('input[name=farm-checkbox]');
-                e.each(function(i, el) {
-                    el.checked = !el.checked;
+            if (Object.keys(data.status) > 1) {
+                if (data.status[0] == "RF") {
+                    var rabbit_status = "Готов к размнож."
+                } else if (data.status[0] == "R") {
+                    rabbit_status = "Отдыхает"
+                } else if (data.status[0] == "UP") {
+                    rabbit_status = "Неподтвержденная берем."
+                } else if (data.status[0] == "NI") {
+                    rabbit_status = "Нужен осмотр на берем."
+                } else if (data.status[0] == "CP") {
+                    rabbit_status = "Беременная"
+                } else if (data.status[0] == "FB") {
+                    rabbit_status = "Кормит крольчат"
+                } else if (data.status[0] == "NV") {
+                    rabbit_status = "Треб. вак."
+                } else if (data.status[0] == "NI") {
+                    rabbit_status = "Треб. осмотр"
+                } else if (data.status[0] == "WC") {
+                    rabbit_status = "Кормится без кокцидиост."
+                } else if (data.status[0] == "RS") {
+                    rabbit_status = "Готов к убою"
+                } else if (data.status[0] == "NJ") {
+                    rabbit_status = "Треб. отсадка"
+                } else if (data.status[0] == "MF") {
+                    rabbit_status = "Кормится у матери"
+                }
+                for (let key in data.status) {
+                    if (data.status[key] == "RF") {
+                        rabbit_status += ", Готов к размнож."
+                    } else if (data.status[key] == "R") {
+                        rabbit_status += ", Отдыхает"
+                    } else if (data.status[key] == "UP") {
+                        rabbit_status += ", Неподтвержденная берем."
+                    } else if (data.status[key] == "NI") {
+                        rabbit_status += ", Нужен осмотр на берем."
+                    } else if (data.status[key] == "CP") {
+                        rabbit_status += ", Беременная"
+                    } else if (data.status[key] == "FB") {
+                        rabbit_status += ", Кормит крольчат"
+                    } else if (data.status[key] == "NV") {
+                        rabbit_status += ", Треб. вак."
+                    } else if (data.status[key] == "NI") {
+                        rabbit_status += ", Треб. осмотр"
+                    } else if (data.status[key] == "WC") {
+                        rabbit_status += ", Кормится без кокцидиост."
+                    } else if (data.status[key] == "RS") {
+                        rabbit_status += ", Готов к убою"
+                    } else if (data.status[key] == "NJ") {
+                        rabbit_status += ", Треб. отсадка"
+                    } else if (data.status[key] == "MF") {
+                        rabbit_status += ", Кормится у матери"
+                    }
+                }
+            } else {
+                if (data.status[0] == "RF") {
+                    var rabbit_status = "Готов к размнож."
+                } else if (data.status[0] == "R") {
+                    rabbit_status = "Отдыхает"
+                } else if (data.status[0] == "UP") {
+                    rabbit_status = "Неподтвержденная берем."
+                } else if (data.status[0] == "NI") {
+                    rabbit_status = "Нужен осмотр на берем."
+                } else if (data.status[0] == "CP") {
+                    rabbit_status = "Беременная"
+                } else if (data.status[0] == "FB") {
+                    rabbit_status = "Кормит крольчат"
+                } else if (data.status[0] == "NV") {
+                    rabbit_status = "Треб. вак."
+                } else if (data.status[0] == "NI") {
+                    rabbit_status = "Треб. осмотр"
+                } else if (data.status[0] == "WC") {
+                    rabbit_status = "Кормится без кокцидиост."
+                } else if (data.status[0] == "RS") {
+                    rabbit_status = "Готов к убою"
+                } else if (data.status[0] == "NJ") {
+                    rabbit_status = "Треб. отсадка"
+                } else if (data.status[0] == "MF") {
+                    rabbit_status = "Кормится у матери"
+                }
+            }
+
+            if (data.is_male === null) {
+                modalSex = "unknown";
+            } else if (data.is_male === true) {
+                modalSex = "male-main";
+            } else if (data.is_male === false) {
+                modalSex = "female-main";
+            }
+
+
+            $('.rabbitModal-header').prepend(
+                '<img class="added" src="/img/rabbit-ico' + modal_ico + '.svg">'
+            );
+
+            $('.rabbit-header-info').append(
+                '<a class="changeWeightLink added" onclick="showChangeWeight(' + data.id + ')" href="#changeWeight" id="' + data.id + '">' +
+                '<div class="changeWeight">' +
+                '<img src="/img/change-weight.svg">' +
+                '<p>Взвесить</p>' +
+                '</div>' +
+                '</a>'
+            )
+
+            $('.rabbit-header-sex').append(
+                '<img class="added" src="/img/' + modalSex + '.svg">'
+            )
+
+            if (data.weight === null) {
+                data.weight = "?"
+            }
+            $('.rabbit-header-info-bot').append(
+                '<p class="added">#' + data.id + '</p>' +
+                '<p class="removable-weight added">' + data.weight + '&nbspкг.</p>'
+            )
+
+            var birthday = new Date(data.birthday);
+            birthday = birthday.format("dd.mm.yyyy");
+            $('.rabbit-header-right').append(
+                '<p class="added">Дата рождения:&nbsp<font class="added" style="font-weight:700;width:9.4ch;display:inline-flex;overflow:hidden;">' + birthday + '</font></p>' +
+                '<p class="added">Возраст:&nbsp<font class="added" style="font-weight:700;">' + Math.round(days) + '&nbspдней</font></p>'
+            )
+
+            $('.rabbitModal-type').append(
+                '<span class="subheader-details added">&nbsp' + rabbit_type + '</span>'
+            )
+
+            $('.rabbitModal-breed').append(
+                '<span class="subheader-details added">&nbsp' + data.breed + '</span>'
+            )
+
+            $('.rabbitModal-cageNum').append(
+                '<span class="subheader-details added"> &nbsp' + data.cage.farm_number + data.cage.number + data.cage.letter + '</span>'
+            )
+
+            $('.rabbitModal-status').append(
+                '<span class="subheader-details added"> &nbsp' + rabbit_status + '</span>'
+            )
+
+
+            getData(curr_rabbit_operations)
+                .then((value) => {
+                    return value.json();
+                })
+                .then((data) => {
+                    let this_id = id
+                    if (data.results[0] === undefined) {
+                        $('.operations-history-body').append(
+                            '<div class="operations-history-item added">' +
+                            '<p>Операций с кроликом еще нет...</p>' +
+                            '</div>'
+                        )
+                        $('#rabbit-modal-loading').remove();
+                    } else {
+                        let counter = data.count
+                        for (let i = 0; i < counter; i++) {
+                            var date = new Date(data.results[i].time);
+                            date = date.format("dd.mm.yyyy HH:MM");
+                            let context
+                            let bold_context = ""
+                            if (data.results[i].type == "B") {
+                                context = "Рождение кролика"
+                            }
+                            if (data.results[i].type == "J") {
+                                context = "Отсадка кролика&nbsp"
+                                bold_context = "<font style='font-weight:700'>(" + String(data.results[i].old_cage.farm_number) + data.results[i].old_cage.number + data.results[i].old_cage.letter + " → " + data.results[i].new_cage.farm_number + data.results[i].new_cage.number + data.results[i].new_cage.letter + ")</font>"
+                            }
+                            if (data.results[i].type == "V") {
+                                context = "Вакцинирование"
+                            }
+                            if (data.results[i].type == "S") {
+                                context = "Рождение кролика"
+                            }
+                            if (data.results[i].type == "M") {
+                                if (this_id == data.results[i].father_rabbit_id) {
+                                    context = "Спаривание&nbsp"
+                                    bold_context = "<a href='#rabbitModal-filtered' onclick='showNewRabbit(" + data.results[i].mother_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
+                                } else if (this_id == data.results[i].mother_rabbit_id) {
+                                    context = "Спаривание&nbsp"
+                                    bold_context = "<a href='#rabbitModal-filtered' onclick='showNewRabbit(" + data.results[i].father_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
+                                }
+                            }
+                            $('.operations-history-body').append(
+                                '<div class="operations-history-item added">' +
+                                '<p>' + date + '</p>' +
+                                '<p>' + context + bold_context + '</p>' +
+                                '</div>'
+                            )
+                            $('#rabbit-modal-loading').remove();
+                        }
+                    }
+
                 });
-                updateCount(e.length - count - count);
-            });
-        });
 
-        function updateCount(a) {
-            count = a ? count + a : $('input[name=farm-checkbox]:checked').length;
-            $('#count').text(count);
+        });
+}
+
+function makePaginate(data) {
+    let numItems = data.count
+    let perPage = 10
+    $('#pagination-container').pagination({
+        items: numItems,
+        itemsOnPage: perPage,
+        prevText: "Предыдущая",
+        nextText: "Следующая",
+        onPageClick: function(pageNumber) {
+            if (!FILTER) {
+                showList(operationsURL + "&page=" + pageNumber, false)
+            } else {
+                showList(operationsURL + "&page=" + pageNumber, false, FILTER)
+            }
         }
+    });
+}
+
+function showChangeWeight(id) {
+    getData(getRABBIT + id)
+        .then((value) => {
+            return value.json()
+        })
+        .then((data) => {
+            $('#loader-rabbit-modal').append(
+                '<div id="rabbit-modal-loading" class="loading">' +
+                '<img src="/img/loading.gif">' +
+                '</div>'
+            );
+            let weight_rabbit_id_in_array = id;
+            let weight_rabbit_id = id;
+            let newWeight = {
+                "weight": null
+            }
+            showWeight = data.weight;
+
+            $('.removable-weight').remove();
+            if (data.weight === null) {
+                data.weight = "?"
+            }
+            $('.curr-rabbit-weight').append(
+                '<span class="added added-secondary" style="white-space: nowrap;">&nbsp' + data.weight + '&nbspкг.</span>'
+            )
+
+            $('#changeWeight-modal-loading').remove()
+
+            $(".submit-changeWeight").click(function() {
+
+                $('.added-secondary').remove();
+                newWeight.weight = +$("#newWeight").val();
+                console.log(newWeight.weight)
+                putData(makeLink(rabbitsURL, weight_rabbit_id, data.current_type), newWeight)
+                    .then((value) => {
+                    })
+            })
+        })
+}
+
+$(document).ready(function() {
+    showList(operationsURL)
+
+    $("#rabbitModal-close").click(function() {
+        $('#loader-rabbit-modal').append(
+            '<div id="rabbit-modal-loading" class="loading">' +
+            '<img src="/img/loading.gif">' +
+            '</div>'
+        );
+        $('.added').remove();
+    });
+
+    $("#changeWeight-close").click(function() {
+        $('#loader-changeWeight-modal').append(
+            '<div id="changeWeight-modal-loading" class="loading">' +
+            '<img src="/img/loading.gif">' +
+            '</div>'
+        );
+        $('.added-secondary').remove();
+        $('.rabbit-header-info-bot').append(
+            '<p class="removable-weight added">' + showWeight + '&nbspкг.</p>'
+        )
+        $('#rabbit-modal-loading').remove();
     })
+})
