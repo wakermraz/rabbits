@@ -1725,7 +1725,7 @@ $(document).ready(function() {
                 }
 
                 if (_f_age_from != "" && _f_age_to != "" && _f_age_from > _f_age_to) {
-                    console.log("Дебил, считать не умеешь что-ли? Выставь правильно диапазон возраста.")
+                    console.log("Неправильно выставлен диапазон возраста.")
                 }
 
                 countResponse(o_key, _f_age_from)
@@ -1736,7 +1736,7 @@ $(document).ready(function() {
                 let o_key = "_f_age_to"
 
                 if (_f_age_from != "" && _f_age_to != "" && f_age_from > _f_age_to) {
-                    console.log("Дебил, считать не умеешь что-ли? Выставь правильно диапазон возраста.")
+                    console.log("Неправильно выставлен диапазон возраста.")
                 } else if (_f_age_to === "") {
                     _f_age_to = "&"
                 } else {
@@ -1769,7 +1769,7 @@ $(document).ready(function() {
                     _f_weight_from = "&weight_from=" + _f_weight_from
                 }
                 if (_f_weight_from != "" && _f_weight_to != "" && _f_weight_from > _f_weight_to) {
-                    console.log("Дебил, считать не умеешь что-ли? Выставь правильно диапазон возраста.")
+                    console.log("Неправильно выставлен диапазон веса.")
                 }
 
                 countResponse(o_key, _f_weight_from)
@@ -1780,7 +1780,7 @@ $(document).ready(function() {
                 let o_key = "_f_weight_to"
 
                 if (_f_weight_from != "" && _f_weight_to != "" && _f_weight_from > _f_weight_to) {
-                    console.log("Дебил, считать не умеешь что-ли? Выставь правильно диапазон возраста.")
+                    console.log("Неправильно выставлен диапазон веса.")
                 } else if (_f_weight_to === "") {
                     _f_weight_to = "&"
                 } else {
