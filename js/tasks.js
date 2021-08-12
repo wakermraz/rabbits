@@ -265,13 +265,13 @@ function showList(url, first = true) {
                         for (var i = 0; i < totalItems; i++) {
 
                             if (data.results[i].type == "R") {
-                                task_name = "<p>Отсадка (смена типа: ОТКОРМОЧНЫЙ → РАЗМНОЖЕНИЕ) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
+                                task_name = "<p>Отсадка (смена типа: ОТКОРМОЧНЫЙ → РАЗМНОЖЕНИЕ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "F") {
-                                task_name = "<p>Отсадка (смена типа: РАЗМНОЖЕНИЕ → ОТКОРМОЧНЫЙ) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
+                                task_name = "<p>Отсадка (смена типа: РАЗМНОЖЕНИЕ → ОТКОРМОЧНЫЙ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "M") {
                                 task_name = "<p>Размножение → <font style='font-weight:700'>" + data.results[i].father_cage.farm_number + data.results[i].father_cage.number + data.results[i].father_cage.letter + " → " + data.results[i].mother_cage.farm_number + data.results[i].mother_cage.number + data.results[i].mother_cage.letter + "</font></p>"
                             } else if (data.results[i].type == "B") {
-                                task_name = "<p>Отсадка от матери → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " (" + data.results[i].number_bunnies + " кр.)" + " → " + data.results[i].male_cage_to.farm_number + data.results[i].male_cage_to.number + data.results[i].male_cage_to.letter + "(M) → " + data.results[i].female_cage_to.farm_number + data.results[i].female_cage_to.number + data.results[i].female_cage_to.letter + " (Ж)</font></p>"
+                                task_name = "<p>Отсадка от матери → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "V") {
                                 task_name = "<p>Вакцинация → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "I") {
