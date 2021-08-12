@@ -1131,6 +1131,83 @@ header {
     white-space: nowrap;
 }
 
-#todo-list-loading{
+#todo-list-loading {
     margin-top: 2%;
+}
+
+.tasks-label {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.make-btn,
+.review-btn {
+    margin: auto;
+    height: 35px;
+    width: 140px;
+}
+
+.make-btn>p,
+.review-btn>p {
+    font-size: 18px;
+    font-weight: 400;
+    color: #fff;
+}
+
+.active-tab {
+    background: #6D6D6D;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+}
+
+.task-date {
+    font-weight: 400 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tasks-filter {
+    font-weight: 300;
+    font-size: 16px;
+    color: #a6a6a6;
+}
+
+.tasks-filter-wrapper {
+    border: 1px solid #A6A6A6;
+    border-radius: 10px;
+    height: 150px;
+}
+
+.save-changes-btn {
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 10px;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Roboto Condensed';
+    width: 235px;
+    height: 60px;
+    padding: 9px 30px;
+    cursor: pointer;
+}
+
+.discard-changes-btn {
+    background: linear-gradient(180deg, #C74D4D 0%, #B33B3B 100%);
+    border-radius: 10px;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Roboto Condensed';
+    width: 235px;
+    height: 60px;
+    padding: 9px 30px;
+    cursor: pointer;
+}
+
+.disabled{
+    opacity: 60%;
+    cursor: default !important;
 }
