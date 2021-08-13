@@ -268,86 +268,8 @@ function showNewRabbit(id) {
                 rabbit_type = "РАЗМНОЖ"
             }
 
-            if (Object.keys(data.status) > 1) {
-                if (data.status[0] == "RF") {
-                    var rabbit_status = "Готов к размнож."
-                } else if (data.status[0] == "R") {
-                    rabbit_status = "Отдыхает"
-                } else if (data.status[0] == "UP") {
-                    rabbit_status = "Неподтвержденная берем."
-                } else if (data.status[0] == "NI") {
-                    rabbit_status = "Нужен осмотр на берем."
-                } else if (data.status[0] == "CP") {
-                    rabbit_status = "Беременная"
-                } else if (data.status[0] == "FB") {
-                    rabbit_status = "Кормит крольчат"
-                } else if (data.status[0] == "NV") {
-                    rabbit_status = "Треб. вак."
-                } else if (data.status[0] == "NI") {
-                    rabbit_status = "Треб. осмотр"
-                } else if (data.status[0] == "WC") {
-                    rabbit_status = "Кормится без кокцидиост."
-                } else if (data.status[0] == "RS") {
-                    rabbit_status = "Готов к убою"
-                } else if (data.status[0] == "NJ") {
-                    rabbit_status = "Треб. отсадка"
-                } else if (data.status[0] == "MF") {
-                    rabbit_status = "Кормится у матери"
-                }
-                for (let key in data.status) {
-                    if (data.status[key] == "RF") {
-                        rabbit_status += ", Готов к размнож."
-                    } else if (data.status[key] == "R") {
-                        rabbit_status += ", Отдыхает"
-                    } else if (data.status[key] == "UP") {
-                        rabbit_status += ", Неподтвержденная берем."
-                    } else if (data.status[key] == "NI") {
-                        rabbit_status += ", Нужен осмотр на берем."
-                    } else if (data.status[key] == "CP") {
-                        rabbit_status += ", Беременная"
-                    } else if (data.status[key] == "FB") {
-                        rabbit_status += ", Кормит крольчат"
-                    } else if (data.status[key] == "NV") {
-                        rabbit_status += ", Треб. вак."
-                    } else if (data.status[key] == "NI") {
-                        rabbit_status += ", Треб. осмотр"
-                    } else if (data.status[key] == "WC") {
-                        rabbit_status += ", Кормится без кокцидиост."
-                    } else if (data.status[key] == "RS") {
-                        rabbit_status += ", Готов к убою"
-                    } else if (data.status[key] == "NJ") {
-                        rabbit_status += ", Треб. отсадка"
-                    } else if (data.status[key] == "MF") {
-                        rabbit_status += ", Кормится у матери"
-                    }
-                }
-            } else {
-                if (data.status[0] == "RF") {
-                    var rabbit_status = "Готов к размнож."
-                } else if (data.status[0] == "R") {
-                    rabbit_status = "Отдыхает"
-                } else if (data.status[0] == "UP") {
-                    rabbit_status = "Неподтвержденная берем."
-                } else if (data.status[0] == "NI") {
-                    rabbit_status = "Нужен осмотр на берем."
-                } else if (data.status[0] == "CP") {
-                    rabbit_status = "Беременная"
-                } else if (data.status[0] == "FB") {
-                    rabbit_status = "Кормит крольчат"
-                } else if (data.status[0] == "NV") {
-                    rabbit_status = "Треб. вак."
-                } else if (data.status[0] == "NI") {
-                    rabbit_status = "Треб. осмотр"
-                } else if (data.status[0] == "WC") {
-                    rabbit_status = "Кормится без кокцидиост."
-                } else if (data.status[0] == "RS") {
-                    rabbit_status = "Готов к убою"
-                } else if (data.status[0] == "NJ") {
-                    rabbit_status = "Треб. отсадка"
-                } else if (data.status[0] == "MF") {
-                    rabbit_status = "Кормится у матери"
-                }
-            }
+            defineStatus(data)
+            console.log(rabbit_status)
 
             if (data.is_male === null) {
                 modalSex = "unknown";
@@ -501,8 +423,122 @@ function convertToCalendar(date) {
     var res = "";
     date = date.replace("-", ".")
     date = date.replace("-", ".")
-    res = date[8] + data[9] + date[7] + date[5] + date[6] + date[4] + date[0] + date[1] + date[2] + date[3]
+    res = date[8] + date[9] + date[7] + date[5] + date[6] + date[4] + date[0] + date[1] + date[2] + date[3]
     return res;
+}
+
+function defineStatus(data) {
+    rabbit_status = ""
+    let rabbit_statuses = {}
+    if (data.current_type == "B") {
+        if (Object.keys(data.status).length > 1) {
+            for (let i = 0; i < Object.keys(data.status).length; i++) {
+                if (data.status[i] == "NJ") {
+                    rabbit_statuses[i] += {
+                        "status": "Нужна отсадка"
+                    }
+                } else if (data.status[i] == "MF") {
+                    rabbit_statuses[i] += {
+                        "status": "Кормится у матери"
+                    }
+                }
+            }
+            rabbit_status = rabbit_statuses[0].status + ", " + rabbit_statuses[1].status
+        } else {
+            if (data.status == "NJ") {
+                rabbit_status = "Нужна отсадка"
+            } else if (data.status == "MF") {
+                rabbit_status = "Кормится у матери"
+            }
+        }
+    } else if (data.current_type == "F") {
+        if (Object.keys(data.status).length > 1) {
+            for (let i = 0; i < Object.keys(data.status).length; i++) {
+                if (data.status[i] == "NV") {
+                    rabbit_statuses[i] += {
+                        "status": "Нужна вакцинация"
+                    }
+                } else if (data.status[i] == "NI") {
+                    rabbit_statuses[i] += {
+                        "status": "Нужен осмотр перед убоем"
+                    }
+                } else if (data.status[i] == "WC") {
+                    rabbit_statuses[i] += {
+                        "status": "Кормится без кокцидиост."
+                    }
+                } else if (data.status[i] == "RS") {
+                    rabbit_statuses[i] += {
+                        "status": "Готов к убою"
+                    }
+                }
+                if (Object.keys(rabbit_statuses).length - i == 1) {
+                    rabbit_status += rabbit_statuses[i].status
+                } else {
+                    rabbit_status += rabbit_statuses[i].status + ", "
+                }
+            }
+        } else {
+            if (data.status == "NV") {
+                rabbit_status = "Нужна вакцинация"
+            } else if (data.status == "NI") {
+                rabbit_status = "Нужен осмотр перед убоем"
+            } else if (data.status == "WC") {
+                rabbit_status = "Кормится без кокцидиост."
+            } else if (data.status == "RS") {
+                rabbit_status = "Готов к убою"
+            }
+        }
+    } else if (data.current_type == "M") {
+        if (Object.keys(data.status).length > 1) {
+            for (let i = 0; i < Object.keys(data.status).length; i++) {
+                if (data.status[i] == "RF") {
+                    rabbit_status += "Готова к размнож., "
+                } else if (data.status[i] == "UP") {
+                    rabbit_status += "Неподтвержденная берем., "
+                } else if (data.status[i] == "NI") {
+                    rabbit_status += "Нужен осмотр на берем., "
+                } else if (data.status[i] == "CP") {
+                    rabbit_status += "Подтвержденная берем., "
+                } else if (data.status[i] == "FB") {
+                    rabbit_status += "Кормит крольчат"
+                }
+            }
+        } else if (Object.keys(data.status).length == 1) {
+            if (data.status == "RF") {
+                rabbit_status = "Готова к размнож."
+            } else if (data.status == "UP") {
+                rabbit_status = "Неподтвержденная берем."
+            } else if (data.status == "NI") {
+                rabbit_status = "Нужен осмотр на берем."
+            } else if (data.status == "CP") {
+                rabbit_status = "Подтвержденная берем."
+            } else if (data.status == "FB") {
+                rabbit_status = "Кормит крольчат"
+            }
+        }
+    } else if (data.current_type == "P") {
+        if (Object.keys(data.status).length > 1) {
+            for (let i = 0; i < Object.keys(data.status).length; i++) {
+                if (data.status[i] == "RF") {
+                    rabbit_statuses[i] += {
+                        "status": "Готов к размнож."
+                    }
+                } else if (data.status[i] == "R") {
+                    rabbit_statuses[i] += {
+                        "status": "Отдыхает"
+                    }
+                }
+            }
+            rabbit_status = rabbit_statuses[0].status + ", " + rabbit_statuses[1].status
+        } else {
+            if (data.status == "RF") {
+                rabbit_status = "Готов к размнож."
+            } else if (data.status == "R") {
+                rabbit_status = "Отдыхает"
+            }
+        }
+    }
+    return rabbit_status;
 }
 
 function getAvailCages(obj_key, filter) {
@@ -664,90 +700,11 @@ function showList(url, first = true) {
                         rabbitSize = "rabbit";
                     }
 
-                    if (Object.keys(data.results[i].status).length > 1) {
-                        if (data.results[i].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data.results[i].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data.results[i].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data.results[i].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data.results[i].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data.results[i].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data.results[i].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data.results[i].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data.results[i].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data.results[i].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data.results[i].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data.results[i].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                        for (let key in data.results[i].status) {
-                            if (data.results[i].status[key] == "RF") {
-                                rabbit_status += ", Готов к размнож."
-                            } else if (data.results[i].status[key] == "R") {
-                                rabbit_status += ", Отдыхает"
-                            } else if (data.results[i].status[key] == "UP") {
-                                rabbit_status += ", Неподтвержденная берем."
-                            } else if (data.results[i].status[key] == "NI") {
-                                rabbit_status += ", Нужен осмотр на берем."
-                            } else if (data.results[i].status[key] == "CP") {
-                                rabbit_status += ", Беременная"
-                            } else if (data.results[i].status[key] == "FB") {
-                                rabbit_status += ", Кормит крольчат"
-                            } else if (data.results[i].status[key] == "NV") {
-                                rabbit_status += ", Треб. вак."
-                            } else if (data.results[i].status[key] == "NI") {
-                                rabbit_status += ", Треб. осмотр"
-                            } else if (data.results[i].status[key] == "WC") {
-                                rabbit_status += ", Кормится без кокцидиост."
-                            } else if (data.results[i].status[key] == "RS") {
-                                rabbit_status += ", Готов к убою"
-                            } else if (data.results[i].status[key] == "NJ") {
-                                rabbit_status += ", Треб. отсадка"
-                            } else if (data.results[i].status[key] == "MF") {
-                                rabbit_status += ", Кормится у матери"
-                            }
-                        }
-                    } else {
-                        if (data.results[i].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data.results[i].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data.results[i].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data.results[i].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data.results[i].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data.results[i].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data.results[i].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data.results[i].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data.results[i].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data.results[i].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data.results[i].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data.results[i].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                    }
+                    defineStatus(data.results[i])
 
 
                     $('#list-wrapper').append(
-                        '<a href="#rabbitModal" class="rabbitModal" id="' + data.results[i].id + '">' +
+                        '<a href="#rabbitModal" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
                         '<div class="list-item">' +
                         '<div class="left-item-body">' +
                         '<label class="' + rabbitSize + '-select">' +
@@ -825,86 +782,7 @@ function showList(url, first = true) {
                         rabbit_type = "РАЗМНОЖ"
                     }
 
-                    if (Object.keys(data.results[modal_id].status) > 1) {
-                        if (data.results[modal_id].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data.results[modal_id].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data.results[modal_id].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data.results[modal_id].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data.results[modal_id].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data.results[modal_id].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data.results[modal_id].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data.results[modal_id].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data.results[modal_id].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data.results[modal_id].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data.results[modal_id].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data.results[modal_id].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                        for (let key in data.results[modal_id].status) {
-                            if (data.results[modal_id].status[key] == "RF") {
-                                rabbit_status += ", Готов к размнож."
-                            } else if (data.results[modal_id].status[key] == "R") {
-                                rabbit_status += ", Отдыхает"
-                            } else if (data.results[modal_id].status[key] == "UP") {
-                                rabbit_status += ", Неподтвержденная берем."
-                            } else if (data.results[modal_id].status[key] == "NI") {
-                                rabbit_status += ", Нужен осмотр на берем."
-                            } else if (data.results[modal_id].status[key] == "CP") {
-                                rabbit_status += ", Беременная"
-                            } else if (data.results[modal_id].status[key] == "FB") {
-                                rabbit_status += ", Кормит крольчат"
-                            } else if (data.results[modal_id].status[key] == "NV") {
-                                rabbit_status += ", Треб. вак."
-                            } else if (data.results[modal_id].status[key] == "NI") {
-                                rabbit_status += ", Треб. осмотр"
-                            } else if (data.results[modal_id].status[key] == "WC") {
-                                rabbit_status += ", Кормится без кокцидиост."
-                            } else if (data.results[modal_id].status[key] == "RS") {
-                                rabbit_status += ", Готов к убою"
-                            } else if (data.results[modal_id].status[key] == "NJ") {
-                                rabbit_status += ", Треб. отсадка"
-                            } else if (data.results[modal_id].status[key] == "MF") {
-                                rabbit_status += ", Кормится у матери"
-                            }
-                        }
-                    } else {
-                        if (data.results[modal_id].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data.results[modal_id].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data.results[modal_id].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data.results[modal_id].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data.results[modal_id].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data.results[modal_id].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data.results[modal_id].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data.results[modal_id].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data.results[modal_id].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data.results[modal_id].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data.results[modal_id].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data.results[modal_id].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                    }
+                    defineStatus(data.results[modal_id])
 
                     if (data.results[modal_id].is_male === null) {
                         modalSex = "unknown";
@@ -999,10 +877,10 @@ function showList(url, first = true) {
                                     if (data.results[i].type == "M") {
                                         if (this_id == data.results[i].father_rabbit_id) {
                                             context = "Спаривание&nbsp"
-                                            bold_context = "<a href='#rabbitModal' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
+                                            bold_context = "<a href='#rabbitModal-filtered' onclick='showNewRabbit(" + data.results[i].mother_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
                                         } else if (this_id == data.results[i].mother_rabbit_id) {
                                             context = "Спаривание&nbsp"
-                                            bold_context = "<a href='#rabbitModal' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
+                                            bold_context = "<a href='#rabbitModal-filtered' onclick='showNewRabbit(" + data.results[i].mother_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
                                         }
                                     }
                                     $('.operations-history-body').append(
@@ -1121,86 +999,7 @@ function showList(url, first = true) {
                         rabbitSize = "rabbit";
                     }
 
-                    if (Object.keys(data.results[i].status).length > 1) {
-                        if (data.results[i].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data.results[i].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data.results[i].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data.results[i].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data.results[i].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data.results[i].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data.results[i].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data.results[i].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data.results[i].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data.results[i].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data.results[i].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data.results[i].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                        for (let key in data.results[i].status) {
-                            if (data.results[i].status[key] == "RF") {
-                                rabbit_status += ", Готов к размнож."
-                            } else if (data.results[i].status[key] == "R") {
-                                rabbit_status += ", Отдыхает"
-                            } else if (data.results[i].status[key] == "UP") {
-                                rabbit_status += ", Неподтвержденная берем."
-                            } else if (data.results[i].status[key] == "NI") {
-                                rabbit_status += ", Нужен осмотр на берем."
-                            } else if (data.results[i].status[key] == "CP") {
-                                rabbit_status += ", Беременная"
-                            } else if (data.results[i].status[key] == "FB") {
-                                rabbit_status += ", Кормит крольчат"
-                            } else if (data.results[i].status[key] == "NV") {
-                                rabbit_status += ", Треб. вак."
-                            } else if (data.results[i].status[key] == "NI") {
-                                rabbit_status += ", Треб. осмотр"
-                            } else if (data.results[i].status[key] == "WC") {
-                                rabbit_status += ", Кормится без кокцидиост."
-                            } else if (data.results[i].status[key] == "RS") {
-                                rabbit_status += ", Готов к убою"
-                            } else if (data.results[i].status[key] == "NJ") {
-                                rabbit_status += ", Треб. отсадка"
-                            } else if (data.results[i].status[key] == "MF") {
-                                rabbit_status += ", Кормится у матери"
-                            }
-                        }
-                    } else {
-                        if (data.results[i].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data.results[i].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data.results[i].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data.results[i].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data.results[i].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data.results[i].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data.results[i].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data.results[i].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data.results[i].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data.results[i].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data.results[i].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data.results[i].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                    }
+                    defineStatus(data.results[i])
 
 
                     $('#list-wrapper').append(
@@ -1282,86 +1081,7 @@ function showList(url, first = true) {
                         rabbit_type = "РАЗМНОЖ"
                     }
 
-                    if (Object.keys(data.results[modal_id].status) > 1) {
-                        if (data.results[modal_id].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data.results[modal_id].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data.results[modal_id].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data.results[modal_id].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data.results[modal_id].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data.results[modal_id].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data.results[modal_id].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data.results[modal_id].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data.results[modal_id].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data.results[modal_id].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data.results[modal_id].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data.results[modal_id].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                        for (let key in data.results[modal_id].status) {
-                            if (data.results[modal_id].status[key] == "RF") {
-                                rabbit_status += ", Готов к размнож."
-                            } else if (data.results[modal_id].status[key] == "R") {
-                                rabbit_status += ", Отдыхает"
-                            } else if (data.results[modal_id].status[key] == "UP") {
-                                rabbit_status += ", Неподтвержденная берем."
-                            } else if (data.results[modal_id].status[key] == "NI") {
-                                rabbit_status += ", Нужен осмотр на берем."
-                            } else if (data.results[modal_id].status[key] == "CP") {
-                                rabbit_status += ", Беременная"
-                            } else if (data.results[modal_id].status[key] == "FB") {
-                                rabbit_status += ", Кормит крольчат"
-                            } else if (data.results[modal_id].status[key] == "NV") {
-                                rabbit_status += ", Треб. вак."
-                            } else if (data.results[modal_id].status[key] == "NI") {
-                                rabbit_status += ", Треб. осмотр"
-                            } else if (data.results[modal_id].status[key] == "WC") {
-                                rabbit_status += ", Кормится без кокцидиост."
-                            } else if (data.results[modal_id].status[key] == "RS") {
-                                rabbit_status += ", Готов к убою"
-                            } else if (data.results[modal_id].status[key] == "NJ") {
-                                rabbit_status += ", Треб. отсадка"
-                            } else if (data.results[modal_id].status[key] == "MF") {
-                                rabbit_status += ", Кормится у матери"
-                            }
-                        }
-                    } else {
-                        if (data.results[modal_id].status[0] == "RF") {
-                            var rabbit_status = "Готов к размнож."
-                        } else if (data.results[modal_id].status[0] == "R") {
-                            rabbit_status = "Отдыхает"
-                        } else if (data.results[modal_id].status[0] == "UP") {
-                            rabbit_status = "Неподтвержденная берем."
-                        } else if (data.results[modal_id].status[0] == "NI") {
-                            rabbit_status = "Нужен осмотр на берем."
-                        } else if (data.results[modal_id].status[0] == "CP") {
-                            rabbit_status = "Беременная"
-                        } else if (data.results[modal_id].status[0] == "FB") {
-                            rabbit_status = "Кормит крольчат"
-                        } else if (data.results[modal_id].status[0] == "NV") {
-                            rabbit_status = "Треб. вак."
-                        } else if (data.results[modal_id].status[0] == "NI") {
-                            rabbit_status = "Треб. осмотр"
-                        } else if (data.results[modal_id].status[0] == "WC") {
-                            rabbit_status = "Кормится без кокцидиост."
-                        } else if (data.results[modal_id].status[0] == "RS") {
-                            rabbit_status = "Готов к убою"
-                        } else if (data.results[modal_id].status[0] == "NJ") {
-                            rabbit_status = "Треб. отсадка"
-                        } else if (data.results[modal_id].status[0] == "MF") {
-                            rabbit_status = "Кормится у матери"
-                        }
-                    }
+                    defineStatus(data.results[modal_id])
 
                     if (data.results[modal_id].is_male === null) {
                         modalSex = "unknown";
@@ -1888,7 +1608,7 @@ $(document).ready(function() {
                     if (String(curr.value) == __cage_number) {
                         __cage_id = curr.id
                     }
-                }   
+                }
                 addRabbit(__birth, __breed_id, __breed_name, _is_male, __farm_number, __cage_number, __cage_id, __birth_send)
                 $('.removable-label').remove()
                 $('#rabbitBirth-calendar').empty()

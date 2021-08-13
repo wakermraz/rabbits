@@ -1,7 +1,8 @@
-let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/anonymous/";
+let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/waiting_confirmation/";
 let users = "https://rabbit-api--test.herokuapp.com/api/user/?"
 
 let FILTER = ""
+let user_list = ""
 let EXECUTORS = {}
 let counter = 0
 
@@ -173,75 +174,59 @@ function convertToCalendar(date) {
 
 function showList(url, first = true) {
     if (!first) {
-        getData(users)
+        getData(url + FILTER)
             .then((value) => {
-                return value.json()
+                return value.json();
             })
             .then((data) => {
+                $('#list-wrapper-loading').remove();
+                $('.list-item').remove()
+                var totalItems = Object.keys(data.results).length;
+                let task_name;
 
-                let user_list = ""
-                let totalItems = Object.keys(data.results).length
+                for (var i = 0; i < totalItems; i++) {
 
-                for (let i = 0; i < totalItems; i++) {
-                    user_list += '<option value="' + data.results[i].id + '">' + data.results[i].first_name + " " + data.results[i].last_name + '</option>'
-                }
+                    if (data.results[i].type == "R") {
+                        task_name = "<p>Отсадка (смена типа: ОТКОРМОЧНЫЙ → РАЗМНОЖЕНИЕ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                    } else if (data.results[i].type == "F") {
+                        task_name = "<p>Отсадка (смена типа: РАЗМНОЖЕНИЕ → ОТКОРМОЧНЫЙ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                    } else if (data.results[i].type == "M") {
+                        task_name = "<p>Размножение → <font style='font-weight:700'>" + data.results[i].father_cage.farm_number + data.results[i].father_cage.number + data.results[i].father_cage.letter + " → " + data.results[i].mother_cage.farm_number + data.results[i].mother_cage.number + data.results[i].mother_cage.letter + "</font></p>"
+                    } else if (data.results[i].type == "B") {
+                        task_name = "<p>Отсадка от матери → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                    } else if (data.results[i].type == "V") {
+                        task_name = "<p>Вакцинация → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                    } else if (data.results[i].type == "I") {
+                        task_name = "<p>Осмотр перед убоем → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                    } else if (data.results[i].type == "S") {
+                        task_name = "<p>Убой → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                    }
 
-                getData(url + FILTER)
-                    .then((value) => {
-                        return value.json();
-                    })
-                    .then((data) => {
-                        $('#list-wrapper-loading').remove();
-                        $('.list-item').remove()
-                        var totalItems = Object.keys(data.results).length;
-                        let task_name;
-
-                        for (var i = 0; i < totalItems; i++) {
-
-                            if (data.results[i].type == "R") {
-                                task_name = "<p>Отсадка (смена типа: ОТКОРМОЧНЫЙ → РАЗМНОЖЕНИЕ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                            } else if (data.results[i].type == "F") {
-                                task_name = "<p>Отсадка (смена типа: РАЗМНОЖЕНИЕ → ОТКОРМОЧНЫЙ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                            } else if (data.results[i].type == "M") {
-                                task_name = "<p>Размножение → <font style='font-weight:700'>" + data.results[i].father_cage.farm_number + data.results[i].father_cage.number + data.results[i].father_cage.letter + " → " + data.results[i].mother_cage.farm_number + data.results[i].mother_cage.number + data.results[i].mother_cage.letter + "</font></p>"
-                            } else if (data.results[i].type == "B") {
-                                task_name = "<p>Отсадка от матери → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                            } else if (data.results[i].type == "V") {
-                                task_name = "<p>Вакцинация → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                            } else if (data.results[i].type == "I") {
-                                task_name = "<p>Осмотр перед убоем → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                            } else if (data.results[i].type == "S") {
-                                task_name = "<p>Убой → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                            }
-
-                            $('.list-wrapper').append(
-                                '<div class="list-item">' +
-                                '<div class="left-item-body">' +
-                                '<p class="task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
-                                '</div>' +
-                                '<div class="middle-item-body">' +
-                                '<div class="v-wrapper">' +
-                                '<p>' + task_name + '</p>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="right-item-body cage-right-item-body">' +
-                                '<select id="' + data.results[i].id + '" class="rightside-filter choose-executor" onchange="saveExecutor(this)">' +
-                                '<option value="0">Не выбрано</option>' +
-                                user_list +
-                                '</select>' +
-                                '</div>' +
-                                '</div>'
-                            )
-                            for (let j = 0; j < Object.keys(EXECUTORS).length; j++) {
-                                if (data.results[i].id == EXECUTORS[j].task_id) {
-                                    $('#' + EXECUTORS[j].task_id + ' option[value=' + EXECUTORS[j].id + ']').prop('selected', true);
-                                    console.log("Задача №", data.results[i].id, "=", EXECUTORS[j].task_id)
-                                }
-                            }
+                    $('.list-wrapper').append(
+                        '<div class="list-item">' +
+                        '<div class="left-item-body">' +
+                        '<img src="/img/delete-task.svg" class="delete-task" id="' + data.results[i].id + '">' +
+                        '<p class="task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
+                        '</div>' +
+                        '<div class="middle-item-body">' +
+                        '<div class="v-wrapper">' +
+                        '<p>' + task_name + '</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="right-item-body cage-right-item-body">' +
+                        '<>' +
+                        '</div>' +
+                        '</div>'
+                    )
+                    for (let j = 0; j < Object.keys(EXECUTORS).length; j++) {
+                        if (data.results[i].id == EXECUTORS[j].task_id) {
+                            $('#' + EXECUTORS[j].task_id + ' option[value=' + EXECUTORS[j].id + ']').prop('selected', true);
+                            console.log("Задача №", data.results[i].id, "=", EXECUTORS[j].task_id)
                         }
-                        DATA = data
+                    }
+                }
+                DATA = data
 
-                    })
             })
     } else {
         getData(users)
@@ -340,7 +325,7 @@ function saveExecutor(e) {
 
     if (e.value != 0) {
         $(".save-changes-btn, .discard-changes-btn").removeClass("disabled")
-        $(".save-changes-btn, .discard-changes-btn").prop("disabled", false)
+        listenState()
     }
 
     if (e.value == 0) {
@@ -355,7 +340,6 @@ function saveExecutor(e) {
         }
         if (disabled == true) {
             $(".save-changes-btn, .discard-changes-btn").addClass("disabled")
-            (".save-changes-btn, .discard-changes-btn").prop("disabled", true)
             $(".save-changes-btn, .discard-changes-btn").off()
         }
     }
@@ -382,17 +366,44 @@ function makePaginate(data) {
 }
 
 function listenState() {
-    for (let i = 0; i < Object.keys(EXECUTORS).length; i++) {
-        let link = tasksURL + EXECUTORS[i].task_id + "/"
-        let executor = {
-            "user": EXECUTORS[i].id
+    $(".save-changes-btn").click(function() {
+        for (let i = 0; i < Object.keys(EXECUTORS).length; i++) {
+            let link = tasksURL + EXECUTORS[i].task_id + "/"
+            let executor = {
+                "user": EXECUTORS[i].id
+            }
         }
-        putData(link, executor)
-    }
+    })
+
+    $(".discard-changes-btn").click(function() {
+        location.reload()
+    })
+}
+
+function applyExecutorFilter(e) {
+    FILTER = ""
+    FILTER = e.value
+    showList(tasksURL)
 }
 
 $(document).ready(function() {
     showList(tasksURL)
+
+
+    getData(users)
+        .then((value) => {
+            return value.json()
+        })
+        .then((data) => {
+
+            let user_list = ""
+            let totalItems = Object.keys(data.results).length
+
+            for (let i = 0; i < totalItems; i++) {
+                user_list += '<option value="' + data.results[i].id + '">' + data.results[i].first_name + " " + data.results[i].last_name + '</option>'
+            }
+            $(".executor-list").append(user_list)
+        })
 
     document.querySelector(".rightside-filter").addEventListener('change', function(e) {
         $('#pagination-container>ul').remove();

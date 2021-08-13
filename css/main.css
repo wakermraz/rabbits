@@ -1017,6 +1017,10 @@ header {
     box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.25);
 }
 
+#list-wrapper{
+    max-width: 1019.75px;
+}
+
 .todo-list-item {
     display: flex;
     flex-direction: row;

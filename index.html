@@ -8,7 +8,7 @@
     <link href="/css/datepicker.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="/css/modal.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="/js/tasks.js"></script>
+    <script src="/js/rabbits.js"></script>
     <script src="/js/modal.js"></script>
     <script src="/js/pagination.js"></script>
     <script src="/js/main.js"></script>
@@ -60,15 +60,19 @@
         <div class="main-content">
             <div class="main-content-navigation">
                 <div class="navigation-leftside">
-                    <p class="v-wrapper tasks-label">Задачи</p>
-                    <div class="rabbits-btn make-btn v-wrapper active-tab">
-                        <p>Назначить</p>
+                    <div class="rabbits-btn v-wrapper active-link">
+                        <p>Кролики</p>
                     </div>
-                    <a href="/review.html" style="display: flex;">
-                        <div class="cages-btn review-btn v-wrapper">
-                            <p>Список задач</p>
+                    <a href="/cages.html">
+                        <div class="cages-btn v-wrapper">
+                            <p>Клетки</p>
                         </div>
                     </a>
+                    <div class="add-btn v-wrapper">
+                        <a href="#addRabbitModal">
+                            <img src="/img/add-btn.svg">
+                        </a>
+                    </div>
                 </div>
                 <div class="navigation-rightside">
                     <div class="rightside-text">
@@ -77,14 +81,17 @@
                     <div class="v-wrapper">
                         <div class="rightside-filter-wrapper">
                             <select class="rightside-filter">
-                                <option value="?">все задачи</option>
-                                <option value="?__order_by__=R">отсадка (откорм.→размнож.)</option>
-                                <option value="?__order_by__=F">отсадка (размнож.→откорм.)</option>
-                                <option value="?__order_by__=M">размножение</option>
-                                <option value="?__order_by__=B">отсадка от матери</option>
-                                <option value="?__order_by__=V">вакцинация</option>
-                                <option value="?__order_by__=I">осмотр перед убоем</option>
-                                <option value="?__order_by__=S">убой</option>
+                                <option value="">все кролики</option>
+                                <option value="__order_by__=age">по возрасту (убыв.)</option>
+                                <option value="__order_by__=-age">по возрасту (возраст.)</option>
+                                <option value="__order_by__=sex">по полу</option>
+                                <option value="__order_by__=farm_number">по номеру фермы (возраст.)</option>
+                                <option value="__order_by__=cage_number">по номеру клетки (возраст.)</option>
+                                <option value="__order_by__=type">по типу кролика</option>
+                                <option value="__order_by__=breed">по породе</option>
+                                <option value="__order_by__=status">по статусу крооика</option>
+                                <option value="__order_by__=weight">по весу (возраст..)</option>
+                                <option value="__order_by__=-weight">по весу (убыв.)</option>
                             </select>
                         </div>
                     </div>
@@ -93,13 +100,20 @@
             <div class="main-content-body">
                 <div class="h-wrapper content-body-container">
                     <div class="left-content-body-label">
-                        <p>Дата задачи</p>
+                        <p>№ клетки <font>(</font><span id="count"></span>
+                            <font>)</font>
+                        </p>
                     </div>
                     <div class="h-wrapper middle-main-content-body-label">
-                        <p>Задача</p>
+                        <p>Номер</p>
+                        <p>Пол</p>
+                        <p>Тип</p>
+                        <p>Порода</p>
+                        <p>Возраст</p>
+                        <p>Вес</p>
                     </div>
                     <div class="right-main-content-body-label">
-                        <p>Выбор исполнителя</p>
+                        <p>Статус</p>
                     </div>
                 </div>
                 <div id="list-wrapper" class="list-wrapper">
@@ -113,27 +127,172 @@
             </div>
         </div>
         <div class="sidebar">
-            <div class="h-wrapper tasks-filter-wrapper">
-                <div class="v-wrapper">
-                    <p class="tasks-filter">Фильтры отсутствуют</p>
+            <div class="plan">
+                <div class="plan-label">
+                    <div class="v-wrapper">
+                        <p class="data-text">Ведение плана</p>
+                    </div>
+                </div>
+                <div class="todo-list">
+                    <div id="loader-todo-list">
+                        <div id="todo-list-loading" class="loading">
+                            <img src="/img/loading.gif">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="farm-input-form">
+                <div class="input-form-body">
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Номер фермы</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <select class="dropdown-input rightside-farm-filter count-filtered1">
+                                <option value="all_farms">Все фермы</option>
+                                <option value="2">Ферма №2</option>
+                                <option value="3">Ферма №3</option>
+                                <option value="4">Ферма №4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Выбрать пол</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <div class="checkbox-container">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="green-radio" class="rightside-male-filter count-filtered2" value="1">
+                                    <span></span>
+                                    <img src="/img/male.svg">
+                                </label>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" name="green-radio" class="rightside-female-filter count-filtered3" value="0">
+                                    <span></span>
+                                    <img src="/img/female.svg">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Тип кролика</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <select class="dropdown-input rightside-rtype-filter count-filtered4">
+                                <option value="alltypes">Все типы</option>
+                                <option value="B">Маленький</option>
+                                <option value="F">Откормочный</option>
+                                <option value="M">Мама</option>
+                                <option value="P">Папа</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Порода кролика</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <select class="dropdown-input breeds-container count-filtered5">
+                                <option value="all_breeds">Все породы</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Возраст (в днях)</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <div class="age-input-container">
+                                <p>от:</p>
+                                <input placeholder="10" name="min-age" value="" class="age-input age-from count-filtered6">
+                                <p>до:</p>
+                                <input name="max-age" class="age-input age-to count-filtered7">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Статус кролика</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <select class="dropdown-input rabbit-status count-filtered8">
+                                <option value="all_stats">Все статусы</option>
+                                <option value="RF">Готов к размнож.</option>
+                                <option value="R">Отдыхает</option>
+                                <option value="UP">Неподтвержденная берем.</option>
+                                <option value="NI">Нужен осмотр на берем.</option>
+                                <option value="CP">Беременная</option>
+                                <option value="FB">Кормит крольчат</option>
+                                <option value="NV">Треб. вак.</option>
+                                <option value="NI">Треб. осмотр</option>
+                                <option value="WC">Кормится без кокцидиост.</option>
+                                <option value="RS">Готов к убою</option>
+                                <option value="NJ">Треб. отсадка</option>
+                                <option value="MF">Кормится у матери</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-form-wrapper">
+                        <div class="v-wrapper">
+                            <p>Вес кролика</p>
+                        </div>
+                        <div class="v-wrapper">
+                            <div class="age-input-container">
+                                <p>от:</p>
+                                <input placeholder="1.5" name="min-age" value="" class="age-input weight-from count-filtered9">
+                                <p>до:</p>
+                                <input name="max-age" class="age-input weight-to count-filtered count-filtered10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="submit-btn-wrapper">
+                    <button type="submit" class="submit-btn submit-btn-filter-side">
+                        <div class="v-wrapper">
+                            <div class="h-wrapper" id="count-results-container">
+                                Отобразить&nbsp
+                            </div>
+                        </div>
+                    </button>
                 </div>
             </div>
             <div class="input-form-btns v-wrapper">
                 <div class="h-wrapper btns-container">
-                        <button type="submit" class="save-changes-btn disabled" disabled="true" onclick="listenState()">
+                    <a href="#autoSelectModal" id="auto-select-btn">
+                        <button type="submit" class="auto-select-btn">
                             <div class="v-wrapper">
                                 <div class="h-wrapper">
-                                    Сохранить назначенные задачи
+                                    Автоматический подбор пары
                                 </div>
                             </div>
                         </button>
-                    <button type="submit" class="discard-changes-btn disabled" disabled="true" onclick="location.reload()">
+                    </a>
+                    <a href="#manualSelectModal" id="manual-select-btn" class="hidden">
+                        <button type="submit" class="auto-select-btn">
+                            <div class="v-wrapper">
+                                <div class="h-wrapper">
+                                    Ручной подбор пары
+                                </div>
+                            </div>
+                        </button>
+                    </a>
+                    <button type="submit" class="submit-kill-btn">
                         <div class="v-wrapper">
                             <div class="h-wrapper">
-                                Отменить назначенные задачи
+                                Отправить на убой
                             </div>
                         </div>
                     </button>
+                </div>
+                <div class="h-wrapper bot-navigation">
+                    <div class="manual-select-wrapper">
+                        <label class="manual-select">
+                            <input type="checkbox" name="default-radio" value="indigo">
+                            <span id="manual-select">Ручной выбор</span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>

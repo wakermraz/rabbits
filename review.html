@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>rabbits</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/pagination.css">
+    <link href="/css/datepicker.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/css/modal.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/js/review.js"></script>
+    <script src="/js/modal.js"></script>
+    <script src="/js/pagination.js"></script>
+    <script src="/js/main.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width">
+</head>
+<header>
+    <div class="h-wrapper jcsb header">
+        <div class="v-wrapper logo">
+            <img src="/img/logo.svg">
+        </div>
+        <div class="v-wrapper menu-list">
+            <ul class="h-wrapper jcsb">
+                <li class="v-wrapper menu-list-item">
+                    <a href="/">Данные о ферме</a>
+                </li>
+                <li class="v-wrapper menu-list-item">
+                    <a href="/operations.html">Операции</a>
+                </li>
+                <li class="v-wrapper menu-list-item">
+                    <a href="/statistics.html">Статистика</a>
+                </li>
+                <li class="v-wrapper menu-list-item">
+                    <a href="/tasks.html">Задачи</a>
+                </li>
+            </ul>
+        </div>
+        <div class="menu-plan v-wrapper">
+            <a href="#planModal-create">
+                <p>Работа с планом</p>
+            </a>
+        </div>
+        <div class="v-wrapper">
+            <div class="h-wrapper menu-user">
+                <div class="v-wrapper">
+                    <img src="/img/user-logo.svg">
+                </div>
+                <p>Управляющий</p>
+                <div class="v-wrapper">
+                    <img src="/img/logout.svg">
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<body>
+    <div class="main-content-container">
+        <div class="main-content">
+            <div class="main-content-navigation">
+                <div class="navigation-leftside">
+                    <p class="v-wrapper tasks-label">Задачи</p>
+                    <a href="/tasks.html" style="display: flex;">
+                        <div class="cages-btn review-btn v-wrapper">
+                            <p>Назначить</p>
+                        </div>
+                    </a>
+                    <div class="rabbits-btn make-btn v-wrapper active-tab">
+                        <p>Список задач</p>
+                    </div>
+                </div>
+                <div class="navigation-rightside">
+                    <div class="rightside-text">
+                        <p>Просмотреть задачи исполнителя</p>
+                    </div>
+                    <div class="v-wrapper">
+                        <div class="rightside-filter-wrapper">
+                            <select class="rightside-filter executor-list" onchange="applyExecutorFilter(this)">
+                                <option value="?">все исполнители</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-body">
+                <div class="h-wrapper content-body-container">
+                    <div class="left-content-body-label">
+                        <p>Удалить</p>
+                    </div>
+                    <div class="h-wrapper middle-main-content-body-label">
+                        <p>Дата задачи</p>
+                        <p>Задача</p>
+                        <p>Исполнитель</p>
+                        <p>Отметка</p>
+                    </div>
+                    <div class="right-main-content-body-label">
+                        <p>Подтверждение</p>
+                    </div>
+                </div>
+                <div id="list-wrapper" class="list-wrapper">
+                    <div id="list-wrapper-loading" class="loading">
+                        <img src="/img/loading.gif">
+                    </div>
+                </div>
+            </div>
+            <div class="main-content-pagination">
+                <div id="pagination-container"></div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <div class="h-wrapper tasks-filter-wrapper">
+                <div class="v-wrapper">
+                    <p class="tasks-filter">Фильтры отсутствуют</p>
+                </div>
+            </div>
+            <div class="input-form-btns v-wrapper">
+                <div class="h-wrapper btns-container">
+                        <button type="submit" class="save-changes-btn disabled">
+                            <div class="v-wrapper">
+                                <div class="h-wrapper">
+                                    Сохранить назначенные задачи
+                                </div>
+                            </div>
+                        </button>
+                    <button type="submit" class="discard-changes-btn disabled">
+                        <div class="v-wrapper">
+                            <div class="h-wrapper">
+                                Отменить назначенные задачи
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="planModal-create" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <a href="#close" title="Close" class="close">×</a>
+                    <div class="planModal-wrapper">
+                        <div class="planModal-left">
+                            <div class="planModal-left-top">
+                                <p class="planModal-left-label">Добавить в план</p>
+                            </div>
+                            <div class="planModal-left-middle">
+                                <div class="planModal-left-middle-wrapper">
+                                    <p>Дата</p>
+                                    <div class="plan-label-data">
+                                        <div class="v-wrapper">
+                                            <img class="calendar-icon" src="/img/calendar.svg">
+                                            <input id="calendar" disabled class="datepicker-here custom-calendar planCreate-calendar" data-position="left top">
+                                        </div>
+                                    </div>
+                                    <div class="planModal-plan-select-wrapper">
+                                        <label class="plan-select planModal-plan-select">
+                                            <input type="checkbox" checked name="plan-checkbox" value="">
+                                            <span></span>
+                                        </label>
+                                        <p class="planModal-plan-select-tomorrow">Завтра</p>
+                                    </div>
+                                </div>
+                                <div class="planModal-left-middle-wrapper">
+                                    <p>Операция</p>
+                                    <select class="planModal-dropdown-input">
+                                        <option>Ферма №1</option>
+                                        <option>Ферма №2</option>
+                                    </select>
+                                </div>
+                                <div class="planModal-left-middle-wrapper">
+                                    <p>Количество</p>
+                                    <div class="v-wrapper">
+                                        <input class="rabbits-count-input planCreate-input" type="" name="rabbits-count">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="planModal-left-bottom">
+                                <p class="planModal-add-item">Добавить</p>
+                            </div>
+                        </div>
+                        <div class="planModal-right">
+                            <div class="planCreate-rightside-label-container">
+                                <a href="#allPlansModal">
+                                    <p class="planCreate-rightside-label">Просмотреть план</p>
+                                </a>
+                            </div>
+                            <div class="planModal-right-items">
+                                <div class="planModal-right-item">
+                                    <div class="v-wrapper">
+                                        <p>01.01.2021</p>
+                                    </div>
+                                    <div class="v-wrapper">
+                                        <p>Убой</p>
+                                    </div>
+                                    <div class="v-wrapper">
+                                        <p>535</p>
+                                    </div>
+                                    <div class="v-wrapper">
+                                        <img src="/img/planCreate-delete-item.svg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="planModal-right-submit">
+                                <p class="planModal-submit">Отправить план</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="allPlansModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <a href="#close" title="Close" class="close">×</a>
+                    <div class="allPlans-header">
+                        <a href="#planModal-create">
+                            <p>Вернуться назад</p>
+                        </a>
+                    </div>
+                    <div class="allPlans-subheader">
+                        <p class="p-wrapper">План</p>
+                        <a href="#planModal-create">
+                            <img src="/img/edit.svg">
+                        </a>
+                        <p class="allPlans-subheader-tab allPlans-subheader-tab-active">Ожидается</p>
+                        <p class="allPlans-subheader-tab">Выполнено</p>
+                    </div>
+                    <div class="allPlans-list">
+                        <div class="appPlans-list-item">
+                            <div class="allPlans-list-item-leftside">
+                                <div class="planModal-right-item">
+                                    <div class="v-wrapper">
+                                        <p>01.01.2021</p>
+                                    </div>
+                                    <div class="v-wrapper">
+                                        <p>Убой</p>
+                                    </div>
+                                    <div class="v-wrapper">
+                                        <p>535</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <img id="allPlans-delete" src="/img/planCreate-delete-item.svg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    $('#calendar').datepicker({
+        // Можно выбрать тольо даты, идущие за сегодняшним днем, включая сегодня
+        minDate: new Date()
+    })
+    </script>
+    <script src="/js/datepicker.js"></script>
+</body>
+
+</html>
