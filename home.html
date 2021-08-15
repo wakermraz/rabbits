@@ -100,8 +100,7 @@
             <div class="main-content-body">
                 <div class="h-wrapper content-body-container">
                     <div class="left-content-body-label">
-                        <p>№ клетки <font>(</font><span id="count"></span>
-                            <font>)</font>
+                        <p>№ клетки <font>(</font><span id="count"></span><font>)</font>
                         </p>
                     </div>
                     <div class="h-wrapper middle-main-content-body-label">
@@ -261,7 +260,7 @@
             <div class="input-form-btns v-wrapper">
                 <div class="h-wrapper btns-container">
                     <a href="#autoSelectModal" id="auto-select-btn">
-                        <button type="submit" class="auto-select-btn">
+                        <button type="submit" onclick="autoSelectPartners()" class="auto-select-btn">
                             <div class="v-wrapper">
                                 <div class="h-wrapper">
                                     Автоматический подбор пары
@@ -270,7 +269,7 @@
                         </button>
                     </a>
                     <a href="#manualSelectModal" id="manual-select-btn" class="hidden">
-                        <button type="submit" class="auto-select-btn">
+                        <button type="submit" onclick="manualSelectPartners()" class="auto-select-btn">
                             <div class="v-wrapper">
                                 <div class="h-wrapper">
                                     Ручной подбор пары
@@ -278,7 +277,7 @@
                             </div>
                         </button>
                     </a>
-                    <button type="submit" class="submit-kill-btn">
+                    <button type="submit" onclick="kill()" class="submit-kill-btn">
                         <div class="v-wrapper">
                             <div class="h-wrapper">
                                 Отправить на убой
@@ -342,7 +341,7 @@
                         <div class="input-form-btns v-wrapper">
                             <div class="h-wrapper btns-container">
                                 <a href="#autoSelectModal" id="modal-auto-select-btn">
-                                    <button type="submit" class="auto-select-btn">
+                                    <button type="submit" onclick="autoSelectPartners()" class="auto-select-btn">
                                         <div class="v-wrapper">
                                             <div class="h-wrapper">
                                                 Автоматический подбор пары
@@ -359,7 +358,7 @@
                                         </div>
                                     </button>
                                 </a>
-                                <button type="submit" class="submit-kill-btn">
+                                <button type="submit" onclick="killFromModal()" class="submit-kill-btn">
                                     <div class="v-wrapper">
                                         <div class="h-wrapper">
                                             Отправить на убой
@@ -492,7 +491,7 @@
                         <div class="input-form-btns v-wrapper">
                             <div class="h-wrapper btns-container">
                                 <a href="#autoSelectModal" id="modal-auto-select-btn">
-                                    <button type="submit" class="auto-select-btn">
+                                    <button type="submit" onclick="autoSelectPartners()" class="auto-select-btn">
                                         <div class="v-wrapper">
                                             <div class="h-wrapper">
                                                 Автоматический подбор пары
@@ -509,7 +508,7 @@
                                         </div>
                                     </button>
                                 </a>
-                                <button type="submit" class="submit-kill-btn">
+                                <button type="submit" onclick="killFromModal()" class="submit-kill-btn">
                                     <div class="v-wrapper">
                                         <div class="h-wrapper">
                                             Отправить на убой
@@ -618,154 +617,21 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body">
-                    <a href="#close" title="Close" class="close">×</a>
+                    <a href="#close" title="Close" onclick="closeAutoSelect()" class="close">×</a>
                     <div class="autoSelectModal-header">
                         <p>Автоматический подбор</p>
                     </div>
                     <div class="autoSelectModal-body-container">
-                        <div class="autoSelectModal-body-item">
-                            <div class="selected-rabbit">
-                                <div class="selected-rabbit-label">
-                                    <p>Выбранный кролик:</p>
-                                </div>
-                                <div>
-                                    <a href="#rabbitModal">
-                                        <div class="list-item">
-                                            <div class="middle-item-body">
-                                                <label class="small-rabbit-select">
-                                                    <input name="small-rabbit-checkbox" value="">
-                                                    <span></span>
-                                                </label>
-                                                <div class="v-wrapper">
-                                                    <p>136Б</p>
-                                                </div>
-                                                <div class="v-wrapper">
-                                                    <p>#123123</p>
-                                                </div>
-                                                <div class="v-wrapper">
-                                                    <img src="/img/sex.svg">
-                                                </div>
-                                                <div class="v-wrapper">
-                                                    <div class="h-wrapper">
-                                                        <p class="kind">ПАННОН</p>
-                                                    </div>
-                                                </div>
-                                                <div class="v-wrapper">
-                                                    <p>48 дней</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="selected-rabbit-pair">
-                                <a href="#rabbitModal">
-                                    <div class="list-item">
-                                        <div class="middle-item-body">
-                                            <label class="small-rabbit-select">
-                                                <input type="radio" checked name="small-rabbit-checkbox-for#123123" value="">
-                                                <span></span>
-                                            </label>
-                                            <div class="v-wrapper">
-                                                <p>136Б</p>
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <p>Нет связей</p>
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <p>#123123</p>
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <img src="/img/sex.svg">
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <div class="h-wrapper">
-                                                    <p class="kind">ПАННОН</p>
-                                                </div>
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <p>48 дней</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="autoSelectModal-body-item">
-                            <div class="selected-rabbit">
-                                <div class="selected-rabbit-label">
-                                    <p>Выбранный кролик:</p>
-                                </div>
-                                <div>
-                                    <a href="#rabbitModal">
-                                        <div class="list-item">
-                                            <div class="middle-item-body">
-                                                <label class="small-rabbit-select">
-                                                    <input name="small-rabbit-checkbox" value="">
-                                                    <span></span>
-                                                </label>
-                                                <div class="v-wrapper">
-                                                    <p>136Б</p>
-                                                </div>
-                                                <div class="v-wrapper">
-                                                    <p>#123123</p>
-                                                </div>
-                                                <div class="v-wrapper">
-                                                    <img src="/img/sex.svg">
-                                                </div>
-                                                <div class="v-wrapper">
-                                                    <div class="h-wrapper">
-                                                        <p class="kind">ПАННОН</p>
-                                                    </div>
-                                                </div>
-                                                <div class="v-wrapper">
-                                                    <p>48 дней</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="selected-rabbit-pair">
-                                <a href="#rabbitModal">
-                                    <div class="list-item">
-                                        <div class="middle-item-body">
-                                            <label class="small-rabbit-select">
-                                                <input type="radio" checked name="small-rabbit-checkbox-for#321321" value="">
-                                                <span></span>
-                                            </label>
-                                            <div class="v-wrapper">
-                                                <p>136Б</p>
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <p>Нет связей</p>
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <p>#123123</p>
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <img src="/img/sex.svg">
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <div class="h-wrapper">
-                                                    <p class="kind">ПАННОН</p>
-                                                </div>
-                                            </div>
-                                            <div class="v-wrapper">
-                                                <p>48 дней</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
+                        <div id="auto-select-loading" class="loading">
+                            <img src="/img/loading.gif">
                         </div>
                     </div>
                     <div class="autoSelectModal-bot">
-                        <div id="autoSelect-submit" class="autoSelect-submit">
+                        <div id="autoSelect-submit" onclick="saveRabbitsPartners()" class="autoSelect-submit">
                             <p>Сохранить выбранный подбор</p>
                         </div>
                         <a href="#close">
-                            <div id="autoSelect-decline" class="autoSelect-decline">
+                            <div id="autoSelect-decline" onclick="closeAutoSelect()" class="autoSelect-decline">
                                 <p>Отменить выбранный подбор</p>
                             </div>
                         </a>

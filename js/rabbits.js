@@ -18,10 +18,15 @@ let f_rabbit_status;
 let f_weight_from;
 let f_weight_to;
 let counter = 0;
+let counter_partners = 0;
+let current_partner = 0;
+let openedModalId;
 let DATA;
 let FILTER = "";
 let rabbitsObj = []
 let idsForRemove = ["Заглушка"]
+let SELECTED = {}
+let PARTNERS = {}
 
 let _f_farm_number = "";
 let _f_male = "";
@@ -187,6 +192,17 @@ function putData(url, body) {
     return response_put;
 }
 
+function deleteData(url){
+    const response_put = fetch(url, {
+        method: 'DELETE',
+        mode: 'cors',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    });
+    return response_put;
+}
+
 function postData(url, body) {
     const response_put = fetch(url, {
         method: 'POST',
@@ -298,7 +314,7 @@ function showNewRabbit(id) {
                 '<img class="added1" src="/img/' + modalSex + '.svg">'
             )
 
-            if(data.weight == null){
+            if (data.weight == null) {
                 data.weight = "?"
             }
 
@@ -368,10 +384,10 @@ function showNewRabbit(id) {
                             if (data.results[i].type == "M") {
                                 if (id == data.results[i].father_rabbit_id) {
                                     context = "Спаривание&nbsp"
-                                    bold_context = "<a href='#rabbitModal' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
+                                    bold_context = "<a href='#rabbitModal' onclick='saveOpenedModal(" + data.results[i].father_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
                                 } else if (id == data.results[i].mother_rabbit_id) {
                                     context = "Спаривание&nbsp"
-                                    bold_context = "<a href='#rabbitModal' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
+                                    bold_context = "<a href='#rabbitModal' onclick='saveOpenedModal(" + data.results[i].mother_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
                                 }
                             }
                             $('.operations-history-body1').append(
@@ -394,7 +410,7 @@ function showNewRabbit(id) {
                             "weight": null
                         }
 
-                        if(data.weight == null){
+                        if (data.weight == null) {
                             showWeight = "?"
                         } else {
                             showWeight = data.weight;
@@ -718,11 +734,11 @@ function showList(url, first = true) {
 
 
                     $('#list-wrapper').append(
-                        '<a href="#rabbitModal" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
+                        '<a href="#rabbitModal" onclick="saveOpenedModal(' + data.results[i].id + ')" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
                         '<div class="list-item">' +
                         '<div class="left-item-body">' +
                         '<label class="' + rabbitSize + '-select">' +
-                        '<input type="checkbox" id="selected-rabiit-id' + data.results[i].id + '" name="' + rabbitSize + '-checkbox">' +
+                        '<input type="checkbox" onclick="saveRabbitState(this, \'' + sex + '\')" value="' + data.results[i].id + '" id="selected-rabiit-id' + data.results[i].id + '" name="' + rabbitSize + '-checkbox">' +
                         '<span class="rabbitCheckbox"></span>' +
                         '</label>' +
                         '<div class="v-wrapper">' +
@@ -759,6 +775,11 @@ function showList(url, first = true) {
                         '</div>' +
                         '</a>'
                     );
+                    for (let j = 0; j < Object.keys(SELECTED).length; j++) {
+                        if (data.results[i].id == SELECTED[j].rabbit_id) {
+                            $("#" + SELECTED[j].id).prop("checked", true)
+                        }
+                    }
                 }
                 DATA = data
                 $(".rabbitModal").click(function() {
@@ -1017,11 +1038,11 @@ function showList(url, first = true) {
 
 
                     $('#list-wrapper').append(
-                        '<a href="#rabbitModal" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
+                        '<a href="#rabbitModal" onclick="saveOpenedModal(' + data.results[i].id + ')" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
                         '<div class="list-item">' +
                         '<div class="left-item-body">' +
                         '<label class="' + rabbitSize + '-select">' +
-                        '<input type="checkbox" id="selected-rabiit-id' + data.results[i].id + '" name="' + rabbitSize + '-checkbox">' +
+                        '<input type="checkbox" onclick="saveRabbitState(this, \'' + sex + '\')" value="' + data.results[i].id + '" id="selected-rabiit-id' + data.results[i].id + '" name="' + rabbitSize + '-checkbox">' +
                         '<span class="rabbitCheckbox"></span>' +
                         '</label>' +
                         '<div class="v-wrapper">' +
@@ -1058,6 +1079,11 @@ function showList(url, first = true) {
                         '</div>' +
                         '</a>'
                     );
+                    for (let j = 0; j < Object.keys(SELECTED).length; j++) {
+                        if (data.results[i].id == SELECTED[j].rabbit_id) {
+                            $("#" + SELECTED[j].id).prop("checked", true)
+                        }
+                    }
                 }
                 makePaginate(data)
                 $(".rabbitModal").click(function() {
@@ -1254,6 +1280,280 @@ function showList(url, first = true) {
                 });
             })
     }
+
+}
+
+function saveRabbitState(e, sex) {
+    $("#count").empty()
+    console.log(sex)
+    if ($("#" + e.id).prop("checked") == true) {
+        if (sex == "female-main") {
+            sex = "mother"
+        } else if (sex == "male-main") {
+            sex = "father"
+        }
+        SELECTED[counter] = {
+            "id": e.id,
+            "rabbit_id": e.value,
+            "sex": sex
+        }
+        counter++
+    } else {
+        for (let i = 0; i < Object.keys(SELECTED).length; i++) {
+            if (SELECTED[i].id == e.id) {
+                delete SELECTED[i]
+                counter--
+                break
+            }
+        }
+    }
+    $("#count").append(Object.keys(SELECTED).length)
+}
+
+function makePartnersLink(sex, id, isPartners) {
+    if (isPartners) {
+        return rabbitsURL_ + sex + "/" + id + "/partners/"
+    } else {
+        return rabbitsURL_ + sex + "/" + id + "/"
+    }
+}
+
+function autoSelectPartners() {
+    for (let i = 0; i < Object.keys(SELECTED).length; i++) {
+        let link = makePartnersLink(SELECTED[i].sex, SELECTED[i].rabbit_id, true)
+        getData(makePartnersLink(SELECTED[i].sex, SELECTED[i].rabbit_id, false))
+            .then((value) => {
+                return value.json()
+            })
+            .then((data) => {
+                if (data.is_male == true) {
+                    data.is_male = "male-main"
+                    var opposite = "mother",
+                        opposite_ava = "female-main"
+                } else {
+                    data.is_male = "female-main"
+                    var opposite = "father",
+                        opposite_ava = "male-main"
+                }
+
+                var birthday = new Date(data.birthday);
+                var today = new Date;
+
+                var diff = today - birthday;
+                var milliseconds = diff;
+                var seconds = milliseconds / 1000;
+                var minutes = seconds / 60;
+                var hours = minutes / 60;
+                var days = hours / 24;
+                getData(link)
+                    .then((value) => {
+                        return value.json()
+                    })
+                    .then((partners) => {
+                        if (partners.warning) {
+                            let errMsg = String(partners.warning.message)
+                            errMsg = errMsg.substring(2, errMsg.length-2);
+                            $(".autoSelectModal-body-container").append(
+                                '<div class="autoSelectModal-body-item">' +
+                                '<div class="selected-rabbit">' +
+                                '<div class="selected-rabbit-label">' +
+                                '<p>Выбранный кролик:</p>' +
+                                '</div>' +
+                                '<div style="width:100%">' +
+                                '<a onclick="saveOpenedModal(' + partners.id + ')" href="#rabbitModal">' +
+                                '<div class="list-item">' +
+                                '<div class="middle-item-body">' +
+                                '<label class="rabbit-select">' +
+                                '<input name="rabbit-checkbox" value="">' +
+                                '<span></span>' +
+                                '</label>' +
+                                '<div class="v-wrapper">' +
+                                '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<p>#' + data.id + '</p>' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<img src="/img/' + data.is_male + '.svg">' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<div class="h-wrapper">' +
+                                '<p class="kind">' + data.breed + '</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<p>' + Math.round(days) + ' дней</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</a>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + i + '">' +
+                                '<div class="list-item">' +
+                                '<div class="middle-item-body">' +
+                                '<div class="v-wrapper">' +
+                                '<p style="font-weight:700; color:red">' + errMsg + '</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>'
+                            )
+                            $("#auto-select-loading").remove()
+                        } else {
+                            $(".autoSelectModal-body-container").append(
+                                '<div class="autoSelectModal-body-item">' +
+                                '<div class="selected-rabbit">' +
+                                '<div class="selected-rabbit-label">' +
+                                '<p>Выбранный кролик:</p>' +
+                                '</div>' +
+                                '<div style="width:100%">' +
+                                '<a onclick="saveOpenedModal(' + partners.id + ')" href="#rabbitModal">' +
+                                '<div class="list-item">' +
+                                '<div class="middle-item-body">' +
+                                '<label class="rabbit-select">' +
+                                '<input name="rabbit-checkbox" value="">' +
+                                '<span></span>' +
+                                '</label>' +
+                                '<div class="v-wrapper">' +
+                                '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<p>#' + data.id + '</p>' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<img src="/img/' + data.is_male + '.svg">' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<div class="h-wrapper">' +
+                                '<p class="kind">' + data.breed + '</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<p>' + Math.round(days) + ' дней</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '</a>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + i + '">'
+                            )
+
+                            if (Object.values(partners)[0] == null) {
+                                var connection = "Нет связей"
+                            } else {
+                                var connection = "Связь в " + Object.values(partners)[current_partner] + "поколении"
+                            }
+
+                            PARTNERS[counter_partners] = {
+                                "id": data.id,
+                                "partner_id": Object.keys(partners)[current_partner],
+                                "sex": data.is_male
+                            }
+
+                            counter_partners++
+                            current_partner++
+
+                            getData(makePartnersLink(opposite, Object.keys(partners)[current_partner], false))
+                                .then((value) => {
+                                    return value.json()
+                                })
+                                .then((partner_details) => {
+                                    var birthday = new Date(partner_details.birthday);
+                                    var today = new Date;
+
+                                    var diff = today - birthday;
+                                    var milliseconds = diff;
+                                    var seconds = milliseconds / 1000;
+                                    var minutes = seconds / 60;
+                                    var hours = minutes / 60;
+                                    var days = hours / 24;
+                                    $('.selected-rabbit-pair' + i).append(
+                                        '<a onclick="saveOpenedModal(' + partners.id + ')" id="' + Object.keys(partners)[current_partner] + '" href="#rabbitModal">' +
+                                        '<div class="list-item">' +
+                                        '<div class="middle-item-body">' +
+                                        '<label class="rabbit-select">' +
+                                        '<input name="rabbit-checkbox-for' + Object.keys(partners)[current_partner] + '" value="">' +
+                                        '<span></span>' +
+                                        '</label>' +
+                                        '<div class="v-wrapper">' +
+                                        '<p>' + partner_details.cage.farm_number + partner_details.cage.number + partner_details.cage.letter + '</p>' +
+                                        '</div>' +
+                                        '<div class="v-wrapper">' +
+                                        '<p>' + connection + '</p>' +
+                                        '</div>' +
+                                        '<div class="v-wrapper">' +
+                                        '<p>#' + partner_details.id + '</p>' +
+                                        '</div>' +
+                                        '<div class="v-wrapper">' +
+                                        '<img src="/img/' + opposite_ava + '.svg">' +
+                                        '</div>' +
+                                        '<div class="v-wrapper">' +
+                                        '<div class="h-wrapper">' +
+                                        '<p class="kind">' + partner_details.breed + '</p>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '<div class="v-wrapper">' +
+                                        '<p>' + Math.round(days) + ' дней</p>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</a>' +
+                                        '</div>' +
+                                        '</div>'
+                                    )
+                                    $("#auto-select-loading").remove()
+                                })
+                        }
+                    })
+            })
+    }
+}
+
+function closeAutoSelect() {
+    $(".autoSelectModal-body-container").empty()
+    $(".autoSelectModal-body-container").append(
+        '<div id="auto-select-loading" class="loading">' +
+        '<img src="/img/loading.gif">' +
+        '</div>'
+    )
+    current_partner = 0
+    for(let i = 0; i < Object.keys(PARTNERS).length; i++){
+        delete PARTNERS[i]
+    }
+}
+
+function saveRabbitsPartners() {
+    for(let i = 0; i < Object.keys(PARTNERS).length; i++){
+        let sendData = {
+            "partner": PARTNERS[i].partner_id
+        }
+        if(PARTNERS[i].sex == "male-main"){
+            PARTNERS[i].sex = "father"
+        } else {
+            PARTNERS[i].sex = "mother"
+        }
+        postData(makePartnersLink(PARTNERS[i].sex, PARTNERS[i].id, true), sendData)
+    }
+}
+
+function kill(){
+    for(let i = 0; i < Object.keys(SELECTED).length; i++){
+        deleteData(rabbitsURL_ + SELECTED[i].rabbit_id + "/")
+    }
+}
+
+function saveOpenedModal(id){
+    openedModalId = id
+}
+
+function killFromModal(){
+    deleteData(rabbitsURL_ + openedModalId + "/")
+}
+
+function manualSelectPartners() {
 
 }
 
@@ -1459,7 +1759,7 @@ $(document).ready(function() {
                 }
 
                 if (_f_age_from != "" && _f_age_to != "" && _f_age_from > _f_age_to) {
-                    console.log("Дебил, считать не умеешь что-ли? Выставь правильно диапазон возраста.")
+                    console.log("Выставь правильно диапазон возраста.")
                 }
 
                 countResponse(o_key, _f_age_from)
@@ -1470,7 +1770,7 @@ $(document).ready(function() {
                 let o_key = "_f_age_to"
 
                 if (_f_age_from != "" && _f_age_to != "" && f_age_from > _f_age_to) {
-                    console.log("Дебил, считать не умеешь что-ли? Выставь правильно диапазон возраста.")
+                    console.log("Выставь правильно диапазон возраста.")
                 } else if (_f_age_to === "") {
                     _f_age_to = "&"
                 } else {
@@ -1503,7 +1803,7 @@ $(document).ready(function() {
                     _f_weight_from = "&weight_from=" + _f_weight_from
                 }
                 if (_f_weight_from != "" && _f_weight_to != "" && _f_weight_from > _f_weight_to) {
-                    console.log("Дебил, считать не умеешь что-ли? Выставь правильно диапазон возраста.")
+                    console.log("Выставь правильно диапазон возраста.")
                 }
 
                 countResponse(o_key, _f_weight_from)
@@ -1514,7 +1814,7 @@ $(document).ready(function() {
                 let o_key = "_f_weight_to"
 
                 if (_f_weight_from != "" && _f_weight_to != "" && _f_weight_from > _f_weight_to) {
-                    console.log("Дебил, считать не умеешь что-ли? Выставь правильно диапазон возраста.")
+                    console.log("Выставь правильно диапазон возраста.")
                 } else if (_f_weight_to === "") {
                     _f_weight_to = "&"
                 } else {

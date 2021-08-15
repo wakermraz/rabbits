@@ -1018,7 +1018,7 @@ header {
     box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.25);
 }
 
-#list-wrapper{
+#list-wrapper {
     max-width: 1019.75px;
 }
 
@@ -1212,51 +1212,59 @@ header {
     cursor: pointer;
 }
 
-.disabled{
+.disabled {
     opacity: 60%;
     cursor: default !important;
 }
 
-.delete-task{
+.delete-task {
     width: 20px;
     cursor: pointer;
 }
 
-.task-nav{
+.task-nav {
     width: 30px;
     cursor: pointer;
 }
 
-.task-nav-container{
+.task-nav-container {
     display: flex;
     flex-direction: row-reverse;
     gap: 20px;
 }
 
-.review-task-date{
+.review-task-date {
     font-weight: 400 !important;
 }
 
-.bold-font{
+.bold-font {
     font-weight: 700;
 }
 
-.task-executor{
+.task-executor {
     text-decoration: underline;
 }
 
-.confirmed{
+.confirmed {
     color: #249F53;
 }
 
-.declined{
+.declined {
     color: #C74D4D;
 }
 
-.task-name-wrapper{
+.task-name-wrapper {
     width: 370px;
 }
 
-.review-left-item-body{
+.review-left-item-body {
     gap: 40px;
+}
+
+#auto-select-loading {
+    padding: 25% 41%;
+    position: absolute;
+    background: #fff;
+    margin-top: -5%;
+    margin-left: -1%;
 }

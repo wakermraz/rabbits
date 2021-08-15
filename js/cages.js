@@ -365,7 +365,6 @@ function showList(url, first = true) {
 
 function saveCageState(e, status) {
     $("#count").empty()
-    console.log(status)
     if ($("#" + e.id).prop("checked") == true) {
         SELECTED[counter] = {
             "id": e.id,
@@ -383,7 +382,6 @@ function saveCageState(e, status) {
         }
     }
     $("#count").append(Object.keys(SELECTED).length)
-    console.log(SELECTED)
 }
 
 function cageRepaired() {
