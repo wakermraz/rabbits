@@ -1,9 +1,13 @@
 const cagesURL = "https://rabbit-api--test.herokuapp.com/api/cage/?";
 const cagesFILTER = "https://rabbit-api--test.herokuapp.com/api/cage/?";
+let renewCageURL = "https://rabbit-api--test.herokuapp.com/api/cage/"
 
 var sidebar_filter = false;
 var sidebar_filter_order;
 var filter_order;
+let counter = 0;
+
+let SELECTED = {}
 
 let _f_farm_number,
     _f_type,
@@ -240,11 +244,13 @@ function showList(url, first = true) {
                         cage_status = "Треб. уборка"
                     }
 
+                    let send_status = data.results[i].status
+
                     $('.list-wrapper').append(
                         '<div class="list-item">' +
                         '<div class="left-item-body">' +
                         '<label class="farm-select">' +
-                        '<input type="checkbox" id="selected-cage-id' + data.results[i].id + '" name="farm-checkbox">' +
+                        '<input type="checkbox" onclick="saveCageState(this, ' + '\'' + send_status + '\'' + ')" value="' + data.results[i].id + '" id="selected-cage-id' + data.results[i].id + '" name="farm-checkbox">' +
                         '<span></span>' +
                         '</label>' +
                         '<div class="v-wrapper">' +
@@ -271,6 +277,11 @@ function showList(url, first = true) {
                         '</div>' +
                         '</div>'
                     )
+                    for (let j = 0; j < Object.keys(SELECTED).length; j++) {
+                        if (data.results[i].id == SELECTED[j].cage_id) {
+                            $("#" + SELECTED[j].id).prop("checked", true)
+                        }
+                    }
                 }
                 DATA = data
             })
@@ -306,11 +317,13 @@ function showList(url, first = true) {
                         cage_status = "Треб. уборка"
                     }
 
+                    let send_status = data.results[i].status
+
                     $('.list-wrapper').append(
                         '<div class="list-item">' +
                         '<div class="left-item-body">' +
                         '<label class="farm-select">' +
-                        '<input type="checkbox" id="selected-cage-id' + data.results[i].id + '" name="farm-checkbox">' +
+                        '<input type="checkbox" onclick="saveCageState(this, ' + '\'' + send_status + '\'' + ')" value="' + data.results[i].id + '" id="selected-cage-id' + data.results[i].id + '" name="farm-checkbox">' +
                         '<span></span>' +
                         '</label>' +
                         '<div class="v-wrapper">' +
@@ -337,12 +350,184 @@ function showList(url, first = true) {
                         '</div>' +
                         '</div>'
                     )
+                    for (let j = 0; j < Object.keys(SELECTED).length; j++) {
+                        if (data.results[i].id == SELECTED[j].cage_id) {
+                            $("#" + SELECTED[j].id).prop("checked", true)
+                        }
+                    }
                 }
                 DATA = data
 
                 makePaginate(data)
             })
     }
+}
+
+function saveCageState(e, status) {
+    $("#count").empty()
+    console.log(status)
+    if ($("#" + e.id).prop("checked") == true) {
+        SELECTED[counter] = {
+            "id": e.id,
+            "cage_id": e.value,
+            "status": status
+        }
+        counter++
+    } else {
+        for (let i = 0; i < Object.keys(SELECTED).length; i++) {
+            if (SELECTED[i].cage_id == e.value) {
+                delete SELECTED[i]
+                counter--
+                break
+            }
+        }
+    }
+    $("#count").append(Object.keys(SELECTED).length)
+    console.log(SELECTED)
+}
+
+function cageRepaired() {
+    let status = {}
+    for (let i = 0; i < Object.keys(SELECTED).length; i++) {
+        if (SELECTED[i].status === "R,C" || SELECTED[i].status == "C,R") {
+            status = {
+                "status": ["C"]
+            }
+            SELECTED[i].status = "C"
+        } else if (SELECTED[i].status === "R") {
+            status = {
+                "status": []
+            }
+            SELECTED[i].status = ""
+        } else if (SELECTED[i].status === "C") {
+            status = {
+                "status": ["C"]
+            }
+            SELECTED[i].status = "C"
+        } else if (SELECTED[i].status === ""){
+            status = {
+                "status": []
+            }
+            SELECTED[i].status = ""
+        }
+        putData((renewCageURL + SELECTED[i].cage_id + "/"), status)
+    }
+    $(".list-item").remove()
+        $("#pagination-container").empty()
+        $(".list-wrapper").append(
+            '<div id="list-wrapper-loading" class="loading">' +
+            '<img src="/img/loading.gif">' +
+            '</div>'
+        )
+    showList(cagesURL)
+}
+
+function cageCleaned() {
+    let status = {}
+    for (let i = 0; i < Object.keys(SELECTED).length; i++) {
+        if (SELECTED[i].status === "R,C" || SELECTED[i].status === "C,R") {
+            status = {
+                "status": ["R"]
+            }
+            SELECTED[i].status = "R"
+        } else if (SELECTED[i].status === "R") {
+            status = {
+                "status": ["R"]
+            }
+            SELECTED[i].status = "R"
+        } else if (SELECTED[i].status === "C") {
+            status = {
+                "status": []
+            }
+            SELECTED[i].status = ""
+        } else if (SELECTED[i].status === ""){
+            status = {
+                "status": []
+            }
+            SELECTED[i].status = ""
+        }
+        putData((renewCageURL + SELECTED[i].cage_id + "/"), status)
+    }
+    $(".list-item").remove()
+        $("#pagination-container").empty()
+        $(".list-wrapper").append(
+            '<div id="list-wrapper-loading" class="loading">' +
+            '<img src="/img/loading.gif">' +
+            '</div>'
+        )
+    showList(cagesURL)
+}
+
+function needRepair() {
+    let status = {}
+    for (let i = 0; i < Object.keys(SELECTED).length; i++) {
+        if (SELECTED[i].status === "R,C" || SELECTED[i].status == "C,R") {
+            status = {
+                "status": ["R", "C"]
+            }
+            SELECTED[i].status = "R,C"
+        } else if (SELECTED[i].status === "R") {
+            status = {
+                "status": ["R"]
+            }
+            SELECTED[i].status = "R"
+        } else if (SELECTED[i].status === "C") {
+            status = {
+                "status": ["R", "C"]
+            }
+            SELECTED[i].status = "R,C"
+        } else if (SELECTED[i].status === ""){
+            status = {
+                "status": ["R"]
+            }
+            SELECTED[i].status = "R"
+        }   
+        putData((renewCageURL + SELECTED[i].cage_id + "/"), status)
+    }
+    $(".list-item").remove()
+        $("#pagination-container").empty()
+        $(".list-wrapper").append(
+            '<div id="list-wrapper-loading" class="loading">' +
+            '<img src="/img/loading.gif">' +
+            '</div>'
+        )
+    showList(cagesURL)
+}
+
+function needClean() {
+    let status = {}
+    for (let i = 0; i < Object.keys(SELECTED).length; i++) {
+        if (SELECTED[i].status === "R,C" || SELECTED[i].status == "C,R") {
+            status = {
+                "status": ["R", "C"]
+            }
+            SELECTED[i].status = "R,C"
+        } else if (SELECTED[i].status === "R") {
+            status = {
+                "status": ["R", "C"]
+            }
+            SELECTED[i].status = "R,C"
+        } else if (SELECTED[i].status === "C") {
+            status = {
+                "status": ["C"]
+            }
+            SELECTED[i].status = "C"
+        } else if (SELECTED[i].status === ""){
+            status = {
+                "status": ["C"]
+            }
+            SELECTED[i].status = "C"
+        }
+        putData((renewCageURL + SELECTED[i].cage_id + "/"), status)
+    }
+    $(".list-item").remove()
+        $("#pagination-container").empty()
+        $(".list-wrapper").append(
+            '<div id="list-wrapper-loading" class="loading">' +
+            '<img src="/img/loading.gif">' +
+            '</div>'
+        )
+    showList(cagesURL)
 }
 
 function makePaginate(data) {
@@ -367,104 +552,7 @@ $(document).ready(function() {
     showList(cagesURL)
 
     document.querySelector(".rightside-filter").addEventListener('change', function(e) {
-            if (sidebar_filter) {
-                $('#pagination-container>ul').remove();
-                $('.list-item').remove()
-                $('#list-wrapper').append(
-                    '<div id="list-wrapper-loading" class="loading">' +
-                    '<img src="/img/loading.gif">' +
-                    '</div>'
-                )
-
-                FILTER += e.target.value
-
-                showList(cagesURL)
-            } else if (!sidebar_filter) {
-                $('#pagination-container>ul').remove();
-                $('.list-item').remove()
-                $('#list-wrapper').append(
-                    '<div id="list-wrapper-loading" class="loading">' +
-                    '<img src="/img/loading.gif">' +
-                    '</div>'
-                )
-
-                FILTER += e.target.value
-
-                showList(cagesURL)
-            }
-        })
-
-        document.querySelector(".count-filtered1").addEventListener('change', function(e) {
-            let _f_farm_number = "&" + e.target.value;
-            let o_key = "_f_farm_number"
-
-            FILTER += _f_farm_number
-
-            countResponse(o_key, _f_farm_number)
-        });
-
-        document.querySelector(".count-filtered2").addEventListener('change', function(e) {
-            let _f_type = "&" + e.target.value;
-            let o_key = "_f_type"
-
-            FILTER += _f_type
-
-            countResponse(o_key, _f_type)
-        });
-
-        document.querySelector(".count-filtered3").addEventListener('change', function(e) {
-            let _f_number_rabbits_from = e.target.value
-            if (_f_number_rabbits_from === "") {
-                _f_number_rabbits_from = "&";
-            } else {
-                _f_number_rabbits_from = "&number_rabbits_from=" + e.target.value;
-            }
-            let o_key = "_f_number_rabbits_from"
-
-            FILTER += _f_number_rabbits_from
-
-            countResponse(o_key, _f_number_rabbits_from)
-        });
-
-        document.querySelector(".count-filtered4").addEventListener('change', function(e) {
-            if ($('.count-filtered4').prop('checked')) {
-                _f_status = "&" + e.target.value
-                if ($('.count-filtered4').prop('checked') && $('.count-filtered5').prop('checked')) {
-                    _f_status = "&status=R,C"
-                }
-            } else if ($('.count-filtered5').prop('checked') && !$('.count-filtered4').prop('checked')) {
-                _f_status = "&status=R"
-            } else {
-                _f_status = "&"
-            }
-
-            let o_key = "_f_status"
-
-            FILTER += _f_status
-
-            countResponse(o_key, _f_status)
-        });
-
-        document.querySelector(".count-filtered5").addEventListener('change', function(e) {
-            if ($('.count-filtered5').prop('checked')) {
-                _f_status = "&" + e.target.value
-                if ($('.count-filtered5').prop('checked') && $('.count-filtered4').prop('checked')) {
-                    _f_status = "&status=R,C"
-                }
-            } else if ($('.count-filtered4').prop('checked') && !$('.count-filtered5').prop('checked')) {
-                _f_status = "&status=C"
-            } else {
-                _f_status = "&"
-            }
-
-            let o_key = "_f_status"
-
-            FILTER += _f_status
-
-            countResponse(o_key, _f_status)
-        });
-
-        $('.submit-btn').click(function() {
+        if (sidebar_filter) {
             $('#pagination-container>ul').remove();
             $('.list-item').remove()
             $('#list-wrapper').append(
@@ -473,14 +561,130 @@ $(document).ready(function() {
                 '</div>'
             )
 
-            if(sidebar_filter_order === undefined){
-                sidebar_filter_order = cagesFILTER;
-            } else {
-                filter_order = sidebar_filter_order;
-            }
-
-            sidebar_filter = true;
+            FILTER += e.target.value
 
             showList(cagesURL)
-        })
+        } else if (!sidebar_filter) {
+            $('#pagination-container>ul').remove();
+            $('.list-item').remove()
+            $('#list-wrapper').append(
+                '<div id="list-wrapper-loading" class="loading">' +
+                '<img src="/img/loading.gif">' +
+                '</div>'
+            )
+
+            FILTER += e.target.value
+
+            showList(cagesURL)
+        }
+    })
+
+    document.querySelector(".count-filtered1").addEventListener('change', function(e) {
+        let _f_farm_number = "&" + e.target.value;
+        let o_key = "_f_farm_number"
+
+        FILTER += _f_farm_number
+
+        countResponse(o_key, _f_farm_number)
+    });
+
+    document.querySelector(".count-filtered2").addEventListener('change', function(e) {
+        let _f_type = "&" + e.target.value;
+        let o_key = "_f_type"
+
+        FILTER += _f_type
+
+        countResponse(o_key, _f_type)
+    });
+
+    document.querySelector(".count-filtered3").addEventListener('change', function(e) {
+        let _f_number_rabbits_from = e.target.value
+        if (_f_number_rabbits_from === "") {
+            _f_number_rabbits_from = "&";
+        } else {
+            _f_number_rabbits_from = "&number_rabbits_from=" + e.target.value;
+        }
+        let o_key = "_f_number_rabbits_from"
+
+        FILTER += _f_number_rabbits_from
+
+        countResponse(o_key, _f_number_rabbits_from)
+    });
+
+    document.querySelector(".count-filtered4").addEventListener('change', function(e) {
+        if ($('.count-filtered4').prop('checked')) {
+            _f_status = "&" + e.target.value
+            if ($('.count-filtered4').prop('checked') && $('.count-filtered5').prop('checked')) {
+                _f_status = "&status=R,C"
+            }
+        } else if ($('.count-filtered5').prop('checked') && !$('.count-filtered4').prop('checked')) {
+            _f_status = "&status=R"
+        } else {
+            _f_status = "&"
+        }
+
+        let o_key = "_f_status"
+
+        FILTER += _f_status
+
+        countResponse(o_key, _f_status)
+    });
+
+    document.querySelector(".count-filtered5").addEventListener('change', function(e) {
+        if ($('.count-filtered5').prop('checked')) {
+            _f_status = "&" + e.target.value
+            if ($('.count-filtered5').prop('checked') && $('.count-filtered4').prop('checked')) {
+                _f_status = "&status=R,C"
+            }
+        } else if ($('.count-filtered4').prop('checked') && !$('.count-filtered5').prop('checked')) {
+            _f_status = "&status=C"
+        } else {
+            _f_status = "&"
+        }
+
+        let o_key = "_f_status"
+
+        FILTER += _f_status
+
+        countResponse(o_key, _f_status)
+    });
+
+    $('.submit-btn').click(function() {
+        $('#pagination-container>ul').remove();
+        $('.list-item').remove()
+        $('#list-wrapper').append(
+            '<div id="list-wrapper-loading" class="loading">' +
+            '<img src="/img/loading.gif">' +
+            '</div>'
+        )
+
+        if (sidebar_filter_order === undefined) {
+            sidebar_filter_order = cagesFILTER;
+        } else {
+            filter_order = sidebar_filter_order;
+        }
+
+        sidebar_filter = true;
+
+        _f_farm_number = "&" + $(".count-filtered1").val()
+        _f_type = "&" + $(".count-filtered2").val()
+        if ($(".count-filtered3").val() == "") {
+            _f_number_rabbits_from = "&"
+        } else {
+            _f_number_rabbits_from = "&number_rabbits_from=" + $(".count-filtered3").val()
+        }
+
+        if ($(".count-filtered4").prop("checked")) {
+            _f_status = $(".count-filtered4").val()
+        } else if ($(".count-filtered5").prop("checked")) {
+            _f_status += $(".count-filtered5").val()
+        } else {
+            _f_status = "&"
+        }
+
+
+        FILTER = String(_f_farm_number) + _f_type + _f_number_rabbits_from + _f_status
+
+        showList(cagesURL)
+    })
 })

@@ -229,6 +229,7 @@ function makeLink(url, id, r_type) {
     } else if (r_type == "M") {
         link = url + "mother/" + id + "/";
     }
+
     return link;
 }
 
@@ -269,7 +270,8 @@ function showNewRabbit(id) {
             }
 
             defineStatus(data)
-            console.log(rabbit_status)
+
+            let current_type = data.current_type
 
             if (data.is_male === null) {
                 modalSex = "unknown";
@@ -284,7 +286,7 @@ function showNewRabbit(id) {
             );
 
             $('.rabbit-header-info1').append(
-                '<a class="changeWeightLink-filtered added1" href="#changeWeight-filtered" id="' + id + '">' +
+                '<a class="changeWeightLink-filtered added1" href="#changeWeight" id="' + id + '">' +
                 '<div class="changeWeight">' +
                 '<img src="/img/change-weight.svg">' +
                 '<p>Взвесить</p>' +
@@ -295,6 +297,10 @@ function showNewRabbit(id) {
             $('.rabbit-header-sex1').append(
                 '<img class="added1" src="/img/' + modalSex + '.svg">'
             )
+
+            if(data.weight == null){
+                data.weight = "?"
+            }
 
             $('.rabbit-header-info-bot1').append(
                 '<p class="added1">#' + id + '</p>' +
@@ -387,10 +393,17 @@ function showNewRabbit(id) {
                         let newWeight = {
                             "weight": null
                         }
-                        showWeight = data.results[weight_rabbit_id_in_array].weight;
+
+                        if(data.weight == null){
+                            showWeight = "?"
+                        } else {
+                            showWeight = data.weight;
+                        }
+
+                        console.log(showWeight)
 
                         $('.curr-rabbit-weight').append(
-                            '<span class="added added-secondary" style="white-space: nowrap;">&nbsp' + data.weight + '</span>'
+                            '<span class="added added-secondary" style="white-space: nowrap;">&nbsp' + showWeight + '</span>'
                         )
 
                         $('#changeWeight-modal-loading').remove()
@@ -398,7 +411,8 @@ function showNewRabbit(id) {
                         $(".submit-changeWeight").click(function() {
                             $('.added-secondary').remove();
                             newWeight.weight = +$("#newWeight").val();
-                            putData(makeLink(rabbitsURL_, weight_rabbit_id_filtered, data.current_type), newWeight)
+                            console.log(data)
+                            putData(makeLink(rabbitsURL_, id, current_type), newWeight)
                                 .then((value) => {
                                     $('.rightside-filter').empty();
                                     $('#newWeight').empty();
@@ -880,7 +894,7 @@ function showList(url, first = true) {
                                             bold_context = "<a href='#rabbitModal-filtered' onclick='showNewRabbit(" + data.results[i].mother_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
                                         } else if (this_id == data.results[i].mother_rabbit_id) {
                                             context = "Спаривание&nbsp"
-                                            bold_context = "<a href='#rabbitModal-filtered' onclick='showNewRabbit(" + data.results[i].mother_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
+                                            bold_context = "<a href='#rabbitModal-filtered' onclick='showNewRabbit(" + data.results[i].father_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
                                         }
                                     }
                                     $('.operations-history-body').append(

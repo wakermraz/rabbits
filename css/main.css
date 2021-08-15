@@ -271,6 +271,7 @@ header {
     flex-direction: row;
     justify-content: start;
     width: 100%;
+    gap: 10px;
 }
 
 .left-content-body-label>p>font,
@@ -1214,4 +1215,48 @@ header {
 .disabled{
     opacity: 60%;
     cursor: default !important;
+}
+
+.delete-task{
+    width: 20px;
+    cursor: pointer;
+}
+
+.task-nav{
+    width: 30px;
+    cursor: pointer;
+}
+
+.task-nav-container{
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 20px;
+}
+
+.review-task-date{
+    font-weight: 400 !important;
+}
+
+.bold-font{
+    font-weight: 700;
+}
+
+.task-executor{
+    text-decoration: underline;
+}
+
+.confirmed{
+    color: #249F53;
+}
+
+.declined{
+    color: #C74D4D;
+}
+
+.task-name-wrapper{
+    width: 370px;
+}
+
+.review-left-item-body{
+    gap: 40px;
 }

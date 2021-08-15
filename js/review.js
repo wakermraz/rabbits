@@ -1,6 +1,8 @@
-let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/waiting_confirmation/";
+let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/?";
 let users = "https://rabbit-api--test.herokuapp.com/api/user/?"
+let confirmURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/confirm/"
 
+let isAppended = false
 let FILTER = ""
 let user_list = ""
 let EXECUTORS = {}
@@ -174,72 +176,23 @@ function convertToCalendar(date) {
 
 function showList(url, first = true) {
     if (!first) {
-        getData(url + FILTER)
-            .then((value) => {
-                return value.json();
-            })
-            .then((data) => {
-                $('#list-wrapper-loading').remove();
-                $('.list-item').remove()
-                var totalItems = Object.keys(data.results).length;
-                let task_name;
-
-                for (var i = 0; i < totalItems; i++) {
-
-                    if (data.results[i].type == "R") {
-                        task_name = "<p>Отсадка (смена типа: ОТКОРМОЧНЫЙ → РАЗМНОЖЕНИЕ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                    } else if (data.results[i].type == "F") {
-                        task_name = "<p>Отсадка (смена типа: РАЗМНОЖЕНИЕ → ОТКОРМОЧНЫЙ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                    } else if (data.results[i].type == "M") {
-                        task_name = "<p>Размножение → <font style='font-weight:700'>" + data.results[i].father_cage.farm_number + data.results[i].father_cage.number + data.results[i].father_cage.letter + " → " + data.results[i].mother_cage.farm_number + data.results[i].mother_cage.number + data.results[i].mother_cage.letter + "</font></p>"
-                    } else if (data.results[i].type == "B") {
-                        task_name = "<p>Отсадка от матери → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                    } else if (data.results[i].type == "V") {
-                        task_name = "<p>Вакцинация → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                    } else if (data.results[i].type == "I") {
-                        task_name = "<p>Осмотр перед убоем → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                    } else if (data.results[i].type == "S") {
-                        task_name = "<p>Убой → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
-                    }
-
-                    $('.list-wrapper').append(
-                        '<div class="list-item">' +
-                        '<div class="left-item-body">' +
-                        '<img src="/img/delete-task.svg" class="delete-task" id="' + data.results[i].id + '">' +
-                        '<p class="task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
-                        '</div>' +
-                        '<div class="middle-item-body">' +
-                        '<div class="v-wrapper">' +
-                        '<p>' + task_name + '</p>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="right-item-body cage-right-item-body">' +
-                        '<>' +
-                        '</div>' +
-                        '</div>'
-                    )
-                    for (let j = 0; j < Object.keys(EXECUTORS).length; j++) {
-                        if (data.results[i].id == EXECUTORS[j].task_id) {
-                            $('#' + EXECUTORS[j].task_id + ' option[value=' + EXECUTORS[j].id + ']').prop('selected', true);
-                            console.log("Задача №", data.results[i].id, "=", EXECUTORS[j].task_id)
-                        }
-                    }
-                }
-                DATA = data
-
-            })
-    } else {
         getData(users)
             .then((value) => {
                 return value.json()
             })
             .then((data) => {
+                if (isAppended == false) {
+                    let totalItems = Object.keys(data.results).length
 
-                let user_list = ""
-                let totalItems = Object.keys(data.results).length
-
-                for (let i = 0; i < totalItems; i++) {
-                    user_list += '<option value="' + data.results[i].id + '">' + data.results[i].username + '</option>'
+                    for (let i = 0; i < totalItems; i++) {
+                        $(".executor-list").append('<option value="user=' + data.results[i].id + '">' + data.results[i].first_name + " " + data.results[i].last_name + '</option>')
+                        let assign = {
+                            "name": data.results[i].first_name + " " + data.results[i].last_name,
+                            "id": data.results[i].id
+                        }
+                        EXECUTORS[i] = assign
+                    }
+                    isAppended = true
                 }
 
                 getData(url + FILTER)
@@ -251,100 +204,188 @@ function showList(url, first = true) {
                         $('.list-item').remove()
                         var totalItems = Object.keys(data.results).length;
                         let task_name;
+                        let task_executor
+                        let task_status
 
                         for (var i = 0; i < totalItems; i++) {
 
                             if (data.results[i].type == "R") {
-                                task_name = "<p>Отсадка (смена типа: ОТКОРМОЧНЫЙ → РАЗМНОЖЕНИЕ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                                task_name = "<p style='font-size:15px;' class='task-name-wrapper'>Отс. (смена типа: ОТК. → РАЗМН.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "F") {
-                                task_name = "<p>Отсадка (смена типа: РАЗМНОЖЕНИЕ → ОТКОРМОЧНЫЙ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                                task_name = "<p style='font-size:15px' class='task-name-wrapper'>Отс. (смена типа: РАЗМН. → ОТК.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "M") {
-                                task_name = "<p>Размножение → <font style='font-weight:700'>" + data.results[i].father_cage.farm_number + data.results[i].father_cage.number + data.results[i].father_cage.letter + " → " + data.results[i].mother_cage.farm_number + data.results[i].mother_cage.number + data.results[i].mother_cage.letter + "</font></p>"
+                                task_name = "<p style='font-size:16px' class='task-name-wrapper'>Размн. → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "B") {
-                                task_name = "<p>Отсадка от матери → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                                task_name = "<p style='font-size:15px' class='task-name-wrapper'>Отс. от матери (" + data.results[i].number_bunnies + " кр.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].male_cage_to.farm_number + data.results[i].male_cage_to.number + data.results[i].male_cage_to.letter + "(M)" + " → " + data.results[i].female_cage_to.farm_number + data.results[i].female_cage_to.number + data.results[i].female_cage_to.letter + "(Ж)</font></p>"
                             } else if (data.results[i].type == "V") {
-                                task_name = "<p>Вакцинация → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                                task_name = "<p style='font-size:16px' class='task-name-wrapper'>Вакц. → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "I") {
-                                task_name = "<p>Осмотр перед убоем → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                                task_name = "<p style='font-size:16px' class='task-name-wrapper'>Осмотр перед убоем (" + data.results[i].number_rabbits + " кр.) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "S") {
-                                task_name = "<p>Убой → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                                task_name = "<p style='font-size:16px' class='task-name-wrapper'>Убой → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                            }
+
+                            if (data.results[i].is_completed == true) {
+                                task_status = "<p class='confirmed' style='font-weight: 700 !important;'>ВЫПОЛНЕНО</p>"
+                            } else {
+                                task_status = "<p class='declined' style='font-weight: 700 !important;'>НЕ ВЫПОЛНЕНО</p>"
+                            }
+
+                            for (let j = 0; j < Object.keys(EXECUTORS).length; j++) {
+                                if (data.results[i].user == EXECUTORS[j].id) {
+                                    task_executor = EXECUTORS[j].name
+                                    break
+                                }
                             }
 
                             $('.list-wrapper').append(
                                 '<div class="list-item">' +
                                 '<div class="left-item-body">' +
-                                '<p class="task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
+                                '<img class="delete-task" src="/img/delete-task.svg">' +
+                                '<div class="v-wrapper">' +
+                                '<p class="review-task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
+                                '</div>' +
                                 '</div>' +
                                 '<div class="middle-item-body">' +
                                 '<div class="v-wrapper">' +
                                 '<p>' + task_name + '</p>' +
                                 '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<p class="task-executor">' + task_executor + '</p>' +
                                 '</div>' +
-                                '<div class="right-item-body cage-right-item-body">' +
-                                '<select id="' + data.results[i].id + '" class="rightside-filter choose-executor" onchange="saveExecutor(this)">' +
-                                '<option value="0">Не выбрано</option>' +
-                                user_list +
-                                '</select>' +
+                                '<div class="v-wrapper">' +
+                                '<div class="h-wrapper">' +
+                                task_status +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="right-item-body">' +
+                                '<div class="task-nav-container">' +
+                                '<img class="task-nav confirm" onclick="confirmTask(' + data.results[i].id + ')" src="/img/confirm-task.svg">' +
+                                '<img class="task-nav decline" onclick="declineTask(' + data.results[i].id + ')" src="/img/decline-task.svg">' +
+                                '</div>' +
                                 '</div>' +
                                 '</div>'
                             )
-                            for (let j = 0; j < Object.keys(EXECUTORS).length; j++) {
-                                if (data.results[i].id == EXECUTORS[j].task_id) {
-                                    $('#select option[value=' + EXECUTORS[j].id + ']').prop('selected', true);
-                                    break
-                                }
-                            }
+
                         }
                         DATA = data
 
+                    })
+            })
+    } else {
+        getData(users)
+            .then((value) => {
+                return value.json()
+            })
+            .then((data) => {
+                if (isAppended == false) {
+                    let totalItems = Object.keys(data.results).length
+
+                    for (let i = 0; i < totalItems; i++) {
+                        $(".executor-list").append('<option value="user=' + data.results[i].id + '">' + data.results[i].first_name + " " + data.results[i].last_name + '</option>')
+                        let assign = {
+                            "name": data.results[i].first_name + " " + data.results[i].last_name,
+                            "id": data.results[i].id
+                        }
+                        EXECUTORS[i] = assign
+                    }
+                    isAppended = true
+                }
+
+                getData(url + FILTER)
+                    .then((value) => {
+                        return value.json();
+                    })
+                    .then((data) => {
+                        $('#list-wrapper-loading').remove();
+                        $('.list-item').remove()
+                        var totalItems = Object.keys(data.results).length;
+                        let task_name;
+                        let task_executor
+                        let task_status
+
+                        for (var i = 0; i < totalItems; i++) {
+
+                            if (data.results[i].type == "R") {
+                                task_name = "<p style='font-size:15px;' class='task-name-wrapper'>Отс. (смена типа: ОТК. → РАЗМН.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
+                            } else if (data.results[i].type == "F") {
+                                task_name = "<p style='font-size:15px' class='task-name-wrapper'>Отс. (смена типа: РАЗМН. → ОТК.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
+                            } else if (data.results[i].type == "M") {
+                                task_name = "<p style='font-size:16px' class='task-name-wrapper'>Размн. → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
+                            } else if (data.results[i].type == "B") {
+                                task_name = "<p style='font-size:15px' class='task-name-wrapper'>Отс. от матери (" + data.results[i].number_bunnies + " кр.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].male_cage_to.farm_number + data.results[i].male_cage_to.number + data.results[i].male_cage_to.letter + "(M)" + " → " + data.results[i].female_cage_to.farm_number + data.results[i].female_cage_to.number + data.results[i].female_cage_to.letter + "(Ж)</font></p>"
+                            } else if (data.results[i].type == "V") {
+                                task_name = "<p style='font-size:16px' class='task-name-wrapper'>Вакц. → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                            } else if (data.results[i].type == "I") {
+                                task_name = "<p style='font-size:16px' class='task-name-wrapper'>Осмотр перед убоем (" + data.results[i].number_rabbits + " кр.) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                            } else if (data.results[i].type == "S") {
+                                task_name = "<p style='font-size:16px' class='task-name-wrapper'>Убой → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
+                            }
+
+                            if (data.results[i].is_completed == true) {
+                                task_status = "<p class='confirmed' style='font-weight: 700 !important;'>ВЫПОЛНЕНО</p>"
+                            } else {
+                                task_status = "<p class='declined' style='font-weight: 700 !important;'>НЕ ВЫПОЛНЕНО</p>"
+                            }
+
+                            for (let j = 0; j < Object.keys(EXECUTORS).length; j++) {
+                                if (data.results[i].user == EXECUTORS[j].id) {
+                                    task_executor = EXECUTORS[j].name
+                                    break
+                                }
+                            }
+
+                            $('.list-wrapper').append(
+                                '<div class="list-item">' +
+                                '<div class="left-item-body">' +
+                                '<img class="delete-task" src="/img/delete-task.svg">' +
+                                '<div class="v-wrapper">' +
+                                '<p class="review-task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="middle-item-body">' +
+                                '<div class="v-wrapper">' +
+                                '<p>' + task_name + '</p>' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<p class="task-executor">' + task_executor + '</p>' +
+                                '</div>' +
+                                '<div class="v-wrapper">' +
+                                '<div class="h-wrapper">' +
+                                task_status +
+                                '</div>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="right-item-body">' +
+                                '<div class="task-nav-container">' +
+                                '<img class="task-nav confirm" onclick="confirmTask(' + data.results[i].id + ')" src="/img/confirm-task.svg">' +
+                                '<img class="task-nav decline" onclick="declineTask(' + data.results[i].id + ')" src="/img/decline-task.svg">' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>'
+                            )
+
+                        }
+                        DATA = data
                         makePaginate(data)
                     })
             })
     }
 }
 
-function saveExecutor(e) {
-    let assign = {
-        "id": e.value,
-        "task_id": e.id
+function confirmTask(id) {
+    let confirm = {
+        "is_confirmed": true
     }
-    let assigned = false
+    putData((confirmURL + id + "/"), confirm)
+}
 
-    for (let i = 0; i < Object.keys(EXECUTORS).length; i++) {
-        if (EXECUTORS[i].task_id == e.id) {
-            EXECUTORS[i] = assign
-            assigned = true
-            break
-        }
+function declineTask(id) {
+    let decline = {
+        "is_confirmed": false
     }
-
-    if (assigned == false) {
-        EXECUTORS[counter] = assign
-        counter++
-    }
-
-    if (e.value != 0) {
-        $(".save-changes-btn, .discard-changes-btn").removeClass("disabled")
-        listenState()
-    }
-
-    if (e.value == 0) {
-        let disabled = false
-        for (let i = 0; i < Object.keys(EXECUTORS).length; i++) {
-            if (EXECUTORS[i].id == 0) {
-                disabled = true
-            } else {
-                disabled = false
-                break
-            }
-        }
-        if (disabled == true) {
-            $(".save-changes-btn, .discard-changes-btn").addClass("disabled")
-            $(".save-changes-btn, .discard-changes-btn").off()
-        }
-    }
-
-    console.log(EXECUTORS)
+    putData((confirmURL + id + "/"), decline)
 }
 
 function makePaginate(data) {
@@ -388,22 +429,6 @@ function applyExecutorFilter(e) {
 
 $(document).ready(function() {
     showList(tasksURL)
-
-
-    getData(users)
-        .then((value) => {
-            return value.json()
-        })
-        .then((data) => {
-
-            let user_list = ""
-            let totalItems = Object.keys(data.results).length
-
-            for (let i = 0; i < totalItems; i++) {
-                user_list += '<option value="' + data.results[i].id + '">' + data.results[i].first_name + " " + data.results[i].last_name + '</option>'
-            }
-            $(".executor-list").append(user_list)
-        })
 
     document.querySelector(".rightside-filter").addEventListener('change', function(e) {
         $('#pagination-container>ul').remove();

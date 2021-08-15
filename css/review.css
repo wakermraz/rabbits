@@ -1,0 +1,15 @@
+.left-content-body-label {
+    width: 60% !important;
+}
+
+.middle-main-content-body-label {
+    width: 93% !important;
+    display: flex !important;
+}
+
+.right-main-content-body-label {
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 51% !important;
+    gap: 35px !important;
+}
