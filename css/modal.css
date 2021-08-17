@@ -153,7 +153,8 @@ p {
 
 /* RABBIT MODALS */
 
-.rabbitModal-header, .rabbitModal-header1 {
+.rabbitModal-header,
+.rabbitModal-header1 {
     display: flex;
     flex-direction: row;
 }
@@ -170,20 +171,24 @@ p {
     justify-content: center;
 }
 
-.rabbit-header-info, .rabbit-header-info1,
-.rabbit-header-info-bot, .rabbit-header-info-bot1 {
+.rabbit-header-info,
+.rabbit-header-info1,
+.rabbit-header-info-bot,
+.rabbit-header-info-bot1 {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     padding-left: 17px;
 }
 
-.rabbit-header-info-bot>p, .rabbit-header-info-bot1>p {
+.rabbit-header-info-bot>p,
+.rabbit-header-info-bot1>p {
     font-size: 25px;
     font-weight: 700;
 }
 
-.rabbit-header-right, .rabbit-header-right1 {
+.rabbit-header-right,
+.rabbit-header-right1 {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -191,11 +196,13 @@ p {
     text-align: right;
 }
 
-.rabbit-header-right>p, .rabbit-header-right1>p {
+.rabbit-header-right>p,
+.rabbit-header-right1>p {
     font-size: 18px;
 }
 
-.rabbit-header-sex>img, .rabbit-header-sex1>img {
+.rabbit-header-sex>img,
+.rabbit-header-sex1>img {
     height: 19px;
 }
 
@@ -253,7 +260,8 @@ p {
     font-weight: 700;
 }
 
-.operations-history-body {
+.operations-history-body,
+.operations-history-body1 {
     margin-top: 15px;
     display: flex;
     flex-direction: column;
@@ -701,6 +709,7 @@ p {
     padding: 15px 0px;
     text-align: center;
     width: 280px;
+    cursor: pointer;
 }
 
 .planCreate-rightside-label-container {
@@ -759,6 +768,7 @@ p {
     width: 280px;
     color: #fff;
     margin-bottom: -10px;
+    cursor: pointer;
 }
 
 
@@ -1009,7 +1019,7 @@ p {
     margin-top: -25px;
 }
 
-.addRabbitModal-right-labels>p{
+.addRabbitModal-right-labels>p {
     font-size: 16px;
     margin: auto 0;
 }
@@ -1045,15 +1055,15 @@ p {
     padding: 9px 20px;
 }
 
-.addRabbitModal-right-item>div>p{
+.addRabbitModal-right-item>div>p {
     font-size: 18px;
 }
 
-.addRabbit-wrapper{
+.addRabbit-wrapper {
     margin-left: -20px;
 }
 
-.addRabbitModal-right-labels>p:nth-child(2){
+.addRabbitModal-right-labels>p:nth-child(2) {
     margin-left: 50px;
 }
 
@@ -1110,4 +1120,151 @@ p {
 
 .addRabbitModal-checkbox>img {
     margin-left: 55px;
+}
+
+/* EXECUTE JIGGING MODAL */
+
+#executeJigging>.modal-dialog {
+    max-width: 450px;
+}
+
+#executeJigging>.modal-dialog>.modal-content {
+    height: 500px;
+}
+
+#executeJigging>.modal-dialog>.modal-content>.modal-body>.close {
+    margin-left: 340px;
+}
+
+.jiggingDate,
+.inspectDate {
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.executeJigging-subheader {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.executeJigging-header {
+    margin-bottom: 25px;
+}
+
+.executeJigging-input {
+    background: #8A8A8A;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    border: none;
+    height: 30px;
+    color: #fff;
+    font-family: Roboto Condensed;
+    font-size: 21px;
+    padding-left: 20px;
+}
+
+.executeJigging-input:focus-visible {
+    outline: none;
+}
+
+.executeJigging-bot {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.executeJigging-bot>p {
+    width: 215px;
+    height: 35px;
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 5px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* EXECUTE INSPECT MODAL */
+
+#executeInspect>.modal-dialog {
+    max-width: 450px;
+}
+
+#executeInspect>.modal-dialog>.modal-content {
+    height: unset;
+}
+
+#executeInspect>.modal-dialog>.modal-content>.modal-body>.close {
+    margin-left: 340px;
+}
+
+.jiggingDate {
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.executeInspect-subheader {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.executeInspect-header {
+    margin-bottom: 25px;
+}
+
+.executeInspect-input {
+    background: #8A8A8A;
+    box-shadow: inset 0px 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    border: none;
+    height: 30px;
+    color: #fff;
+    font-family: Roboto Condensed;
+    font-size: 21px;
+    padding-left: 20px;
+}
+
+.executeInspect-input:focus-visible {
+    outline: none;
+}
+
+.executeInspect-bot {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.executeInspect-bot>p {
+    width: 215px;
+    height: 35px;
+    background: linear-gradient(180deg, #5AB752 0%, #249F53 100%);
+    border-radius: 5px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.rabbits-weights {
+    flex-direction: column;
+}
+
+.input-sm{
+    width: 15%;
+}
+
+.weights-wrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }

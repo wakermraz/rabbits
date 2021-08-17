@@ -119,17 +119,16 @@
             </div>
             <div class="input-form-btns v-wrapper">
                 <div class="h-wrapper btns-container">
-                    <button type="submit" class="save-changes-btn disabled">
+                    <p>Напечатать задания для:</p>
+                    <select class="rightside-filter executor-list forPrint" onchange="unlockPrint(this)">
+                        <option value="?">все исполнители</option>
+                    </select>
+                </div>
+                <div class="h-wrapper btns-container review-btns-container">
+                    <button type="submit" class="print-btn disabled" onclick="printTasks()">
                         <div class="v-wrapper">
                             <div class="h-wrapper">
-                                Сохранить назначенные задачи
-                            </div>
-                        </div>
-                    </button>
-                    <button type="submit" class="discard-changes-btn disabled">
-                        <div class="v-wrapper">
-                            <div class="h-wrapper">
-                                Отменить назначенные задачи
+                                Напечатать
                             </div>
                         </div>
                     </button>
@@ -248,6 +247,58 @@
                             </div>
                             <img id="allPlans-delete" src="/img/planCreate-delete-item.svg">
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="executeJigging" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <a href="#close" title="Close" class="close">×</a>
+                    <div class="allPlans-header executeJigging-header">
+                        <p>Отсадка от мат.</p>
+                        <p class="jiggingDate"></p>
+                    </div>
+                    <div class="allPlans-subheader executeJigging-subheader">
+                        <p class="p-wrapper">№ клетки ИЗ</p>
+                        <input class="executeJigging-input" type="text" placeholder="*****" id="cageFrom">
+                    </div>
+                    <div class="allPlans-subheader executeJigging-subheader">
+                        <p class="p-wrapper">№ клетки B</p>
+                        <input class="executeJigging-input" type="text" placeholder="*****" id="cageTo">
+                    </div>
+                    <div class="allPlans-subheader executeJigging-subheader">
+                        <p class="p-wrapper">Количество самцов</p>
+                        <input class="executeJigging-input" type="text" placeholder="*****" id="maleNumber">
+                    </div>
+                    <div class="allPlans-subheader executeJigging-subheader">
+                        <p class="p-wrapper">Количество самок</p>
+                        <input class="executeJigging-input" type="text" placeholder="*****" id="femaleNumber">
+                    </div>
+                    <div class="allPlans-subheader executeJigging-bot">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="executeInspect" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <a href="#close" title="Close" class="close">×</a>
+                    <div class="allPlans-header executeInspect-header">
+                        <p>Осмотр (убой)</p>
+                        <p class="inspectDate"></p>
+                    </div>
+                    <div class="allPlans-subheader executeInspect-subheader">
+                        <p class="p-wrapper">№ клетки</p>
+                        <input class="executeInspect-input" type="text" placeholder="*****" id="cageNumber">
+                    </div>
+                    <div class="allPlans-subheader executeInspect-subheader rabbits-weights">
+                    </div>
+                    <div class="allPlans-subheader executeInspect-bot">
                     </div>
                 </div>
             </div>
