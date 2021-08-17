@@ -30,6 +30,7 @@ let planObj = {};
 let idsForRemove = ["Заглушка"]
 let SELECTED = {}
 let PARTNERS = {}
+let current_plan
 
 let _f_farm_number = "";
 let _f_male = "";
@@ -1952,20 +1953,47 @@ function saveRabbitsPartners() {
 }
 
 function kill() {
+    let send = {}
+    let assign = []
     for (let i = 0; i < Object.keys(SELECTED).length; i++) {
-        deleteData(rabbitsURL_ + SELECTED[i].rabbit_id + "/")
+        assign[i] = +SELECTED[i].rabbit_id
+    }
+    send = {
+        "rabbits": assign
+    }
+    putData(putPlan + current_plan + "/", send)
+    .then((answer) => {
+        location.reload()
+    })
+}
+
+function filterRabForPlan(e, id){
+    if($(".filter-for-plan" + e.id).prop("checked")){
+        current_plan = id
+        $(".rabbitModal").remove()
+        FILTER = "&plan=&type=F&status=RS"
+        showList(rabbitsURL)
+        $(".submit-kill-btn").removeClass("disabled")
+    } else {
+        $(".rabbitModal").remove()
+        current_plan = ""
+        FILTER = ""
+        showList(rabbitsURL)
+        $(".submit-kill-btn").addClass("disabled")
     }
 }
 
-function filterRabForPlan(id){
-    $(".rabbitModal").remove()
-    FILTER = "&plan=&type=F"
-    showList(rabbitsURL, true, FILTER)
-    $(".submit-kill-btn").removeClass("disabled")
-}
-
 function killFromModal() {
-    deleteData(rabbitsURL_ + openedModalId + "/")
+    let assign = []
+    assign[0] = openedModalId
+    let send = {
+        "rabbits": assign
+    }
+    putData(putPlan + current_plan + "/", send)
+    .then((answer) => {
+        window.location.href = "#close"
+        location.reload()
+    })
 }
 
 function manualSelectPartners() {
@@ -2056,7 +2084,7 @@ $(document).ready(function() {
                 newValue = ""
             }
             $('.rabbitModal').remove()
-            FILTER = newValue
+            FILTER += newValue
             showList(rabbitsURL)
         }
     })
@@ -2385,7 +2413,7 @@ $(document).ready(function() {
                         '<div class="todo-item-left">' +
                         '<div class="v-wrapper">' +
                         '<label class="plan-select">' +
-                        '<input type="checkbox" onclick="filterRabForPlan(' + data.results[i].id + ')" name="plan-checkbox" value="">' +
+                        '<input type="checkbox" id="' + data.results[i].id + '" class="filter-for-plan' + data.results[i].id + '" onclick="filterRabForPlan(this, ' + data.results[i].id + ')" name="plan-checkbox" value="">' +
                         '<span></span>' +
                         '</label>' +
                         '</div>' +
