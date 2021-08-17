@@ -1,5 +1,6 @@
-let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/anonymous/";
-let users = "https://rabbit-api--test.herokuapp.com/api/user/?"
+let tasksURL = "https://rabbit-api--app.herokuapp.com/api/task/anonymous/";
+let users = "https://rabbit-api--app.herokuapp.com/api/user/?"
+let deleteURL = "https://rabbit-api--app.herokuapp.com/api/task/mating/"
 
 let FILTER = ""
 let EXECUTORS = {}
@@ -130,6 +131,19 @@ function getData(url) {
     return response;
 }
 
+function deleteData(url) {
+    const response = fetch(url, {
+        method: 'DELETE',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response;
+}
+
 function putData(url, body) {
     const response_put = fetch(url, {
         method: 'PUT',
@@ -198,11 +212,14 @@ function showList(url, first = true) {
 
                         for (var i = 0; i < totalItems; i++) {
 
+                            let isDeletable = ""
+
                             if (data.results[i].type == "R") {
                                 task_name = "<p>Отсадка (смена типа: ОТКОРМОЧНЫЙ → РАЗМНОЖЕНИЕ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "F") {
                                 task_name = "<p>Отсадка (смена типа: РАЗМНОЖЕНИЕ → ОТКОРМОЧНЫЙ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "M") {
+                                isDeletable = '<img onclick="deleteTask(' + data.results[i].id + ')" class="delete-task" src="/img/delete-task.svg">'
                                 task_name = "<p>Размножение → <font style='font-weight:700'>" + data.results[i].father_cage.farm_number + data.results[i].father_cage.number + data.results[i].father_cage.letter + " → " + data.results[i].mother_cage.farm_number + data.results[i].mother_cage.number + data.results[i].mother_cage.letter + "</font></p>"
                             } else if (data.results[i].type == "B") {
                                 task_name = "<p>Отсадка от матери → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
@@ -218,6 +235,7 @@ function showList(url, first = true) {
                                 '<div class="list-item">' +
                                 '<div class="left-item-body">' +
                                 '<p class="task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
+                                isDeletable +
                                 '</div>' +
                                 '<div class="middle-item-body">' +
                                 '<div class="v-wrapper">' +
@@ -269,11 +287,14 @@ function showList(url, first = true) {
 
                         for (var i = 0; i < totalItems; i++) {
 
+                            let isDeletable = ""
+
                             if (data.results[i].type == "R") {
                                 task_name = "<p>Отсадка (смена типа: ОТКОРМОЧНЫЙ → РАЗМНОЖЕНИЕ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "F") {
                                 task_name = "<p>Отсадка (смена типа: РАЗМНОЖЕНИЕ → ОТКОРМОЧНЫЙ) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "M") {
+                                isDeletable = '<img onclick="deleteTask(' + data.results[i].id + ')" class="delete-task" src="/img/delete-task.svg">'
                                 task_name = "<p>Размножение → <font style='font-weight:700'>" + data.results[i].father_cage.farm_number + data.results[i].father_cage.number + data.results[i].father_cage.letter + " → " + data.results[i].mother_cage.farm_number + data.results[i].mother_cage.number + data.results[i].mother_cage.letter + "</font></p>"
                             } else if (data.results[i].type == "B") {
                                 task_name = "<p>Отсадка от матери → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
@@ -289,6 +310,7 @@ function showList(url, first = true) {
                                 '<div class="list-item">' +
                                 '<div class="left-item-body">' +
                                 '<p class="task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
+                                isDeletable +
                                 '</div>' +
                                 '<div class="middle-item-body">' +
                                 '<div class="v-wrapper">' +
@@ -305,8 +327,8 @@ function showList(url, first = true) {
                             )
                             for (let j = 0; j < Object.keys(EXECUTORS).length; j++) {
                                 if (data.results[i].id == EXECUTORS[j].task_id) {
-                                    $('#select option[value=' + EXECUTORS[j].id + ']').prop('selected', true);
-                                    break
+                                    $('#' + EXECUTORS[j].task_id + ' option[value=' + EXECUTORS[j].id + ']').prop('selected', true);
+                                    console.log("Задача №", data.results[i].id, "=", EXECUTORS[j].task_id)
                                 }
                             }
                         }
@@ -355,12 +377,19 @@ function saveExecutor(e) {
         }
         if (disabled == true) {
             $(".save-changes-btn, .discard-changes-btn").addClass("disabled")
-            (".save-changes-btn, .discard-changes-btn").prop("disabled", true)
+                (".save-changes-btn, .discard-changes-btn").prop("disabled", true)
             $(".save-changes-btn, .discard-changes-btn").off()
         }
     }
 
     console.log(EXECUTORS)
+}
+
+function deleteTask(id) {
+    deleteData(deleteURL + id + "/")
+    .then((after) => {
+        location.reload()
+    })
 }
 
 function makePaginate(data) {
@@ -388,6 +417,9 @@ function listenState() {
             "user": EXECUTORS[i].id
         }
         putData(link, executor)
+        .then((answer) => {
+            location.reload()
+        })
     }
 }
 

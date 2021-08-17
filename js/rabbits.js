@@ -1,9 +1,10 @@
-let rabbitsURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?"
-let rabbitsURL_ = "https://rabbit-api--test.herokuapp.com/api/rabbit/"
-let rabbit_operations = "https://rabbit-api--test.herokuapp.com/api/operation/?rabbit_id=";
-let rabbits_breed = "https://rabbit-api--test.herokuapp.com/api/breed/"
-let addRabbitCages = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status="
-let getPlan = "https://rabbit-api--test.herokuapp.com/api/plan/?date="
+let rabbitsURL = "https://rabbit-api--app.herokuapp.com/api/rabbit/?"
+let rabbitsURL_ = "https://rabbit-api--app.herokuapp.com/api/rabbit/"
+let rabbit_operations = "https://rabbit-api--app.herokuapp.com/api/operation/?rabbit_id=";
+let rabbits_breed = "https://rabbit-api--app.herokuapp.com/api/breed/"
+let addRabbitCages = "https://rabbit-api--app.herokuapp.com/api/cage/?number_rabbits_to=0&status="
+let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
 var sidebar_filter = false;
 var sidebar_filter_order;
 var showWeight;
@@ -18,15 +19,18 @@ let f_rabbit_status;
 let f_weight_from;
 let f_weight_to;
 let counter = 0;
+let counterForPlan = 0;
 let counter_partners = 0;
 let current_partner = 0;
 let openedModalId;
 let DATA;
 let FILTER = "";
 let rabbitsObj = []
+let planObj = {};
 let idsForRemove = ["Заглушка"]
 let SELECTED = {}
 let PARTNERS = {}
+let current_plan
 
 let _f_farm_number = "";
 let _f_male = "";
@@ -192,7 +196,7 @@ function putData(url, body) {
     return response_put;
 }
 
-function deleteData(url){
+function deleteData(url) {
     const response_put = fetch(url, {
         method: 'DELETE',
         mode: 'cors',
@@ -217,7 +221,7 @@ function postData(url, body) {
 
 function countResponse(obj_key, filter) {
     $('#count-results').remove()
-    let obj_to_link = "https://rabbit-api--test.herokuapp.com/api/rabbit/?"
+    let obj_to_link = "https://rabbit-api--app.herokuapp.com/api/rabbit/?"
     for (let key in filter_object) {
         if (key == obj_key && filter != filter_object[key]) {
             filter_object[key] = filter;
@@ -251,7 +255,8 @@ function makeLink(url, id, r_type) {
 
 function showNewRabbit(id) {
     $('.added1').remove()
-    getData("https://rabbit-api--test.herokuapp.com/api/rabbit/" + id)
+    openedModalId = id;
+    getData("https://rabbit-api--app.herokuapp.com/api/rabbit/" + id)
         .then((value) => {
             return value.json()
         })
@@ -354,7 +359,7 @@ function showNewRabbit(id) {
                 })
                 .then((data) => {
                     if (data.results[0] === undefined) {
-                        $('.operations-history-body').append(
+                        $('.operations-history-body1').append(
                             '<div class="operations-history-item added">' +
                             '<p>Операций с кроликом еще нет...</p>' +
                             '</div>'
@@ -384,10 +389,10 @@ function showNewRabbit(id) {
                             if (data.results[i].type == "M") {
                                 if (id == data.results[i].father_rabbit_id) {
                                     context = "Спаривание&nbsp"
-                                    bold_context = "<a href='#rabbitModal' onclick='saveOpenedModal(" + data.results[i].father_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
+                                    bold_context = "<a href='#rabbitModal' onclick='showNewRabbit(" + data.results[i].father_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].mother_rabbit_id + "'>(#" + data.results[i].mother_rabbit_id + ")</a>"
                                 } else if (id == data.results[i].mother_rabbit_id) {
                                     context = "Спаривание&nbsp"
-                                    bold_context = "<a href='#rabbitModal' onclick='saveOpenedModal(" + data.results[i].mother_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
+                                    bold_context = "<a href='#rabbitModal' onclick='showNewRabbit(" + data.results[i].mother_rabbit_id + ")' style='font-weight: 700; font-size: 18px; color: #fff;' id='" + data.results[i].father_rabbit_id + "'>(#" + data.results[i].father_rabbit_id + ")</a>"
                                 }
                             }
                             $('.operations-history-body1').append(
@@ -396,6 +401,7 @@ function showNewRabbit(id) {
                                 '<p>' + context + bold_context + '</p>' +
                                 '</div>'
                             )
+                            $("#rabbit-modal-loading").remove()
                         }
                     }
                     $(".changeWeightLink-filtered").click(function() {
@@ -573,7 +579,7 @@ function defineStatus(data) {
 
 function getAvailCages(obj_key, filter) {
     $('.cageSelect-item').remove()
-    let obj_to_link = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status=&page_size=10000"
+    let obj_to_link = "https://rabbit-api--app.herokuapp.com/api/cage/?number_rabbits_to=0&status=&page_size=10000"
     for (let key in ar_filter_object) {
         if (key == obj_key && filter != ar_filter_object[key]) {
             ar_filter_object[key] = filter;
@@ -601,6 +607,77 @@ function getAvailCages(obj_key, filter) {
                 )
             }
         })
+}
+
+function unlockCalendar() {
+    if ($(".plan-checkbox").prop("checked") == false) {
+        $(".planCreate-calendar").prop("disabled", false)
+        $(".planCreate-calendar").prop("value", "")
+    } else {
+        $(".planCreate-calendar").prop("disabled", true)
+        var today = new Date();
+        var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
+        var dayTomorrow = tomorrow.getDate();
+        var monthTomorrow = tomorrow.getMonth() + 1; //в js месяц отсчитывается с нуля
+        if (monthTomorrow < 10) {
+            monthTomorrow = "0" + monthTomorrow
+        }
+        var yearTomorrow = tomorrow.getFullYear();
+        let date = String(dayTomorrow) + "." + monthTomorrow + "." + yearTomorrow
+        $(".planCreate-calendar").prop("value", date)
+    }
+}
+
+function addPlan() {
+    let date = $(".planCreate-calendar").val()
+    let rabbitsNum = $(".planCreate-input").val()
+
+    $(".planCreate-calendar").prop("value", "")
+    $(".planCreate-input").prop("value", "")
+    $(".plan-checkbox").prop("checked", false)
+    $(".planCreate-calendar").prop("disabled", false)
+    let dateForSend = date.replace(".", "-")
+    dateForSend = dateForSend.replace(".", "-")
+
+    dateForSend = dateForSend[6] + dateForSend[7] + dateForSend[8] + dateForSend[9] + dateForSend[5] + dateForSend[3] + dateForSend[4] + dateForSend[2] + dateForSend[0] + dateForSend[1]
+
+    planObj[counterForPlan] = {
+        "date": dateForSend,
+        "quantity": rabbitsNum
+    }
+
+    $(".planModal-right-items").append(
+        '<div class="planModal-right-item removable-plan' + counterForPlan + '">' +
+        '<div class="v-wrapper">' +
+        '<p>' + date + '</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<p>Убой</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<p>' + rabbitsNum + '</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<img onclick="deletePlanItem(' + counterForPlan + ')" src="/img/planCreate-delete-item.svg">' +
+        '</div>' +
+        '</div>'
+    )
+
+    counterForPlan++
+}
+
+function submitPlans(){
+    for(key in planObj){
+        postData(putPlan, planObj[key])
+    }
+    window.location.href = "#close"
+    location.reload()
+}
+
+function deletePlanItem(id){
+    $(".removable-plan" + id).remove()
+    delete planObj[id]
+
 }
 
 function addRabbit(birthday, breed_id, breed_name, is_male, farm_number, cage_number, cage_id, b_day_send) {
@@ -661,7 +738,6 @@ function addRabbit(birthday, breed_id, breed_name, is_male, farm_number, cage_nu
     )
     counter++;
     idsForRemove.push(cage_id)
-    console.log(idsForRemove)
     $('.delete-rabbit').click(function() {
         delete rabbitsObj[this.id]
         delete idsForRemove[idsForRemove.indexOf($(".addRabbit-item" + this.id).attr('value'))]
@@ -734,7 +810,7 @@ function showList(url, first = true) {
 
 
                     $('#list-wrapper').append(
-                        '<a href="#rabbitModal" onclick="saveOpenedModal(' + data.results[i].id + ')" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
+                        '<a href="#rabbitModal" onclick="showNewRabbit(' + data.results[i].id + ')" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
                         '<div class="list-item">' +
                         '<div class="left-item-body">' +
                         '<label class="' + rabbitSize + '-select">' +
@@ -790,9 +866,23 @@ function showList(url, first = true) {
                     let modal_ico;
                     let weight_rabbit_id_filtered = this_id;
                     let modalSex;
+                    let saveSex;
                     let rabbit_type;
                     let curr_rabbit_operations = rabbit_operations;
                     curr_rabbit_operations += this_id + "&page_size=50";
+
+
+                    if (data.results[modal_id].is_male === null) {
+                        saveSex = "unknown";
+                    } else if (data.results[modal_id].is_male === true && data.results[modal_id].current_type != "F") {
+                        saveSex = "father";
+                    } else if (data.results[modal_id].is_male === false) {
+                        saveSex = "mother";
+                    } else if (data.results[modal_id].is_male === true && data.results[modal_id].current_type == "F") {
+                        saveSex = "fattening"
+                    }
+                    $(".auto-select-btn[value=details]").prop("name", saveSex)
+                    $(".auto-select-btn[value=details]").prop("id", this_id)
 
                     var birthday = new Date(data.results[modal_id].birthday);
                     var today = new Date;
@@ -1038,7 +1128,7 @@ function showList(url, first = true) {
 
 
                     $('#list-wrapper').append(
-                        '<a href="#rabbitModal" onclick="saveOpenedModal(' + data.results[i].id + ')" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
+                        '<a href="#rabbitModal" onclick="showNewRabbit(' + data.results[i].id + ')" class="rabbitModal" name="' + i + '" id="' + data.results[i].id + '">' +
                         '<div class="list-item">' +
                         '<div class="left-item-body">' +
                         '<label class="' + rabbitSize + '-select">' +
@@ -1089,8 +1179,8 @@ function showList(url, first = true) {
                 $(".rabbitModal").click(function() {
                     $(".added").remove();
 
-                    let modal_id = +this.name; //номер кролика
-                    let this_id = +this.id; //номер записи о кролике
+                    let modal_id = +this.name;
+                    let this_id = +this.id;
                     let modal_ico;
                     let weight_rabbit_id_filtered = this_id;
                     let modalSex;
@@ -1106,6 +1196,18 @@ function showList(url, first = true) {
                     var minutes = seconds / 60;
                     var hours = minutes / 60;
                     var days = hours / 24;
+
+                    if (data.results[modal_id].is_male === null) {
+                        saveSex = "unknown";
+                    } else if (data.results[modal_id].is_male === true) {
+                        saveSex = "father";
+                    } else if (data.results[modal_id].is_male === false) {
+                        saveSex = "mother";
+                    } else if (data.results[modal_id].is_male === true && data.results[modal_id].current_type == "F") {
+                        saveSex = "fattening"
+                    }
+                    $(".auto-select-btn[value=details]").prop("name", saveSex)
+                    $(".auto-select-btn[value=details]").prop("id", this_id)
 
                     if (data.results[modal_id].current_type == "B") {
                         modal_ico = "-small";
@@ -1285,25 +1387,40 @@ function showList(url, first = true) {
 
 function saveRabbitState(e, sex) {
     $("#count").empty()
-    console.log(sex)
     if ($("#" + e.id).prop("checked") == true) {
         if (sex == "female-main") {
             sex = "mother"
         } else if (sex == "male-main") {
             sex = "father"
         }
-        SELECTED[counter] = {
-            "id": e.id,
-            "rabbit_id": e.value,
-            "sex": sex
-        }
-        counter++
+        getData(rabbitsURL_ + e.value)
+            .then((value) => {
+                return value.json()
+            })
+            .then((data) => {
+                if (data.current_type == "F") {
+                    SELECTED[counter] = {
+                        "id": e.id,
+                        "rabbit_id": e.value,
+                        "sex": "fattening"
+                    }
+                    counter++
+                } else {
+                    SELECTED[counter] = {
+                        "id": e.id,
+                        "rabbit_id": e.value,
+                        "sex": sex
+                    }
+                    counter++
+                }
+            })
+
     } else {
-        for (let i = 0; i < Object.keys(SELECTED).length; i++) {
-            if (SELECTED[i].id == e.id) {
-                delete SELECTED[i]
+        console.log(SELECTED)
+        for (let key in SELECTED) {
+            if (SELECTED[key].id == e.id) {
+                delete SELECTED[key]
                 counter--
-                break
             }
         }
     }
@@ -1318,10 +1435,14 @@ function makePartnersLink(sex, id, isPartners) {
     }
 }
 
-function autoSelectPartners() {
-    for (let i = 0; i < Object.keys(SELECTED).length; i++) {
-        let link = makePartnersLink(SELECTED[i].sex, SELECTED[i].rabbit_id, true)
-        getData(makePartnersLink(SELECTED[i].sex, SELECTED[i].rabbit_id, false))
+function autoSelectPartners(e) {
+    $('.autoSelectModal-body-container').empty()
+    if (e == undefined) {
+        e = ""
+    }
+    if (e.value == "details") {
+        let link = makePartnersLink(e.name, e.id, true)
+        getData(makePartnersLink(e.name, e.id, false))
             .then((value) => {
                 return value.json()
             })
@@ -1345,169 +1466,461 @@ function autoSelectPartners() {
                 var minutes = seconds / 60;
                 var hours = minutes / 60;
                 var days = hours / 24;
-                getData(link)
-                    .then((value) => {
-                        return value.json()
-                    })
-                    .then((partners) => {
-                        if (partners.warning) {
-                            let errMsg = String(partners.warning.message)
-                            errMsg = errMsg.substring(2, errMsg.length-2);
-                            $(".autoSelectModal-body-container").append(
-                                '<div class="autoSelectModal-body-item">' +
-                                '<div class="selected-rabbit">' +
-                                '<div class="selected-rabbit-label">' +
-                                '<p>Выбранный кролик:</p>' +
-                                '</div>' +
-                                '<div style="width:100%">' +
-                                '<a onclick="saveOpenedModal(' + partners.id + ')" href="#rabbitModal">' +
-                                '<div class="list-item">' +
-                                '<div class="middle-item-body">' +
-                                '<label class="rabbit-select">' +
-                                '<input name="rabbit-checkbox" value="">' +
-                                '<span></span>' +
-                                '</label>' +
-                                '<div class="v-wrapper">' +
-                                '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
-                                '</div>' +
-                                '<div class="v-wrapper">' +
-                                '<p>#' + data.id + '</p>' +
-                                '</div>' +
-                                '<div class="v-wrapper">' +
-                                '<img src="/img/' + data.is_male + '.svg">' +
-                                '</div>' +
-                                '<div class="v-wrapper">' +
-                                '<div class="h-wrapper">' +
-                                '<p class="kind">' + data.breed + '</p>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="v-wrapper">' +
-                                '<p>' + Math.round(days) + ' дней</p>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</a>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + i + '">' +
-                                '<div class="list-item">' +
-                                '<div class="middle-item-body">' +
-                                '<div class="v-wrapper">' +
-                                '<p style="font-weight:700; color:red">' + errMsg + '</p>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>'
-                            )
-                            $("#auto-select-loading").remove()
-                        } else {
-                            $(".autoSelectModal-body-container").append(
-                                '<div class="autoSelectModal-body-item">' +
-                                '<div class="selected-rabbit">' +
-                                '<div class="selected-rabbit-label">' +
-                                '<p>Выбранный кролик:</p>' +
-                                '</div>' +
-                                '<div style="width:100%">' +
-                                '<a onclick="saveOpenedModal(' + partners.id + ')" href="#rabbitModal">' +
-                                '<div class="list-item">' +
-                                '<div class="middle-item-body">' +
-                                '<label class="rabbit-select">' +
-                                '<input name="rabbit-checkbox" value="">' +
-                                '<span></span>' +
-                                '</label>' +
-                                '<div class="v-wrapper">' +
-                                '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
-                                '</div>' +
-                                '<div class="v-wrapper">' +
-                                '<p>#' + data.id + '</p>' +
-                                '</div>' +
-                                '<div class="v-wrapper">' +
-                                '<img src="/img/' + data.is_male + '.svg">' +
-                                '</div>' +
-                                '<div class="v-wrapper">' +
-                                '<div class="h-wrapper">' +
-                                '<p class="kind">' + data.breed + '</p>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="v-wrapper">' +
-                                '<p>' + Math.round(days) + ' дней</p>' +
-                                '</div>' +
-                                '</div>' +
-                                '</div>' +
-                                '</a>' +
-                                '</div>' +
-                                '</div>' +
-                                '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + i + '">'
-                            )
-
-                            if (Object.values(partners)[0] == null) {
-                                var connection = "Нет связей"
+                if (e.name != "fattening") {
+                    getData(link)
+                        .then((value) => {
+                            return value.json()
+                        })
+                        .then((partners) => {
+                            if (partners.warning) {
+                                let errMsg = String(partners.warning.message)
+                                errMsg = errMsg.substring(2, errMsg.length - 2);
+                                $(".autoSelectModal-body-container").append(
+                                    '<div class="autoSelectModal-body-item">' +
+                                    '<div class="selected-rabbit">' +
+                                    '<div class="selected-rabbit-label">' +
+                                    '<p>Выбранный кролик:</p>' +
+                                    '</div>' +
+                                    '<div style="width:100%">' +
+                                    '<a onclick="showNewRabbit(' + data.id + ')" href="#rabbitModal">' +
+                                    '<div class="list-item">' +
+                                    '<div class="middle-item-body">' +
+                                    '<label class="rabbit-select">' +
+                                    '<input name="rabbit-checkbox" value="">' +
+                                    '<span></span>' +
+                                    '</label>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>#' + data.id + '</p>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<img src="/img/' + data.is_male + '.svg">' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<div class="h-wrapper">' +
+                                    '<p class="kind">' + data.breed + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>' + Math.round(days) + ' дней</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</a>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + e.id + '">' +
+                                    '<div class="list-item">' +
+                                    '<div class="middle-item-body">' +
+                                    '<div class="v-wrapper">' +
+                                    '<p style="font-weight:700; color:red">' + errMsg + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>'
+                                )
+                                $("#auto-select-loading").remove()
                             } else {
-                                var connection = "Связь в " + Object.values(partners)[current_partner] + "поколении"
+                                $(".autoSelectModal-body-container").append(
+                                    '<div class="autoSelectModal-body-item">' +
+                                    '<div class="selected-rabbit">' +
+                                    '<div class="selected-rabbit-label">' +
+                                    '<p>Выбранный кролик:</p>' +
+                                    '</div>' +
+                                    '<div style="width:100%">' +
+                                    '<a onclick="showNewRabbit(' + data.id + ')" href="#rabbitModal">' +
+                                    '<div class="list-item">' +
+                                    '<div class="middle-item-body">' +
+                                    '<label class="rabbit-select">' +
+                                    '<input name="rabbit-checkbox" value="">' +
+                                    '<span></span>' +
+                                    '</label>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>#' + data.id + '</p>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<img src="/img/' + data.is_male + '.svg">' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<div class="h-wrapper">' +
+                                    '<p class="kind">' + data.breed + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>' + Math.round(days) + ' дней</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</a>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + e.id + '">'
+                                )
+
+                                if (Object.values(partners)[0] == null) {
+                                    var connection = "Нет связей"
+                                } else {
+                                    var connection = "Связь в " + Object.values(partners)[current_partner] + "поколении"
+                                }
+
+                                PARTNERS[counter_partners] = {
+                                    "id": data.id,
+                                    "partner_id": Object.keys(partners)[current_partner],
+                                    "sex": data.is_male
+                                }
+
+                                counter_partners++
+                                current_partner++
+
+                                getData(makePartnersLink(opposite, Object.keys(partners)[current_partner], false))
+                                    .then((value) => {
+                                        return value.json()
+                                    })
+                                    .then((partner_details) => {
+                                        var birthday = new Date(partner_details.birthday);
+                                        var today = new Date;
+                                        var diff = today - birthday;
+                                        var milliseconds = diff;
+                                        var seconds = milliseconds / 1000;
+                                        var minutes = seconds / 60;
+                                        var hours = minutes / 60;
+                                        var days = hours / 24;
+                                        $('.selected-rabbit-pair' + e.id).append(
+                                            '<a onclick="showNewRabbit(' + Object.keys(partners)[current_partner] + ')" id="' + Object.keys(partners)[current_partner] + '" href="#rabbitModal-filtered">' +
+                                            '<div class="list-item">' +
+                                            '<div class="middle-item-body">' +
+                                            '<label class="rabbit-select">' +
+                                            '<input name="rabbit-checkbox-for' + Object.keys(partners)[current_partner] + '" value="">' +
+                                            '<span></span>' +
+                                            '</label>' +
+                                            '<div class="v-wrapper">' +
+                                            '<p>' + partner_details.cage.farm_number + partner_details.cage.number + partner_details.cage.letter + '</p>' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<p>' + connection + '</p>' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<p>#' + partner_details.id + '</p>' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<img src="/img/' + opposite_ava + '.svg">' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<div class="h-wrapper">' +
+                                            '<p class="kind">' + partner_details.breed + '</p>' +
+                                            '</div>' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<p>' + Math.round(days) + ' дней</p>' +
+                                            '</div>' +
+                                            '</div>' +
+                                            '</div>' +
+                                            '</a>' +
+                                            '</div>' +
+                                            '</div>'
+                                        )
+                                        $("#auto-select-loading").remove()
+                                    })
                             }
+                        })
+                } else {
+                    $(".autoSelectModal-body-container").append(
+                        '<div class="autoSelectModal-body-item">' +
+                        '<div class="selected-rabbit">' +
+                        '<div class="selected-rabbit-label">' +
+                        '<p>Выбранный кролик:</p>' +
+                        '</div>' +
+                        '<div style="width:100%">' +
+                        '<a onclick="showNewRabbit(' + data.id + ')" href="#rabbitModal">' +
+                        '<div class="list-item">' +
+                        '<div class="middle-item-body">' +
+                        '<label class="rabbit-select">' +
+                        '<input name="rabbit-checkbox" value="">' +
+                        '<span></span>' +
+                        '</label>' +
+                        '<div class="v-wrapper">' +
+                        '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<p>#' + data.id + '</p>' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<img src="/img/' + data.is_male + '.svg">' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<div class="h-wrapper">' +
+                        '<p class="kind">' + data.breed + '</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<p>' + Math.round(days) + ' дней</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</a>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + e.id + '">' +
+                        '<div class="list-item">' +
+                        '<div class="middle-item-body">' +
+                        '<div class="v-wrapper">' +
+                        '<p style="font-weight:700; color:red">Кролик не готов для размножения</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>'
+                    )
+                    $("#auto-select-loading").remove()
+                }
+            })
+    }
+    for (let key in SELECTED) {
+        let link = makePartnersLink(SELECTED[key].sex, SELECTED[key].rabbit_id, true)
+        getData(makePartnersLink(SELECTED[key].sex, SELECTED[key].rabbit_id, false))
+            .then((value) => {
+                return value.json()
+            })
+            .then((data) => {
+                if (data.is_male == true) {
+                    data.is_male = "male-main"
+                    var opposite = "mother",
+                        opposite_ava = "female-main"
+                } else {
+                    data.is_male = "female-main"
+                    var opposite = "father",
+                        opposite_ava = "male-main"
+                }
 
-                            PARTNERS[counter_partners] = {
-                                "id": data.id,
-                                "partner_id": Object.keys(partners)[current_partner],
-                                "sex": data.is_male
+                var birthday = new Date(data.birthday);
+                var today = new Date;
+
+                var diff = today - birthday;
+                var milliseconds = diff;
+                var seconds = milliseconds / 1000;
+                var minutes = seconds / 60;
+                var hours = minutes / 60;
+                var days = hours / 24;
+                if (SELECTED[key].sex != "fattening") {
+                    getData(link)
+                        .then((value) => {
+                            return value.json()
+                        })
+                        .then((partners) => {
+                            if (partners.warning) {
+                                let errMsg = String(partners.warning.message)
+                                errMsg = errMsg.substring(2, errMsg.length - 2);
+                                $(".autoSelectModal-body-container").append(
+                                    '<div class="autoSelectModal-body-item">' +
+                                    '<div class="selected-rabbit">' +
+                                    '<div class="selected-rabbit-label">' +
+                                    '<p>Выбранный кролик:</p>' +
+                                    '</div>' +
+                                    '<div style="width:100%">' +
+                                    '<a onclick="showNewRabbit(' + data.id + ')" href="#rabbitModal">' +
+                                    '<div class="list-item">' +
+                                    '<div class="middle-item-body">' +
+                                    '<label class="rabbit-select">' +
+                                    '<input name="rabbit-checkbox" value="">' +
+                                    '<span></span>' +
+                                    '</label>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>#' + data.id + '</p>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<img src="/img/' + data.is_male + '.svg">' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<div class="h-wrapper">' +
+                                    '<p class="kind">' + data.breed + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>' + Math.round(days) + ' дней</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</a>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + key + '">' +
+                                    '<div class="list-item">' +
+                                    '<div class="middle-item-body">' +
+                                    '<div class="v-wrapper">' +
+                                    '<p style="font-weight:700; color:red">' + errMsg + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>'
+                                )
+                                $("#auto-select-loading").remove()
+                            } else {
+                                $(".autoSelectModal-body-container").append(
+                                    '<div class="autoSelectModal-body-item">' +
+                                    '<div class="selected-rabbit">' +
+                                    '<div class="selected-rabbit-label">' +
+                                    '<p>Выбранный кролик:</p>' +
+                                    '</div>' +
+                                    '<div style="width:100%">' +
+                                    '<a onclick="showNewRabbit(' + data.id + ')" href="#rabbitModal">' +
+                                    '<div class="list-item">' +
+                                    '<div class="middle-item-body">' +
+                                    '<label class="rabbit-select">' +
+                                    '<input name="rabbit-checkbox" value="">' +
+                                    '<span></span>' +
+                                    '</label>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>#' + data.id + '</p>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<img src="/img/' + data.is_male + '.svg">' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<div class="h-wrapper">' +
+                                    '<p class="kind">' + data.breed + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="v-wrapper">' +
+                                    '<p>' + Math.round(days) + ' дней</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</a>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + key + '">'
+                                )
+
+                                if (Object.values(partners)[0] == null) {
+                                    var connection = "Нет связей"
+                                } else {
+                                    var connection = "Связь в " + Object.values(partners)[current_partner] + "поколении"
+                                }
+
+                                PARTNERS[counter_partners] = {
+                                    "id": data.id,
+                                    "partner_id": Object.keys(partners)[current_partner],
+                                    "sex": data.is_male
+                                }
+
+                                counter_partners++
+                                current_partner++
+
+                                getData(makePartnersLink(opposite, Object.keys(partners)[current_partner], false))
+                                    .then((value) => {
+                                        return value.json()
+                                    })
+                                    .then((partner_details) => {
+                                        var birthday = new Date(partner_details.birthday);
+                                        var today = new Date;
+
+                                        var diff = today - birthday;
+                                        var milliseconds = diff;
+                                        var seconds = milliseconds / 1000;
+                                        var minutes = seconds / 60;
+                                        var hours = minutes / 60;
+                                        var days = hours / 24;
+                                        $('.selected-rabbit-pair' + key).append(
+                                            '<a onclick="showNewRabbit(' + Object.keys(partners)[current_partner] + ')" id="' + Object.keys(partners)[current_partner] + '" href="#rabbitModal-filtered">' +
+                                            '<div class="list-item">' +
+                                            '<div class="middle-item-body">' +
+                                            '<label class="rabbit-select">' +
+                                            '<input name="rabbit-checkbox-for' + Object.keys(partners)[current_partner] + '" value="">' +
+                                            '<span></span>' +
+                                            '</label>' +
+                                            '<div class="v-wrapper">' +
+                                            '<p>' + partner_details.cage.farm_number + partner_details.cage.number + partner_details.cage.letter + '</p>' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<p>' + connection + '</p>' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<p>#' + partner_details.id + '</p>' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<img src="/img/' + opposite_ava + '.svg">' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<div class="h-wrapper">' +
+                                            '<p class="kind">' + partner_details.breed + '</p>' +
+                                            '</div>' +
+                                            '</div>' +
+                                            '<div class="v-wrapper">' +
+                                            '<p>' + Math.round(days) + ' дней</p>' +
+                                            '</div>' +
+                                            '</div>' +
+                                            '</div>' +
+                                            '</a>' +
+                                            '</div>' +
+                                            '</div>'
+                                        )
+                                        $("#auto-select-loading").remove()
+                                    })
                             }
-
-                            counter_partners++
-                            current_partner++
-
-                            getData(makePartnersLink(opposite, Object.keys(partners)[current_partner], false))
-                                .then((value) => {
-                                    return value.json()
-                                })
-                                .then((partner_details) => {
-                                    var birthday = new Date(partner_details.birthday);
-                                    var today = new Date;
-
-                                    var diff = today - birthday;
-                                    var milliseconds = diff;
-                                    var seconds = milliseconds / 1000;
-                                    var minutes = seconds / 60;
-                                    var hours = minutes / 60;
-                                    var days = hours / 24;
-                                    $('.selected-rabbit-pair' + i).append(
-                                        '<a onclick="saveOpenedModal(' + partners.id + ')" id="' + Object.keys(partners)[current_partner] + '" href="#rabbitModal">' +
-                                        '<div class="list-item">' +
-                                        '<div class="middle-item-body">' +
-                                        '<label class="rabbit-select">' +
-                                        '<input name="rabbit-checkbox-for' + Object.keys(partners)[current_partner] + '" value="">' +
-                                        '<span></span>' +
-                                        '</label>' +
-                                        '<div class="v-wrapper">' +
-                                        '<p>' + partner_details.cage.farm_number + partner_details.cage.number + partner_details.cage.letter + '</p>' +
-                                        '</div>' +
-                                        '<div class="v-wrapper">' +
-                                        '<p>' + connection + '</p>' +
-                                        '</div>' +
-                                        '<div class="v-wrapper">' +
-                                        '<p>#' + partner_details.id + '</p>' +
-                                        '</div>' +
-                                        '<div class="v-wrapper">' +
-                                        '<img src="/img/' + opposite_ava + '.svg">' +
-                                        '</div>' +
-                                        '<div class="v-wrapper">' +
-                                        '<div class="h-wrapper">' +
-                                        '<p class="kind">' + partner_details.breed + '</p>' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '<div class="v-wrapper">' +
-                                        '<p>' + Math.round(days) + ' дней</p>' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '</a>' +
-                                        '</div>' +
-                                        '</div>'
-                                    )
-                                    $("#auto-select-loading").remove()
-                                })
-                        }
-                    })
+                        })
+                } else {
+                    $(".autoSelectModal-body-container").append(
+                        '<div class="autoSelectModal-body-item">' +
+                        '<div class="selected-rabbit">' +
+                        '<div class="selected-rabbit-label">' +
+                        '<p>Выбранный кролик:</p>' +
+                        '</div>' +
+                        '<div style="width:100%">' +
+                        '<a onclick="showNewRabbit(' + data.id + ')" href="#rabbitModal">' +
+                        '<div class="list-item">' +
+                        '<div class="middle-item-body">' +
+                        '<label class="rabbit-select">' +
+                        '<input name="rabbit-checkbox" value="">' +
+                        '<span></span>' +
+                        '</label>' +
+                        '<div class="v-wrapper">' +
+                        '<p>' + data.cage.farm_number + data.cage.number + data.cage.letter + '</p>' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<p>#' + data.id + '</p>' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<img src="/img/' + data.is_male + '.svg">' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<div class="h-wrapper">' +
+                        '<p class="kind">' + data.breed + '</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="v-wrapper">' +
+                        '<p>' + Math.round(days) + ' дней</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</a>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="selected-rabbit-pair ' + "selected-rabbit-pair" + e.id + '">' +
+                        '<div class="list-item">' +
+                        '<div class="middle-item-body">' +
+                        '<div class="v-wrapper">' +
+                        '<p style="font-weight:700; color:red">Кролик не готов для размножения</p>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>'
+                    )
+                    $("#auto-select-loading").remove()
+                }
             })
     }
 }
@@ -1520,17 +1933,17 @@ function closeAutoSelect() {
         '</div>'
     )
     current_partner = 0
-    for(let i = 0; i < Object.keys(PARTNERS).length; i++){
+    for (let i = 0; i < Object.keys(PARTNERS).length; i++) {
         delete PARTNERS[i]
     }
 }
 
 function saveRabbitsPartners() {
-    for(let i = 0; i < Object.keys(PARTNERS).length; i++){
+    for (let i = 0; i < Object.keys(PARTNERS).length; i++) {
         let sendData = {
             "partner": PARTNERS[i].partner_id
         }
-        if(PARTNERS[i].sex == "male-main"){
+        if (PARTNERS[i].sex == "male-main") {
             PARTNERS[i].sex = "father"
         } else {
             PARTNERS[i].sex = "mother"
@@ -1539,22 +1952,52 @@ function saveRabbitsPartners() {
     }
 }
 
-function kill(){
-    for(let i = 0; i < Object.keys(SELECTED).length; i++){
-        deleteData(rabbitsURL_ + SELECTED[i].rabbit_id + "/")
+function kill() {
+    let send = {}
+    let assign = []
+    for (let i = 0; i < Object.keys(SELECTED).length; i++) {
+        assign[i] = +SELECTED[i].rabbit_id
+    }
+    send = {
+        "rabbits": assign
+    }
+    putData(putPlan + current_plan + "/", send)
+    .then((answer) => {
+        location.reload()
+    })
+}
+
+function filterRabForPlan(e, id){
+    if($(".filter-for-plan" + e.id).prop("checked")){
+        current_plan = id
+        $(".rabbitModal").remove()
+        FILTER = "&plan=&type=F&status=RS"
+        showList(rabbitsURL)
+        $(".submit-kill-btn").removeClass("disabled")
+    } else {
+        $(".rabbitModal").remove()
+        current_plan = ""
+        FILTER = ""
+        showList(rabbitsURL)
+        $(".submit-kill-btn").addClass("disabled")
     }
 }
 
-function saveOpenedModal(id){
-    openedModalId = id
-}
-
-function killFromModal(){
-    deleteData(rabbitsURL_ + openedModalId + "/")
+function killFromModal() {
+    let assign = []
+    assign[0] = openedModalId
+    let send = {
+        "rabbits": assign
+    }
+    putData(putPlan + current_plan + "/", send)
+    .then((answer) => {
+        window.location.href = "#close"
+        location.reload()
+    })
 }
 
 function manualSelectPartners() {
-
+    
 }
 
 function makePaginate(data) {
@@ -1641,7 +2084,7 @@ $(document).ready(function() {
                 newValue = ""
             }
             $('.rabbitModal').remove()
-            FILTER = newValue
+            FILTER += newValue
             showList(rabbitsURL)
         }
     })
@@ -1680,7 +2123,7 @@ $(document).ready(function() {
                 if (_f_farm_number == "all_farms") {
                     _f_farm_number = "";
                 } else {
-                    _f_farm_number = "farm_number=" + _f_farm_number;
+                    _f_farm_number = "&farm_number=" + _f_farm_number;
                 }
 
                 countResponse(o_key, _f_farm_number)
@@ -1937,7 +2380,7 @@ $(document).ready(function() {
     $('.addRabbitModal-submit').click(function() {
         let records = document.querySelectorAll('.addRabbitModal-right-item')
         for (let i = 0; i < records.length; i++) {
-            postData("https://rabbit-api--test.herokuapp.com/api/rabbit/reproduction/", rabbitsObj[records[i].id].send)
+            postData("https://rabbit-api--app.herokuapp.com/api/rabbit/reproduction/", rabbitsObj[records[i].id].send)
                 .then((value) => {
                     $('#rabbitBirth-calendar').empty()
                     $('.is_male').prop('checked', false)
@@ -1963,12 +2406,14 @@ $(document).ready(function() {
         .then((data) => {
             if (data.count >= 1) {
                 for (let i = 0; i < Object.keys(data.results).length; i++) {
+                    let progress = Object.keys(data.results[i].rabbits).length
+                    let total = data.results[i].quantity
                     $('.todo-list').append(
                         '<div class="todo-list-item">' +
                         '<div class="todo-item-left">' +
                         '<div class="v-wrapper">' +
                         '<label class="plan-select">' +
-                        '<input type="radio" name="plan-checkbox" value="">' +
+                        '<input type="checkbox" id="' + data.results[i].id + '" class="filter-for-plan' + data.results[i].id + '" onclick="filterRabForPlan(this, ' + data.results[i].id + ')" name="plan-checkbox" value="">' +
                         '<span></span>' +
                         '</label>' +
                         '</div>' +
@@ -1983,7 +2428,7 @@ $(document).ready(function() {
                         '</div>' +
                         '<div class="todo-item-right">' +
                         '<div class="v-wrapper">' +
-                        '<p class="todo-list-text">0 из 535</p>' +
+                        '<p class="todo-list-text">' + progress + ' из ' + total + '</p>' +
                         '</div>' +
                         '</div>' +
                         '</div>'

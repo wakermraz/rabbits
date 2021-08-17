@@ -1,6 +1,6 @@
-const cagesURL = "https://rabbit-api--test.herokuapp.com/api/cage/?";
-const cagesFILTER = "https://rabbit-api--test.herokuapp.com/api/cage/?";
-let renewCageURL = "https://rabbit-api--test.herokuapp.com/api/cage/"
+const cagesURL = "https://rabbit-api--app.herokuapp.com/api/cage/?";
+const cagesFILTER = "https://rabbit-api--app.herokuapp.com/api/cage/?";
+let renewCageURL = "https://rabbit-api--app.herokuapp.com/api/cage/"
 
 var sidebar_filter = false;
 var sidebar_filter_order;

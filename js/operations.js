@@ -1,7 +1,7 @@
-const operationsURL = "https://rabbit-api--test.herokuapp.com/api/operation/?";
-let rabbitsURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/"
-let getRABBIT = "https://rabbit-api--test.herokuapp.com/api/rabbit/";
-const rabbit_operations = "https://rabbit-api--test.herokuapp.com/api/operation/?rabbit_id=";
+const operationsURL = "https://rabbit-api--app.herokuapp.com/api/operation/?";
+let rabbitsURL = "https://rabbit-api--app.herokuapp.com/api/rabbit/"
+let getRABBIT = "https://rabbit-api--app.herokuapp.com/api/rabbit/";
+const rabbit_operations = "https://rabbit-api--app.herokuapp.com/api/operation/?rabbit_id=";
 
 var showWeight;
 
@@ -11,18 +11,18 @@ var sidebar_filter = false;
 var sidebar_filter_order;
 var filter_order;
 
-let _f_farm_number,
+let _f_rabbit_number,
     _f_type,
-    _f_number_rabbits_from,
-    _f_status
+    _f_time_from,
+    _f_time_to
 
 let FILTER = ""
 
 let filter_object = {
-    "_f_farm_number": "&",
-    "_f_status": "&",
+    "_f_rabbit_number": "&",
     "_f_type": "&",
-    "_f_number_rabbits_from": "&"
+    "_f_time_from": "&",
+    "_f_time_to": "&"
 }
 
 var dateFormat = function() {
@@ -227,7 +227,7 @@ function convertToCalendar(date) {
 
 function showNewRabbit(id) {
     $('.added1').remove()
-    getData("https://rabbit-api--test.herokuapp.com/api/rabbit/" + id)
+    getData("https://rabbit-api--app.herokuapp.com/api/rabbit/" + id)
         .then((value) => {
             return value.json()
         })
@@ -878,10 +878,14 @@ function showChangeWeight(id) {
                 newWeight.weight = +$("#newWeight").val();
                 console.log(newWeight.weight)
                 putData(makeLink(rabbitsURL, weight_rabbit_id, data.current_type), newWeight)
-                    .then((value) => {
-                    })
+                    .then((value) => {})
             })
         })
+}
+
+function convertData(date) {
+    date = date[6] + date[7] + date[8] + date[9] + date[5] + date[3] + date[4] + date[2] + date[0] + date[1]
+    return date
 }
 
 $(document).ready(function() {
@@ -908,4 +912,112 @@ $(document).ready(function() {
         )
         $('#rabbit-modal-loading').remove();
     })
+
+    document.querySelector(".rightside-filter").addEventListener('change', function(e) {
+        if (sidebar_filter) {
+            $('#pagination-container>ul').remove();
+            $('.list-item').remove()
+            $('#list-wrapper').append(
+                '<div id="list-wrapper-loading" class="loading">' +
+                '<img src="/img/loading.gif">' +
+                '</div>'
+            )
+
+            FILTER += e.target.value
+
+            showList(operationsURL)
+        } else if (!sidebar_filter) {
+            $('#pagination-container>ul').remove();
+            $('.list-item').remove()
+            $('#list-wrapper').append(
+                '<div id="list-wrapper-loading" class="loading">' +
+                '<img src="/img/loading.gif">' +
+                '</div>'
+            )
+
+            FILTER += e.target.value
+
+            showList(operationsURL)
+        }
+    })
+
+    document.querySelector(".count-filtered1").addEventListener('change', function(e) {
+        let _f_rabbit_number = "rabbit_id=" + e.target.value
+
+        let o_key = "_f_rabbit_number"
+
+        FILTER += _f_rabbit_number
+
+        countResponse(o_key, _f_rabbit_number)
+    });
+
+    document.querySelector(".count-filtered2").addEventListener('change', function(e) {
+        let _f_type = e.target.value
+
+        let o_key = "_f_type"
+
+        FILTER += _f_type
+
+        countResponse(o_key, _f_type)
+    });
+
+    document.querySelector(".count-filtered3").addEventListener('change', function(e) {
+        let _f_time_from = "time_from=" + e.target.value
+
+        let o_key = "_f_time_from"
+
+        FILTER += _f_time_from
+
+        countResponse(o_key, _f_time_from)
+    });
+
+    document.querySelector(".count-filtered4").addEventListener('change', function(e) {
+        let _f_time_to = "time_to=" + e.target.value
+
+        let o_key = "_f_time_to"
+
+        FILTER += _f_time_to
+
+        countResponse(o_key, _f_time_to)
+    });
+
+    $('.submit-btn').click(function() {
+        $('#pagination-container>ul').remove();
+        $('.list-item').remove()
+        $('#list-wrapper').append(
+            '<div id="list-wrapper-loading" class="loading">' +
+            '<img src="/img/loading.gif">' +
+            '</div>'
+        )
+
+        if (sidebar_filter_order === undefined) {
+            sidebar_filter_order = operationsURL;
+        } else {
+            filter_order = sidebar_filter_order;
+        }
+
+        sidebar_filter = true;
+
+        _f_rabbit_number = "rabbit_id=" + $(".count-filtered1").val()
+
+        _f_type = $(".count-filtered2").val()
+
+        if ($(".count-filtered3").val() == "") {
+            _f_time_from = "&"
+        } else {
+            _f_time_from = "time_from=" + convertData($(".count-filtered3").val())
+        }
+
+        if ($(".count-filtered4").val() == "") {
+            _f_time_to = "&"
+        } else {
+            _f_time_to = "time_to=" + convertData($(".count-filtered4").val())
+        }
+
+
+        FILTER = String(_f_rabbit_number) + _f_type + _f_time_from + _f_time_to
+
+        showList(operationsURL)
+    })
+
 })

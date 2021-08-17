@@ -13,3 +13,27 @@
     width: 51% !important;
     gap: 35px !important;
 }
+
+.print-btn {
+    background: linear-gradient(180deg, #4D7EC7 0%, #3B47B3 100%);
+    border-radius: 10px;
+    border: none;
+    width: 215px;
+    height: 40px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: Roboto Condensed;
+    cursor: pointer;
+}
+
+.review-btns-container{
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btns-container>p{
+    margin: auto 0;
+    font-size: 18px;
+    font-weight: 700;
+}

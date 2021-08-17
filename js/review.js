@@ -1,6 +1,11 @@
-let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/?";
-let users = "https://rabbit-api--test.herokuapp.com/api/user/?"
-let confirmURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/confirm/"
+let tasksURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/?";
+let users = "https://rabbit-api--app.herokuapp.com/api/user/?"
+let confirmURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/confirm/"
+let completeURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/complete/"
+let deleteURL = "https://rabbit-api--app.herokuapp.com/api/task/mating/"
+let jiggingURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/complete/bunny_jigging/"
+let inspectURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/complete/slaughter_inspection/"
+let printFileURL = "https://rabbit-api--app.herokuapp.com/api/user/"
 
 let isAppended = false
 let FILTER = ""
@@ -133,6 +138,33 @@ function getData(url) {
     return response;
 }
 
+function getImage(url) {
+    const response = fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Sec-Fetch-Dest': 'document'
+        }
+    });
+    return response;
+}
+
+function deleteData(url) {
+    const response = fetch(url, {
+        method: 'DELETE',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    return response;
+}
+
 function putData(url, body) {
     const response_put = fetch(url, {
         method: 'PUT',
@@ -209,17 +241,23 @@ function showList(url, first = true) {
 
                         for (var i = 0; i < totalItems; i++) {
 
+                            let isDeletable = '<img style="opacity:40%; cursor: default" class="delete-task" src="/img/delete-task.svg">'
+                            let modalOnAccept = '<img class="task-nav confirm" onclick="confirmTask(' + data.results[i].id + ')" src="/img/confirm-task.svg">'
+
                             if (data.results[i].type == "R") {
                                 task_name = "<p style='font-size:15px;' class='task-name-wrapper'>Отс. (смена типа: ОТК. → РАЗМН.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "F") {
                                 task_name = "<p style='font-size:15px' class='task-name-wrapper'>Отс. (смена типа: РАЗМН. → ОТК.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "M") {
+                                isDeletable = '<img onclick="deleteTask(' + data.results[i].id + ')" class="delete-task" src="/img/delete-task.svg">'
                                 task_name = "<p style='font-size:16px' class='task-name-wrapper'>Размн. → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "B") {
+                                modalOnAccept = '<img class="task-nav confirm" onclick="executeJigging(' + data.results[i].id + ')" src="/img/confirm-task.svg">'
                                 task_name = "<p style='font-size:15px' class='task-name-wrapper'>Отс. от матери (" + data.results[i].number_bunnies + " кр.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].male_cage_to.farm_number + data.results[i].male_cage_to.number + data.results[i].male_cage_to.letter + "(M)" + " → " + data.results[i].female_cage_to.farm_number + data.results[i].female_cage_to.number + data.results[i].female_cage_to.letter + "(Ж)</font></p>"
                             } else if (data.results[i].type == "V") {
                                 task_name = "<p style='font-size:16px' class='task-name-wrapper'>Вакц. → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "I") {
+                                modalOnAccept = '<img class="task-nav confirm" onclick="executeInspect(' + data.results[i].id + ')" src="/img/confirm-task.svg">'
                                 task_name = "<p style='font-size:16px' class='task-name-wrapper'>Осмотр перед убоем (" + data.results[i].number_rabbits + " кр.) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "S") {
                                 task_name = "<p style='font-size:16px' class='task-name-wrapper'>Убой → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
@@ -241,7 +279,7 @@ function showList(url, first = true) {
                             $('.list-wrapper').append(
                                 '<div class="list-item">' +
                                 '<div class="left-item-body">' +
-                                '<img class="delete-task" src="/img/delete-task.svg">' +
+                                isDeletable +
                                 '<div class="v-wrapper">' +
                                 '<p class="review-task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
                                 '</div>' +
@@ -261,7 +299,7 @@ function showList(url, first = true) {
                                 '</div>' +
                                 '<div class="right-item-body">' +
                                 '<div class="task-nav-container">' +
-                                '<img class="task-nav confirm" onclick="confirmTask(' + data.results[i].id + ')" src="/img/confirm-task.svg">' +
+                                modalOnAccept +
                                 '<img class="task-nav decline" onclick="declineTask(' + data.results[i].id + ')" src="/img/decline-task.svg">' +
                                 '</div>' +
                                 '</div>' +
@@ -305,19 +343,30 @@ function showList(url, first = true) {
                         let task_executor
                         let task_status
 
+
                         for (var i = 0; i < totalItems; i++) {
+
+                            let isDeletable = '<img style="opacity:40%; cursor: default" class="delete-task" src="/img/delete-task.svg">'
+                            let modalOnAccept = '<img class="task-nav confirm" onclick="confirmTask(' + data.results[i].id + ')" src="/img/confirm-task.svg">'
 
                             if (data.results[i].type == "R") {
                                 task_name = "<p style='font-size:15px;' class='task-name-wrapper'>Отс. (смена типа: ОТК. → РАЗМН.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "F") {
                                 task_name = "<p style='font-size:15px' class='task-name-wrapper'>Отс. (смена типа: РАЗМН. → ОТК.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "M") {
+                                isDeletable = '<img onclick="deleteTask(' + data.results[i].id + ')" class="delete-task" src="/img/delete-task.svg">'
                                 task_name = "<p style='font-size:16px' class='task-name-wrapper'>Размн. → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].cage_to.farm_number + data.results[i].cage_to.number + data.results[i].cage_to.letter + "</font></p>"
                             } else if (data.results[i].type == "B") {
+                                if (!data.results[i].is_completed) {
+                                    modalOnAccept = '<img class="task-nav confirm" onclick="executeJigging(' + data.results[i].id + ', ' + '\'' + convertToCalendar(data.results[i].created_at) + '\'' + ')" src="/img/confirm-task.svg">'
+                                }
                                 task_name = "<p style='font-size:15px' class='task-name-wrapper'>Отс. от матери (" + data.results[i].number_bunnies + " кр.) → <font style='font-weight:700'>" + data.results[i].cage_from.farm_number + data.results[i].cage_from.number + data.results[i].cage_from.letter + " → " + data.results[i].male_cage_to.farm_number + data.results[i].male_cage_to.number + data.results[i].male_cage_to.letter + "(M)" + " → " + data.results[i].female_cage_to.farm_number + data.results[i].female_cage_to.number + data.results[i].female_cage_to.letter + "(Ж)</font></p>"
                             } else if (data.results[i].type == "V") {
                                 task_name = "<p style='font-size:16px' class='task-name-wrapper'>Вакц. → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "I") {
+                                if (!data.results[i].is_completed) {
+                                    modalOnAccept = '<img class="task-nav confirm" onclick="executeInspect(' + data.results[i].id + ', ' + '\'' + convertToCalendar(data.results[i].created_at) + '\'' + ', ' + data.results[i].number_rabbits + ')" src="/img/confirm-task.svg">'
+                                }
                                 task_name = "<p style='font-size:16px' class='task-name-wrapper'>Осмотр перед убоем (" + data.results[i].number_rabbits + " кр.) → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
                             } else if (data.results[i].type == "S") {
                                 task_name = "<p style='font-size:16px' class='task-name-wrapper'>Убой → <font style='font-weight:700'>" + data.results[i].cage.farm_number + data.results[i].cage.number + data.results[i].cage.letter + "</font></p>"
@@ -339,7 +388,7 @@ function showList(url, first = true) {
                             $('.list-wrapper').append(
                                 '<div class="list-item">' +
                                 '<div class="left-item-body">' +
-                                '<img class="delete-task" src="/img/delete-task.svg">' +
+                                isDeletable +
                                 '<div class="v-wrapper">' +
                                 '<p class="review-task-date">' + convertToCalendar(data.results[i].created_at) + '</p>' +
                                 '</div>' +
@@ -359,7 +408,7 @@ function showList(url, first = true) {
                                 '</div>' +
                                 '<div class="right-item-body">' +
                                 '<div class="task-nav-container">' +
-                                '<img class="task-nav confirm" onclick="confirmTask(' + data.results[i].id + ')" src="/img/confirm-task.svg">' +
+                                modalOnAccept +
                                 '<img class="task-nav decline" onclick="declineTask(' + data.results[i].id + ')" src="/img/decline-task.svg">' +
                                 '</div>' +
                                 '</div>' +
@@ -374,18 +423,93 @@ function showList(url, first = true) {
     }
 }
 
+function deleteTask(id) {
+    deleteData(deleteURL + id + "/")
+        .then((after) => {
+            location.reload()
+        })
+}
+
 function confirmTask(id) {
     let confirm = {
         "is_confirmed": true
     }
     putData((confirmURL + id + "/"), confirm)
+        .then((answer) => {
+            location.reload()
+        })
 }
 
 function declineTask(id) {
-    let decline = {
-        "is_confirmed": false
+    deleteData(completeURL + id + "/")
+    location.reload()
+}
+
+function executeInspect(id, date, rabbits) {
+    $('.inspectDate').append(date)
+    $('.executeInspect-bot').append(
+        '<p class="p-wrapper" onclick="submitInspect(' + id + ', ' + rabbits + ')">Выполнено</p>'
+    )
+
+    for (let i = 0; i < rabbits; i++) {
+        let counter = i + 1
+        $('.rabbits-weights').append(
+            '<div class="weights-wrapper">' +
+            '<p class="p-wrapper">Вес кролика №' + counter + '(кг):</p>' +
+            '<input class="executeInspect-input input-sm" type="text" placeholder="" id="rabbitWeight' + i + '">' +
+            '</div>'
+        )
     }
-    putData((confirmURL + id + "/"), decline)
+
+    window.location.href = "#executeInspect"
+}
+
+function executeJigging(id, date) {
+    $('.jiggingDate').append(date)
+    $('.executeJigging-bot').append(
+        '<p class="p-wrapper" onclick="submitJigging(' + id + ')">Выполнено</p>'
+    )
+
+    window.location.href = "#executeJigging"
+}
+
+function submitJigging(id) {
+    let send = {
+        "males": $("#maleNumber").val()
+    }
+    putData(jiggingURL + id + "/", send)
+        .then((answer) => {
+            let send = {
+                "is_confirmed": true
+            }
+            putData(confirmURL + id + "/", send)
+                .then((answer) => {
+                    window.location.href = "#close"
+                    location.reload()
+                })
+        })
+}
+
+function submitInspect(id, rabbits) {
+    let send = {}
+    let assign = []
+    for (let i = 0; i < rabbits; i++) {
+        assign[i] = +$("#rabbitWeight" + i).val()
+    }
+    send = {
+        "weights": assign
+    }
+    putData(inspectURL + id + "/", send)
+        .then((answer) => {
+            let send = {
+                "is_confirmed": true
+            }
+            putData(confirmURL + id + "/", send)
+                .then((answer) => {
+                    window.location.href = "#close"
+                    location.reload()
+                })
+        })
 }
 
 function makePaginate(data) {
@@ -425,6 +549,21 @@ function applyExecutorFilter(e) {
     FILTER = ""
     FILTER = e.value
     showList(tasksURL)
+}
+
+function unlockPrint(e) {
+    if (e.value == "?") {
+        $(".print-btn").removeClass("disabled")
+        $(".print-btn").addClass("disabled")
+    } else {
+        $(".print-btn").removeClass("disabled")
+    }
+}
+
+function printTasks() {
+    let user = $(".forPrint").val()
+    user = user.replace("user=", "")
+    window.open(printFileURL + user + "/docx/")
 }
 
 $(document).ready(function() {

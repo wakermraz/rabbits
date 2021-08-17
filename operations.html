@@ -70,11 +70,10 @@
                     <div class="v-wrapper">
                         <div class="rightside-filter-wrapper">
                             <select class="rightside-filter">
-                                <option>по ферме</option>
-                                <option>по номеру</option>
-                                <option>по типу</option>
-                                <option>по кол-ву кроликов</option>
-                                <option>по статусу</option>
+                                <option value="&">все операции</option>
+                                <option value="__order_by__=time">по времени (убыв.)</option>
+                                <option value="__order_by__=-time">по времени (возраст.)</option>
+                                <option value="__order_by__=type">по типу</option>
                             </select>
                         </div>
                     </div>
@@ -110,7 +109,7 @@
                             <p>№ кролика</p>
                         </div>
                         <div class="v-wrapper">
-                            <input class="rabbits-count-input" type="" name="rabbits-count">
+                            <input class="rabbits-count-input count-filtered1" type="" name="rabbits-count">
                         </div>
                     </div>
                     <div class="input-form-wrapper">
@@ -118,9 +117,13 @@
                             <p>Операция</p>
                         </div>
                         <div class="v-wrapper">
-                            <select class="dropdown-input">
-                                <option>Рождение кролика</option>
-                                <option>Вакцинирование</option>
+                            <select class="dropdown-input count-filtered2">
+                                <option value="&">Все операции</option>
+                                <option value="&type=J">Отсадка</option>
+                                <option value="&type=B">Рождение кролика</option>
+                                <option value="&type=V">Вакцинирование</option>
+                                <option value="&type=S">Убой</option>
+                                <option value="&type=M">Спаривание</option>
                             </select>
                         </div>
                     </div>
@@ -134,14 +137,14 @@
                                     <div class="h-wrapper">
                                         <img class="operations-calendar-icon calendar-icon-min" src="/img/calendar.svg">
                                         <p>от:</p>
-                                        <input id="calendar" placeholder="01.01.2021" class="datepicker-here operations-filter-calendar custom-kill-calendar" data-position="left top">
+                                        <input id="calendar" placeholder="01.01.2021" class="datepicker-here operations-filter-calendar custom-kill-calendar count-filtered3" data-position="left top">
                                     </div>
                                 </div>
                                 <div class="v-wrapper operations-calendar calendar-min">
                                     <div class="h-wrapper">
                                         <img class="operations-calendar-icon calendar-icon-min" src="/img/calendar.svg">
                                         <p>до:</p>
-                                        <input id="calendar" placeholder="01.01.2021" class="datepicker-here operations-filter-calendar custom-kill-calendar" data-position="left top">
+                                        <input id="calendar" placeholder="01.01.2021" class="datepicker-here operations-filter-calendar custom-kill-calendar count-filtered4" data-position="left top">
                                     </div>
                                 </div>
                             </div>
@@ -150,8 +153,8 @@
                     <div class="cage-sbmt submit-btn-wrapper">
                         <button type="submit" class="submit-btn">
                             <div class="v-wrapper">
-                                <div class="h-wrapper">
-                                    Отобразить&nbsp<span id="count-results">(0)</span>
+                                <div class="h-wrapper" id="count-results-container">
+                                    Отобразить&nbsp<span id="count-results"></span>
                                 </div>
                             </div>
                         </button>
