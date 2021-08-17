@@ -1,6 +1,6 @@
-let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/anonymous/";
-let users = "https://rabbit-api--test.herokuapp.com/api/user/?"
-let deleteURL = "https://rabbit-api--test.herokuapp.com/api/task/mating/"
+let tasksURL = "https://rabbit-api--app.herokuapp.com/api/task/anonymous/";
+let users = "https://rabbit-api--app.herokuapp.com/api/user/?"
+let deleteURL = "https://rabbit-api--app.herokuapp.com/api/task/mating/"
 
 let FILTER = ""
 let EXECUTORS = {}
