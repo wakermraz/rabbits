@@ -1,4 +1,4 @@
-let authURL = "https://rabbit-api--app.herokuapp.com/api/auth/session/"
+let authURL = "https://rabbit-api--app.herokuapp.com/api/auth/token/"
 
 function postData(url, body) {
     const response_put = fetch(url, {
@@ -12,24 +12,57 @@ function postData(url, body) {
     return response_put;
 }
 
-$(document).ready(function() {
+function setCookie(name, value, options = {}) {
 
-	$(".log-in").click(function() {
-		let send = {
-			'username': $('input[name=login]').val(),
-			'password': $('input[name=password]').val()
-		}
-		postData(authURL, send)
-		.then((answer) => {
-			return answer.json()
-		})
-		.then((data) => {
-			if(data.client_error.message.non_field_errors[0].code == "authorization"){
-				location.reload()
-			} else {
-				window.location.href = "/rabbits.html"
-			}
-		})
-	})
+    options = {
+        path: '/',
+        ...options
+    };
+
+    if (options.expires instanceof Date) {
+        options.expires = options.expires.toUTCString();
+    }
+
+    let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+    for (let optionKey in options) {
+        updatedCookie += "; " + optionKey;
+        let optionValue = options[optionKey];
+        if (optionValue !== true) {
+            updatedCookie += "=" + optionValue;
+        }
+    }
+
+    document.cookie = updatedCookie;
+}
+
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+$(document).ready(function() {
+    let findToken = getCookie('token')
+    if(findToken != undefined){
+        window.location.href = "/rabbits.html"
+    }
+    $(".log-in").click(function() {
+        let send = {
+            'username': $('input[name=login]').val(),
+            'password': $('input[name=password]').val()
+        }
+        postData(authURL, send)
+            .then((answer) => {
+                return answer.json()
+            })
+            .then((data) => {
+                let date = new Date(Date.now() + 86400e3);
+                date = date.toUTCString();
+                setCookie('token', data.token, { 'max-age': date});
+                window.location.href="/rabbits.html"
+            })
+    })
 
 })

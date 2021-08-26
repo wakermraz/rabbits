@@ -59,8 +59,17 @@ let ar_filter_object = {
     "_f_cage_farm": "&farm_number=2"
 }
 
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+let tokenToQuery = getCookie('token')
+
 var dateFormat = function() {
-    var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
+    var tokenToQuery = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
         timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
         timezoneClip = /[^-+\dA-Z]/g,
         pad = function(val, len) {
@@ -132,7 +141,7 @@ var dateFormat = function() {
                 S: ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10]
             };
 
-        return mask.replace(token, function($0) {
+        return mask.replace(tokenToQuery, function($0) {
             return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
         });
     };
@@ -178,7 +187,8 @@ function getData(url) {
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': tokenToQuery
         }
     });
     return response;
@@ -189,7 +199,8 @@ function putData(url, body) {
         method: 'PUT',
         mode: 'cors',
         headers: {
-            'Content-type': 'application/json; charset=UTF-8'
+            'Content-type': 'application/json; charset=UTF-8',
+            'Authorization': tokenToQuery
         },
         body: JSON.stringify(body)
     });
@@ -201,7 +212,8 @@ function deleteData(url) {
         method: 'DELETE',
         mode: 'cors',
         headers: {
-            'Content-type': 'application/json; charset=UTF-8'
+            'Content-type': 'application/json; charset=UTF-8',
+            'Authorization': tokenToQuery
         },
     });
     return response_put;
@@ -212,7 +224,8 @@ function postData(url, body) {
         method: 'POST',
         mode: 'cors',
         headers: {
-            'Content-type': 'application/json; charset=UTF-8'
+            'Content-type': 'application/json; charset=UTF-8',
+            'Authorization': tokenToQuery
         },
         body: JSON.stringify(body)
     });

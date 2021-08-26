@@ -1,26 +1,14 @@
-let checkAUTH = "https://rabbit-api--app.herokuapp.com/api/echo/"
-
-function getData(url) {
-    const response = fetch(url, {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    return response;
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-getData(checkAUTH)
-.then((answer) => {
-    return answer.json()
-})
-.then((data) => {
-    if(data.user == "AnonymousUser"){
-        window.location.href = "/home.html"
-    } else {
-        window.location.href = "/rabbits.html"
-    }
-})
+let token = getCookie('token')
+
+if(token === undefined){
+    window.location.href="/home.html"
+} else {
+    console.log('authorased')
+}

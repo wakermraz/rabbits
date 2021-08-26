@@ -12,6 +12,7 @@
     <script src="/js/modal.js"></script>
     <script src="/js/pagination.js"></script>
     <script src="/js/main.js"></script>
+    <script src="/js/checkAuth.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width">
 </head>
@@ -23,7 +24,7 @@
         <div class="v-wrapper menu-list">
             <ul class="h-wrapper jcsb">
                 <li class="v-wrapper menu-list-item">
-                    <a href="/">Данные о ферме</a>
+                    <a href="/rabbits.html">Данные о ферме</a>
                 </li>
                 <li class="v-wrapper menu-list-item">
                     <a href="/operations.html">Операции</a>
@@ -120,13 +121,13 @@
             </div>
             <div class="input-form-btns v-wrapper">
                 <div class="h-wrapper btns-container">
-                        <button type="submit" class="save-changes-btn disabled" disabled="true" onclick="listenState()">
-                            <div class="v-wrapper">
-                                <div class="h-wrapper">
-                                    Сохранить назначенные задачи
-                                </div>
+                    <button type="submit" class="save-changes-btn disabled" disabled="true" onclick="listenState()">
+                        <div class="v-wrapper">
+                            <div class="h-wrapper">
+                                Сохранить назначенные задачи
                             </div>
-                        </button>
+                        </div>
+                    </button>
                     <button type="submit" class="discard-changes-btn disabled" disabled="true" onclick="location.reload()">
                         <div class="v-wrapper">
                             <div class="h-wrapper">
@@ -395,23 +396,16 @@
                                     <div class="plan-label-data">
                                         <div class="v-wrapper">
                                             <img class="calendar-icon" src="/img/calendar.svg">
-                                            <input id="calendar" disabled class="datepicker-here custom-calendar planCreate-calendar" data-position="left top">
+                                            <input id="calendar" class="datepicker-here custom-calendar planCreate-calendar" data-position="left top">
                                         </div>
                                     </div>
                                     <div class="planModal-plan-select-wrapper">
                                         <label class="plan-select planModal-plan-select">
-                                            <input type="checkbox" checked name="plan-checkbox" value="">
+                                            <input type="checkbox" onchange="unlockCalendar()" class="plan-checkbox" name="plan-checkbox" value="">
                                             <span></span>
                                         </label>
                                         <p class="planModal-plan-select-tomorrow">Завтра</p>
                                     </div>
-                                </div>
-                                <div class="planModal-left-middle-wrapper">
-                                    <p>Операция</p>
-                                    <select class="planModal-dropdown-input">
-                                        <option>Ферма №1</option>
-                                        <option>Ферма №2</option>
-                                    </select>
                                 </div>
                                 <div class="planModal-left-middle-wrapper">
                                     <p>Количество</p>
@@ -421,7 +415,7 @@
                                 </div>
                             </div>
                             <div class="planModal-left-bottom">
-                                <p class="planModal-add-item">Добавить</p>
+                                <p class="planModal-add-item" onclick="addPlan()">Добавить</p>
                             </div>
                         </div>
                         <div class="planModal-right">
@@ -431,6 +425,37 @@
                                 </a>
                             </div>
                             <div class="planModal-right-items">
+                            </div>
+                            <div class="planModal-right-submit">
+                                <p class="planModal-submit" onclick="submitPlans()">Отправить план</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="allPlansModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <a href="#close" title="Close" class="close">×</a>
+                    <div class="allPlans-header">
+                        <a href="#planModal-create">
+                            <p>Вернуться назад</p>
+                        </a>
+                    </div>
+                    <div class="allPlans-subheader">
+                        <p class="p-wrapper">План</p>
+                        <a href="#planModal-create">
+                            <img src="/img/edit.svg">
+                        </a>
+                        <p class="allPlans-subheader-tab allPlans-subheader-tab-active">Ожидается</p>
+                        <p class="allPlans-subheader-tab">Выполнено</p>
+                    </div>
+                    <div class="allPlans-list">
+                        <div class="appPlans-list-item">
+                            <div class="allPlans-list-item-leftside">
                                 <div class="planModal-right-item">
                                     <div class="v-wrapper">
                                         <p>01.01.2021</p>
@@ -441,14 +466,9 @@
                                     <div class="v-wrapper">
                                         <p>535</p>
                                     </div>
-                                    <div class="v-wrapper">
-                                        <img src="/img/planCreate-delete-item.svg">
-                                    </div>
                                 </div>
                             </div>
-                            <div class="planModal-right-submit">
-                                <p class="planModal-submit">Отправить план</p>
-                            </div>
+                            <img id="allPlans-delete" src="/img/planCreate-delete-item.svg">
                         </div>
                     </div>
                 </div>
@@ -692,46 +712,6 @@
                             <div class="addRabbitModal-right-submit">
                                 <p class="addRabbitModal-submit">Сохранить изменения</p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="allPlansModal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <a href="#close" title="Close" class="close">×</a>
-                    <div class="allPlans-header">
-                        <a href="#planModal-create">
-                            <p>Вернуться назад</p>
-                        </a>
-                    </div>
-                    <div class="allPlans-subheader">
-                        <p class="p-wrapper">План</p>
-                        <a href="#planModal-create">
-                            <img src="/img/edit.svg">
-                        </a>
-                        <p class="allPlans-subheader-tab allPlans-subheader-tab-active">Ожидается</p>
-                        <p class="allPlans-subheader-tab">Выполнено</p>
-                    </div>
-                    <div class="allPlans-list">
-                        <div class="appPlans-list-item">
-                            <div class="allPlans-list-item-leftside">
-                                <div class="planModal-right-item">
-                                    <div class="v-wrapper">
-                                        <p>01.01.2021</p>
-                                    </div>
-                                    <div class="v-wrapper">
-                                        <p>Убой</p>
-                                    </div>
-                                    <div class="v-wrapper">
-                                        <p>535</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <img id="allPlans-delete" src="/img/planCreate-delete-item.svg">
                         </div>
                     </div>
                 </div>

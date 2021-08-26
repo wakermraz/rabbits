@@ -5,6 +5,9 @@ let renewCageURL = "https://rabbit-api--app.herokuapp.com/api/cage/"
 let babiesURL = "https://rabbit-api--app.herokuapp.com/api/rabbit/?status=MF"
 let operationsURL = "https://rabbit-api--app.herokuapp.com/api/operation/?"
 let feedsURL = "https://rabbit-api--app.herokuapp.com/api/feeds/"
+let femaleURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?type=M&page_size=1"
+let maleURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?type=P&page_size=1"
+let slaughterURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?"
 
 var sidebar_filter = false;
 var sidebar_filter_order;
@@ -26,6 +29,93 @@ let filter_object = {
     "_f_type": "&",
     "_f_number_rabbits_from": "&"
 }
+
+let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
+
+let counterForPlan = 0;
+let planObj = {};
+let current_plan
+
+function unlockCalendar() {
+    if ($(".plan-checkbox").prop("checked") == false) {
+        $(".planCreate-calendar").prop("disabled", false)
+        $(".planCreate-calendar").prop("value", "")
+    } else {
+        $(".planCreate-calendar").prop("disabled", true)
+        var today = new Date();
+        var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
+        var dayTomorrow = tomorrow.getDate();
+        var monthTomorrow = tomorrow.getMonth() + 1; //в js месяц отсчитывается с нуля
+        if (monthTomorrow < 10) {
+            monthTomorrow = "0" + monthTomorrow
+        }
+        var yearTomorrow = tomorrow.getFullYear();
+        let date = String(dayTomorrow) + "." + monthTomorrow + "." + yearTomorrow
+        $(".planCreate-calendar").prop("value", date)
+    }
+}
+
+function addPlan() {
+    let date = $(".planCreate-calendar").val()
+    let rabbitsNum = $(".planCreate-input").val()
+
+    $(".planCreate-calendar").prop("value", "")
+    $(".planCreate-input").prop("value", "")
+    $(".plan-checkbox").prop("checked", false)
+    $(".planCreate-calendar").prop("disabled", false)
+    let dateForSend = date.replace(".", "-")
+    dateForSend = dateForSend.replace(".", "-")
+
+    dateForSend = dateForSend[6] + dateForSend[7] + dateForSend[8] + dateForSend[9] + dateForSend[5] + dateForSend[3] + dateForSend[4] + dateForSend[2] + dateForSend[0] + dateForSend[1]
+
+    planObj[counterForPlan] = {
+        "date": dateForSend,
+        "quantity": rabbitsNum
+    }
+
+    $(".planModal-right-items").append(
+        '<div class="planModal-right-item removable-plan' + counterForPlan + '">' +
+        '<div class="v-wrapper">' +
+        '<p>' + date + '</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<p>Убой</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<p>' + rabbitsNum + '</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<img onclick="deletePlanItem(' + counterForPlan + ')" src="/img/planCreate-delete-item.svg">' +
+        '</div>' +
+        '</div>'
+    )
+
+    counterForPlan++
+}
+
+function submitPlans(){
+    for(key in planObj){
+        postData(putPlan, planObj[key])
+    }
+    window.location.href = "#close"
+    location.reload()
+}
+
+function deletePlanItem(id){
+    $(".removable-plan" + id).remove()
+    delete planObj[id]
+
+}
+
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+let tokenToQuery = getCookie('token')
 
 var dateFormat = function() {
     var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
@@ -146,7 +236,8 @@ function getData(url) {
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': tokenToQuery
         }
     });
     return response;
@@ -157,7 +248,8 @@ function putData(url, body) {
         method: 'PUT',
         mode: 'cors',
         headers: {
-            'Content-type': 'application/json; charset=UTF-8'
+            'Content-type': 'application/json; charset=UTF-8',
+            'Authorization': tokenToQuery
         },
         body: JSON.stringify(body)
     });
@@ -169,7 +261,8 @@ function postData(url, body) {
         method: 'POST',
         mode: 'cors',
         headers: {
-            'Content-type': 'application/json; charset=UTF-8'
+            'Content-type': 'application/json; charset=UTF-8',
+            'Authorization': tokenToQuery
         },
         body: JSON.stringify(body)
     });
@@ -194,41 +287,263 @@ function convertToCalendar(date) {
 }
 
 function updateTopChart() {
+    $('.top-stats-filter-body').empty()
+    $('.top-stats-filter-body').append(
+        '<canvas id="top-stats" width="800" height="300"></canvas>'
+    )
     let week = [];
+    let dayAfter = [];
+    let month = [];
+    let year = [];
+    let weekFetch = [];
+    let monthFetch = [];
+    let yearFetch = [];
+    let showData = [];
+    let labels;
+    let p1;
     if ($('.right').val() == "week") {
         let day = 604800000;
         for (let i = 0; i < 7; i++) {
-            var s = new Date
-            var today = new Date(s.getTime() - day);
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0');
-            var yyyy = today.getFullYear();
+            let s = new Date
+            let tomorrow = new Date(s.getTime() + (24 * 60 * 60 * 1000))
+            let today = new Date(tomorrow.getTime() - day);
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let yyyy = today.getFullYear();
 
+            weekFetch[i] = yyyy + '.' + mm + '.' + dd
             week[i] = dd + '.' + mm + '.' + yyyy;
             day -= 86400000
         }
+        let minDay = 518400000
+        for (let i = 0; i < 7; i++) {
+            if (i == 6) {
+                let s = new Date
+                let tomorrow = new Date(s.getTime() + (24 * 60 * 60 * 1000))
+                let today = new Date(tomorrow.getTime() - 86400000);
+                let dd = String(today.getDate()).padStart(2, '0');
+                let mm = String(today.getMonth() + 1).padStart(2, '0');
+                let yyyy = today.getFullYear();
+                dayAfter[i] = yyyy + '.' + mm + '.' + dd
+            } else {
+                let s = new Date
+                let tomorrow = new Date(s.getTime() + (24 * 60 * 60 * 1000))
+                let today = new Date(tomorrow.getTime() - minDay);
+                let dd = String(today.getDate()).padStart(2, '0');
+                let mm = String(today.getMonth() + 1).padStart(2, '0');
+                let yyyy = today.getFullYear();
+
+                dayAfter[i] = yyyy + '.' + mm + '.' + dd
+            }
+            minDay -= 86400000
+        }
+        for (let i = 0; i < 7; i++) {
+            p1 = getData(operationsURL + "time_from=" + weekFetch[i] + "&time_to=" + dayAfter[i] + $('.left').val())
+                .then((value) => {
+                    return value.json()
+                })
+                .then((data) => {
+                    showData[i] = data.count
+                })
+        }
+        labels = week
+
+        Promise.all([p1]).then((value) => {
+            setTimeout(() => {
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                        backgroundColor: '#fff',
+                        borderColor: '#39A852',
+                        data: showData,
+                    }]
+                };
+
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {}
+                };
+
+                let topStatistics = new Chart(
+                    $("#top-stats"),
+                    config
+                );
+            }, 500)
+        })
+    } else if ($('.right').val() == "month") {
+        let day = 2592000000;
+        for (let i = 0; i < 30; i++) {
+            let s = new Date
+            let tomorrow = new Date(s.getTime() + (24 * 60 * 60 * 1000))
+            let today = new Date(tomorrow.getTime() - day);
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let yyyy = today.getFullYear();
+
+            monthFetch[i] = yyyy + '.' + mm + '.' + dd
+            month[i] = dd + '.' + mm + '.' + yyyy;
+            day -= 86400000
+        }
+        let minDay = 2505600000
+        for (let i = 0; i < 30; i++) {
+            if (i == 29) {
+                let s = new Date
+                let tomorrow = new Date(s.getTime() + (24 * 60 * 60 * 1000))
+                let today = new Date(tomorrow.getTime() - 86400000);
+                let dd = String(today.getDate()).padStart(2, '0');
+                let mm = String(today.getMonth() + 1).padStart(2, '0');
+                let yyyy = today.getFullYear();
+                dayAfter[i] = yyyy + '.' + mm + '.' + dd
+            } else {
+                let s = new Date
+                let tomorrow = new Date(s.getTime() + (24 * 60 * 60 * 1000))
+                let today = new Date(tomorrow.getTime() - minDay);
+                let dd = String(today.getDate()).padStart(2, '0');
+                let mm = String(today.getMonth() + 1).padStart(2, '0');
+                let yyyy = today.getFullYear();
+                dayAfter[i] = yyyy + '.' + mm + '.' + dd
+            }
+            minDay -= 86400000
+        }
+        for (let i = 0; i < 30; i++) {
+            p1 = getData(operationsURL + "time_from=" + monthFetch[i] + "&time_to=" + dayAfter[i] + $('.left').val())
+                .then((value) => {
+                    return value.json()
+                })
+                .then((data) => {
+                    showData[i] = data.count
+                })
+        }
+        labels = month
+
+        Promise.all([p1]).then((value) => {
+            setTimeout(() => {
+                console.log(showData)
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                        backgroundColor: '#fff',
+                        borderColor: '#39A852',
+                        data: showData,
+                    }]
+                };
+
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {}
+                };
+
+                let topStatistics = new Chart(
+                    $("#top-stats"),
+                    config
+                );
+            }, 500)
+        })
+    } else {
+        let day = 31536000000;
+        for (let i = 0; i < 12; i++) {
+            let s = new Date
+            let tomorrow = new Date(s.getTime() + (24 * 60 * 60 * 1000))
+            let today = new Date(tomorrow.getTime() - day);
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let yyyy = today.getFullYear();
+
+            yearFetch[i] = yyyy + '.' + mm + '.01'
+
+            if (mm == '01') {
+                mm = 'Январь'
+            } else if (mm == '02') {
+                mm = 'Февраль'
+            } else if (mm == '03') {
+                mm = 'Март'
+            } else if (mm == '04') {
+                mm = 'Апрель'
+            } else if (mm == '05') {
+                mm = 'Май'
+            } else if (mm == '06') {
+                mm = 'Июнь'
+            } else if (mm == '07') {
+                mm = 'Июль'
+            } else if (mm == '08') {
+                mm = 'Август'
+            } else if (mm == '09') {
+                mm = 'Сентябрь'
+            } else if (mm == '10') {
+                mm = 'Октябрь'
+            } else if (mm == '11') {
+                mm = 'Ноябрь'
+            } else if (mm == '12') {
+                mm = 'Декабрь'
+            }
+
+            year[i] = mm;
+            day -= 2592000000
+        }
+        let minDay = 28944000000
+        for (let i = 0; i < 12; i++) {
+            let s = new Date
+            let tomorrow = new Date(s.getTime() + (24 * 60 * 60 * 1000))
+            let today = new Date(tomorrow.getTime() - minDay);
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0');
+            let yyyy = today.getFullYear();
+
+            if (i == 11) {
+                dayAfter[i] = yyyy + '.' + mm + '.' + dd
+            } else {
+                dayAfter[i] = yyyy + '.' + mm + '.01'
+            }
+            minDay -= 2592000000
+        }
+        for (let i = 0; i < 12; i++) {
+            p1 = getData(operationsURL + "time_from=" + yearFetch[i] + "&time_to=" + dayAfter[i] + $('.left').val())
+                .then((value) => {
+                    return value.json()
+                })
+                .then((data) => {
+                    showData[i] = data.count
+                })
+        }
+        labels = year
+
+        Promise.all([p1]).then((value) => {
+            setTimeout(() => {
+                console.log(showData)
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                        backgroundColor: '#fff',
+                        borderColor: '#39A852',
+                        data: showData,
+                    }]
+                };
+
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                            },
+                            title: {
+                                display: false,
+                            }
+                        }
+                    }
+                };
+
+                let topStatistics = new Chart(
+                    $("#top-stats"),
+                    config
+                );
+            }, 500)
+        })
     }
-    const labels = week;
-
-    const data = {
-        labels: labels,
-        datasets: [{
-            backgroundColor: '#fff',
-            borderColor: '#39A852',
-            data: [20, 20, 20, 20, 40, 10, 13],
-        }]
-    };
-
-    const config = {
-        type: 'line',
-        data: data,
-        options: {}
-    };
-
-    var topStatistics = new Chart(
-        $("#top-stats"),
-        config
-    );
 }
 
 function overallStat() {
@@ -272,21 +587,205 @@ function overallStat() {
         })
 }
 
-$(document).ready(function() {
-    overallStat()
+function bottomStat() {
+    slaughterInit()
+    femaleInit()
+    maleInit()
+}
 
-    updateTopChart()
-
-    $(".food-management-btn").click(function() {
-        getData(feedsURL)
+function slaughterInit() {
+    let instance = []
+    getData(slaughterURL)
         .then((value) => {
             return value.json()
         })
         .then((data) => {
-            $("#all").html(data.all_stocks)
-            $("#expected").html(data.expected_stock)
-            $("#predict").html(data.predict_bags)
+            let ready;
+            let not_ready;
+            let all;
+            all = data.count
+            getData(slaughterURL + "status=RS&page_size=1")
+                .then((value) => {
+                    return value.json()
+                })
+                .then((data) => {
+                    not_ready = all - data.count
+                    ready = data.count
+                })
+                .then(() => {
+                    instance[0] = ready;
+                    instance[1] = not_ready
+                    const data = {
+                        labels: ['Готовы', 'Не готовы'],
+                        datasets: [{
+                            label: 'Сколько готовы к убою',
+                            data: instance,
+                            backgroundColor: ['rgba(36, 159, 83, 1)', 'rgba(178, 59, 59, 1)'],
+                        }]
+                    };
+
+                    const config = {
+                        type: 'doughnut',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Сколько готовы к убою'
+                                }
+                            }
+                        },
+                    };
+
+                    let slaughterStat = new Chart(
+                        $("#ready-for-slaughter"),
+                        config
+                    );
+                })
         })
+}
+
+function femaleInit(){
+    let instance = []
+    getData(femaleURL)
+        .then((value) => {
+            return value.json()
+        })
+        .then((data) => {
+            let ready;
+            let not_ready;
+            let all;
+            all = data.count
+            getData(femaleURL + "&status=RF")
+                .then((value) => {
+                    return value.json()
+                })
+                .then((data) => {
+                    not_ready = all - data.count
+                    ready = data.count
+                })
+                .then(() => {
+                    instance[0] = ready;
+                    instance[1] = not_ready
+                    const data = {
+                        labels: ['Готовы', 'Не готовы'],
+                        datasets: [{
+                            label: 'Самок готовы к размножению',
+                            data: instance,
+                            backgroundColor: ['rgba(155, 40, 123, 1)', 'rgba(69, 149, 194, 1)'],
+                        }]
+                    };
+
+                    const config = {
+                        type: 'doughnut',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Самок готовы к размножению'
+                                }
+                            }
+                        },
+                    };
+
+                    let femaleStat = new Chart(
+                        $("#female-for-sex"),
+                        config
+                    );
+                })
+        })
+}
+
+function maleInit() {
+    let instance = []
+    getData(maleURL)
+        .then((value) => {
+            return value.json()
+        })
+        .then((data) => {
+            let ready;
+            let not_ready;
+            let all;
+            all = data.count
+            getData(maleURL + "&status=RF")
+                .then((value) => {
+                    return value.json()
+                })
+                .then((data) => {
+                    not_ready = all - data.count
+                    ready = data.count
+                })
+                .then(() => {
+                    instance[0] = ready;
+                    instance[1] = not_ready
+                    const data = {
+                        labels: ['Готовы', 'Не готовы'],
+                        datasets: [{
+                            label: 'Самцов готовы к размножению',
+                            data: instance,
+                            backgroundColor: ['rgba(44, 136, 114, 1)', 'rgba(143, 143, 143, 1)'],
+                        }]
+                    };
+
+                    const config = {
+                        type: 'doughnut',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Самцов готовы к размножению'
+                                }
+                            }
+                        },
+                    };
+
+                    let maleStat = new Chart(
+                        $("#male-for-sex"),
+                        config
+                    );
+                })
+        })
+}
+
+$(document).ready(function() {
+    overallStat()
+
+    bottomStat()
+
+    updateTopChart()
+
+    document.querySelector(".right").addEventListener('change', function(e) {
+        updateTopChart()
+    })
+
+    document.querySelector(".left").addEventListener('change', function(e) {
+        updateTopChart()
+    })
+
+    $(".food-management-btn").click(function() {
+        getData(feedsURL)
+            .then((value) => {
+                return value.json()
+            })
+            .then((data) => {
+                $("#all").html(data.all_stocks)
+                $("#expected").html(data.expected_stock)
+                $("#predict").html(data.predict_bags)
+            })
     })
 
     $(".addFood").click(function() {
@@ -294,10 +793,10 @@ $(document).ready(function() {
             'stocks': $('input[name=addFood]').val()
         }
         postData(feedsURL, send)
-        .then((answer) => {
-            window.location.href = "#close"
-            location.reload()
-        })
+            .then((answer) => {
+                window.location.href = "#close"
+                location.reload()
+            })
     })
 
     $(".deleteFood").click(function() {
@@ -305,9 +804,9 @@ $(document).ready(function() {
             'stocks': +('-' + $('input[name=deleteFood]').val())
         }
         postData(feedsURL, send)
-        .then((answer) => {
-            window.location.href = "#close"
-            location.reload()
-        })
+            .then((answer) => {
+                window.location.href = "#close"
+                location.reload()
+            })
     })
 })

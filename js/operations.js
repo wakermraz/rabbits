@@ -25,6 +25,93 @@ let filter_object = {
     "_f_time_to": "&"
 }
 
+let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
+
+let counterForPlan = 0;
+let planObj = {};
+let current_plan
+
+function unlockCalendar() {
+    if ($(".plan-checkbox").prop("checked") == false) {
+        $(".planCreate-calendar").prop("disabled", false)
+        $(".planCreate-calendar").prop("value", "")
+    } else {
+        $(".planCreate-calendar").prop("disabled", true)
+        var today = new Date();
+        var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
+        var dayTomorrow = tomorrow.getDate();
+        var monthTomorrow = tomorrow.getMonth() + 1; //в js месяц отсчитывается с нуля
+        if (monthTomorrow < 10) {
+            monthTomorrow = "0" + monthTomorrow
+        }
+        var yearTomorrow = tomorrow.getFullYear();
+        let date = String(dayTomorrow) + "." + monthTomorrow + "." + yearTomorrow
+        $(".planCreate-calendar").prop("value", date)
+    }
+}
+
+function addPlan() {
+    let date = $(".planCreate-calendar").val()
+    let rabbitsNum = $(".planCreate-input").val()
+
+    $(".planCreate-calendar").prop("value", "")
+    $(".planCreate-input").prop("value", "")
+    $(".plan-checkbox").prop("checked", false)
+    $(".planCreate-calendar").prop("disabled", false)
+    let dateForSend = date.replace(".", "-")
+    dateForSend = dateForSend.replace(".", "-")
+
+    dateForSend = dateForSend[6] + dateForSend[7] + dateForSend[8] + dateForSend[9] + dateForSend[5] + dateForSend[3] + dateForSend[4] + dateForSend[2] + dateForSend[0] + dateForSend[1]
+
+    planObj[counterForPlan] = {
+        "date": dateForSend,
+        "quantity": rabbitsNum
+    }
+
+    $(".planModal-right-items").append(
+        '<div class="planModal-right-item removable-plan' + counterForPlan + '">' +
+        '<div class="v-wrapper">' +
+        '<p>' + date + '</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<p>Убой</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<p>' + rabbitsNum + '</p>' +
+        '</div>' +
+        '<div class="v-wrapper">' +
+        '<img onclick="deletePlanItem(' + counterForPlan + ')" src="/img/planCreate-delete-item.svg">' +
+        '</div>' +
+        '</div>'
+    )
+
+    counterForPlan++
+}
+
+function submitPlans(){
+    for(key in planObj){
+        postData(putPlan, planObj[key])
+    }
+    window.location.href = "#close"
+    location.reload()
+}
+
+function deletePlanItem(id){
+    $(".removable-plan" + id).remove()
+    delete planObj[id]
+
+}
+
+function getCookie(name) {
+  let matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+let tokenToQuery = getCookie('token')
+
 var dateFormat = function() {
     var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
         timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
@@ -144,7 +231,8 @@ function getData(url) {
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': tokenToQuery
         }
     });
     return response;
@@ -155,7 +243,8 @@ function putData(url, body) {
         method: 'PUT',
         mode: 'cors',
         headers: {
-            'Content-type': 'application/json; charset=UTF-8'
+            'Content-type': 'application/json; charset=UTF-8',
+            'Authorization': tokenToQuery
         },
         body: JSON.stringify(body)
     });
@@ -167,7 +256,8 @@ function postData(url, body) {
         method: 'POST',
         mode: 'cors',
         headers: {
-            'Content-type': 'application/json; charset=UTF-8'
+            'Content-type': 'application/json; charset=UTF-8',
+            'Authorization': tokenToQuery
         },
         body: JSON.stringify(body)
     });
