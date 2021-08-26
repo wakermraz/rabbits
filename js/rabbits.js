@@ -1,10 +1,10 @@
-let rabbitsURL = "https://rabbit-api--app.herokuapp.com/api/rabbit/?"
-let rabbitsURL_ = "https://rabbit-api--app.herokuapp.com/api/rabbit/"
-let rabbit_operations = "https://rabbit-api--app.herokuapp.com/api/operation/?rabbit_id=";
-let rabbits_breed = "https://rabbit-api--app.herokuapp.com/api/breed/"
-let addRabbitCages = "https://rabbit-api--app.herokuapp.com/api/cage/?number_rabbits_to=0&status="
-let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
-let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
+let rabbitsURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?"
+let rabbitsURL_ = "https://rabbit-api--test.herokuapp.com/api/rabbit/"
+let rabbit_operations = "https://rabbit-api--test.herokuapp.com/api/operation/?rabbit_id=";
+let rabbits_breed = "https://rabbit-api--test.herokuapp.com/api/breed/"
+let addRabbitCages = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status="
+let getPlan = "https://rabbit-api--test.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--test.herokuapp.com/api/plan/"
 var sidebar_filter = false;
 var sidebar_filter_order;
 var showWeight;
@@ -234,7 +234,7 @@ function postData(url, body) {
 
 function countResponse(obj_key, filter) {
     $('#count-results').remove()
-    let obj_to_link = "https://rabbit-api--app.herokuapp.com/api/rabbit/?"
+    let obj_to_link = "https://rabbit-api--test.herokuapp.com/api/rabbit/?"
     for (let key in filter_object) {
         if (key == obj_key && filter != filter_object[key]) {
             filter_object[key] = filter;
@@ -269,7 +269,7 @@ function makeLink(url, id, r_type) {
 function showNewRabbit(id) {
     $('.added1').remove()
     openedModalId = id;
-    getData("https://rabbit-api--app.herokuapp.com/api/rabbit/" + id)
+    getData("https://rabbit-api--test.herokuapp.com/api/rabbit/" + id)
         .then((value) => {
             return value.json()
         })
@@ -592,7 +592,7 @@ function defineStatus(data) {
 
 function getAvailCages(obj_key, filter) {
     $('.cageSelect-item').remove()
-    let obj_to_link = "https://rabbit-api--app.herokuapp.com/api/cage/?number_rabbits_to=0&status=&page_size=10000"
+    let obj_to_link = "https://rabbit-api--test.herokuapp.com/api/cage/?number_rabbits_to=0&status=&page_size=10000"
     for (let key in ar_filter_object) {
         if (key == obj_key && filter != ar_filter_object[key]) {
             ar_filter_object[key] = filter;
@@ -2393,7 +2393,7 @@ $(document).ready(function() {
     $('.addRabbitModal-submit').click(function() {
         let records = document.querySelectorAll('.addRabbitModal-right-item')
         for (let i = 0; i < records.length; i++) {
-            postData("https://rabbit-api--app.herokuapp.com/api/rabbit/reproduction/", rabbitsObj[records[i].id].send)
+            postData("https://rabbit-api--test.herokuapp.com/api/rabbit/reproduction/", rabbitsObj[records[i].id].send)
                 .then((value) => {
                     $('#rabbitBirth-calendar').empty()
                     $('.is_male').prop('checked', false)

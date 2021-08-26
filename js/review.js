@@ -1,11 +1,11 @@
-let tasksURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/?";
-let users = "https://rabbit-api--app.herokuapp.com/api/user/?"
-let confirmURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/confirm/"
-let completeURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/complete/"
-let deleteURL = "https://rabbit-api--app.herokuapp.com/api/task/mating/"
-let jiggingURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/complete/bunny_jigging/"
-let inspectURL = "https://rabbit-api--app.herokuapp.com/api/task/in_progress/complete/slaughter_inspection/"
-let printFileURL = "https://rabbit-api--app.herokuapp.com/api/user/"
+let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/?";
+let users = "https://rabbit-api--test.herokuapp.com/api/user/?"
+let confirmURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/confirm/"
+let completeURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/complete/"
+let deleteURL = "https://rabbit-api--test.herokuapp.com/api/task/mating/"
+let jiggingURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/complete/bunny_jigging/"
+let inspectURL = "https://rabbit-api--test.herokuapp.com/api/task/in_progress/complete/slaughter_inspection/"
+let printFileURL = "https://rabbit-api--test.herokuapp.com/api/user/"
 
 let isAppended = false
 let FILTER = ""
@@ -13,8 +13,8 @@ let user_list = ""
 let EXECUTORS = {}
 let counter = 0
 
-let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
-let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
+let getPlan = "https://rabbit-api--test.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--test.herokuapp.com/api/plan/"
 
 let counterForPlan = 0;
 let planObj = {};

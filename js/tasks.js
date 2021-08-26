@@ -1,13 +1,13 @@
-let tasksURL = "https://rabbit-api--app.herokuapp.com/api/task/anonymous/";
-let users = "https://rabbit-api--app.herokuapp.com/api/user/?"
-let deleteURL = "https://rabbit-api--app.herokuapp.com/api/task/mating/"
+let tasksURL = "https://rabbit-api--test.herokuapp.com/api/task/anonymous/";
+let users = "https://rabbit-api--test.herokuapp.com/api/user/?"
+let deleteURL = "https://rabbit-api--test.herokuapp.com/api/task/mating/"
 
 let FILTER = ""
 let EXECUTORS = {}
 let counter = 0
 
-let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
-let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
+let getPlan = "https://rabbit-api--test.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--test.herokuapp.com/api/plan/"
 
 let counterForPlan = 0;
 let planObj = {};

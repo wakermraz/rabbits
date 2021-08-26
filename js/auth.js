@@ -1,4 +1,4 @@
-let authURL = "https://rabbit-api--app.herokuapp.com/api/auth/token/"
+let authURL = "https://rabbit-api--test.herokuapp.com/api/auth/token/"
 
 function postData(url, body) {
     const response_put = fetch(url, {
