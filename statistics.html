@@ -10,6 +10,8 @@
   <script src="/js/modal.js"></script>
   <script src="/js/pagination.js"></script>
   <script src="/js/main.js"></script>
+  <script src="/js/statistics.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="viewport" content="width=device-width">
 </head>
@@ -66,22 +68,22 @@
       	<div class="stat-top-container">
       		<div class="leftside-top-stats">
       			<div class="top-stats-w-btn">
-      				<p class="top-stats-item">Кроликов всего на ферме: <span>0</span></p>
+      				<p class="top-stats-item">Кроликов всего на ферме: <span id="rabbitsOnFarm">0</span></p>
       				<a href="/">
       					<p class="top-stats-item-btn">Перейти</p>
       				</a>
       			</div>
       			<div class="top-stats-w-btn">
-      				<p class="top-stats-item">Клеток всего на ферме: <span>0</span></p>
+      				<p class="top-stats-item">Клеток всего на ферме: <span id="cagesOnFarm">0</span></p>
       				<a href="/cages.html">
       					<p class="top-stats-item-btn">Перейти</p>
       				</a>
       			</div>
       			<div class="top-stats">
-      				<p class="top-stats-item">Кормятся детей: <span>0</span></p>
+      				<p class="top-stats-item">Кормятся детей: <span id="babiesOnFarm">0</span></p>
       			</div>
       			<div class="top-stats">
-      				<p class="top-stats-item">Операций за последние сутки: <span>0</span></p>
+      				<p class="top-stats-item">Операций за последние сутки: <span id="operationsForDay">0</span></p>
       			</div>
       			<a href="#foodControlModal">
 	      			<div class="food-management-btn">
@@ -95,19 +97,21 @@
 	      				<p>Выберите фильтр</p>
 	      			</div>
 	      			<div class="stats-filter-rightside">
-		      			<select class="rightside-filter">
-			                <option>убоев</option>
+		      			<select class="rightside-filter left">
+			                <option value="s">убоев</option>
+			                <option value="j">отсадок</option>
+			                <option value="d">смертей</option>
+			                <option value="m">спариваний</option>
 			            </select>
-			            <select class="rightside-filter">
-			                <option>за неделю</option>
-			                <option>за месяц</option>
-			                <option>за год</option>
-			                <option>за все время</option>
+			            <select class="rightside-filter right">
+			                <option value="week">за неделю</option>
+			                <option value="month">за месяц</option>
+			                <option value="year">за год</option>
 			            </select>
 			        </div>
 		        </div>
 		        <div class="top-stats-filter-body">
-		        	
+		        	<canvas id="top-stats" width="400" height="200"></canvas>
 		        </div>
       		</div>
       	</div>
@@ -135,8 +139,9 @@
 	        	<p>Управление кормом</p>
 	        </div>
 	        <div class="foodControlModal-subheader">
-	        	<p>Количество мешков: <span>0</span></p>
-	        	<p>Ожидаемый запас (в днях): <span>0</span></p>
+	        	<p>Количество мешков: <span id="all">0</span></p>
+	        	<p>Ожидаемый запас (в днях): <span id="expected">0</span></p>
+	        	<p>Прогноз (через 14 дн): <span id="predict">0</span></p>
 	        </div>
 	        <div class="foodControl-body-container">
 		        <div class="changeWeight-body">
@@ -158,6 +163,5 @@
 	    </div>
 	  </div>
 	</div>
-
 </body>
 </html>
