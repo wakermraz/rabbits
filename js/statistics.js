@@ -1,10 +1,10 @@
-const cagesURL = "https://rabbit-api--app.herokuapp.com/api/cage/?";
-let rabbitsURL = "https://rabbit-api--app.herokuapp.com/api/rabbit/"
-const cagesFILTER = "https://rabbit-api--app.herokuapp.com/api/cage/?";
-let renewCageURL = "https://rabbit-api--app.herokuapp.com/api/cage/"
-let babiesURL = "https://rabbit-api--app.herokuapp.com/api/rabbit/?status=MF"
-let operationsURL = "https://rabbit-api--app.herokuapp.com/api/operation/?"
-let feedsURL = "https://rabbit-api--app.herokuapp.com/api/feeds/"
+const cagesURL = "https://rabbit-api--test.herokuapp.com/api/cage/?";
+let rabbitsURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/"
+const cagesFILTER = "https://rabbit-api--test.herokuapp.com/api/cage/?";
+let renewCageURL = "https://rabbit-api--test.herokuapp.com/api/cage/"
+let babiesURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?status=MF"
+let operationsURL = "https://rabbit-api--test.herokuapp.com/api/operation/?"
+let feedsURL = "https://rabbit-api--test.herokuapp.com/api/feeds/"
 let femaleURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?type=M&page_size=1"
 let maleURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?type=P&page_size=1"
 let slaughterURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/?"
@@ -30,8 +30,8 @@ let filter_object = {
     "_f_number_rabbits_from": "&"
 }
 
-let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
-let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
+let getPlan = "https://rabbit-api--test.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--test.herokuapp.com/api/plan/"
 
 let counterForPlan = 0;
 let planObj = {};

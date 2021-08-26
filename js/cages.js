@@ -1,8 +1,8 @@
-const cagesURL = "https://rabbit-api--app.herokuapp.com/api/cage/?";
-const cagesFILTER = "https://rabbit-api--app.herokuapp.com/api/cage/?";
-let renewCageURL = "https://rabbit-api--app.herokuapp.com/api/cage/"
-let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
-let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
+const cagesURL = "https://rabbit-api--test.herokuapp.com/api/cage/?";
+const cagesFILTER = "https://rabbit-api--test.herokuapp.com/api/cage/?";
+let renewCageURL = "https://rabbit-api--test.herokuapp.com/api/cage/"
+let getPlan = "https://rabbit-api--test.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--test.herokuapp.com/api/plan/"
 
 let counterForPlan = 0;
 let planObj = {};

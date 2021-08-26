@@ -1,7 +1,7 @@
-const operationsURL = "https://rabbit-api--app.herokuapp.com/api/operation/?";
-let rabbitsURL = "https://rabbit-api--app.herokuapp.com/api/rabbit/"
-let getRABBIT = "https://rabbit-api--app.herokuapp.com/api/rabbit/";
-const rabbit_operations = "https://rabbit-api--app.herokuapp.com/api/operation/?rabbit_id=";
+const operationsURL = "https://rabbit-api--test.herokuapp.com/api/operation/?";
+let rabbitsURL = "https://rabbit-api--test.herokuapp.com/api/rabbit/"
+let getRABBIT = "https://rabbit-api--test.herokuapp.com/api/rabbit/";
+const rabbit_operations = "https://rabbit-api--test.herokuapp.com/api/operation/?rabbit_id=";
 
 var showWeight;
 
@@ -25,8 +25,8 @@ let filter_object = {
     "_f_time_to": "&"
 }
 
-let getPlan = "https://rabbit-api--app.herokuapp.com/api/plan/?date="
-let putPlan = "https://rabbit-api--app.herokuapp.com/api/plan/"
+let getPlan = "https://rabbit-api--test.herokuapp.com/api/plan/?date="
+let putPlan = "https://rabbit-api--test.herokuapp.com/api/plan/"
 
 let counterForPlan = 0;
 let planObj = {};
@@ -317,7 +317,7 @@ function convertToCalendar(date) {
 
 function showNewRabbit(id) {
     $('.added1').remove()
-    getData("https://rabbit-api--app.herokuapp.com/api/rabbit/" + id)
+    getData("https://rabbit-api--test.herokuapp.com/api/rabbit/" + id)
         .then((value) => {
             return value.json()
         })
